@@ -1,0 +1,293 @@
+import express from "express";
+import path from "path";
+import fs from "fs/promises";
+import { createServer as createViteServer } from "vite";
+import { createClient } from "@supabase/supabase-js";
+
+// Initialize express app
+const app = express();
+const PORT = 3000;
+const DB_FILE = path.join(process.cwd(), "leads_db.json");
+
+app.use(express.json());
+
+// In-memory session store for password authentication
+// Maps token -> { expiresAt: number, lastActive: number }
+interface Session {
+  lastActive: number;
+}
+const sessions = new Map<string, Session>();
+const SESSION_INACTIVITY_LIMIT = 30 * 60 * 1000; // 30 minutes in milliseconds
+
+// Supabase client lazy-initializer
+let supabaseClient: any = null;
+function getSupabase() {
+  if (supabaseClient) return supabaseClient;
+  const url = process.env.SUPABASE_URL;
+  const anonKey = process.env.SUPABASE_ANON_KEY;
+  if (url && anonKey) {
+    try {
+      supabaseClient = createClient(url, anonKey);
+      console.log("Supabase Client initialized successfully.");
+      return supabaseClient;
+    } catch (err) {
+      console.error("Failed to initialize Supabase client:", err);
+    }
+  }
+  return null;
+}
+
+// Ensure the local fallback database file exists
+async function ensureDbExists() {
+  try {
+    await fs.access(DB_FILE);
+  } catch {
+    await fs.writeFile(DB_FILE, JSON.stringify([], null, 2), "utf-8");
+  }
+}
+
+// Read leads from local file
+async function readLeads() {
+  await ensureDbExists();
+  const data = await fs.readFile(DB_FILE, "utf-8");
+  try {
+    return JSON.parse(data);
+  } catch {
+    return [];
+  }
+}
+
+// Write leads to local file
+async function writeLeads(leads: any[]) {
+  await ensureDbExists();
+  await fs.writeFile(DB_FILE, JSON.stringify(leads, null, 2), "utf-8");
+}
+
+// Authentication middleware for /api/admin/*
+function requireAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Unauthorized access" });
+  }
+
+  const token = authHeader.split(" ")[1];
+  const session = sessions.get(token);
+
+  if (!session) {
+    return res.status(401).json({ error: "Session not found or expired" });
+  }
+
+  const now = Date.now();
+  if (now - session.lastActive > SESSION_INACTIVITY_LIMIT) {
+    sessions.delete(token);
+    return res.status(401).json({ error: "Session expired due to 30 minutes of inactivity" });
+  }
+
+  // Update session activity timestamp
+  session.lastActive = now;
+  sessions.set(token, session);
+  next();
+}
+
+// ==========================================
+// API ROUTES
+// ==========================================
+
+// Public Route: Submit new lead from any form (Contact, Quote, Consultation, Planner, etc.)
+app.post("/api/leads", async (req, res) => {
+  try {
+    const { name, phone, email, businessName, businessUrl, service, budget, message, leadSource } = req.body;
+
+    if (!name || !email) {
+      return res.status(400).json({ error: "Name and Email are required fields." });
+    }
+
+    const newLead = {
+      id: "LD-" + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 5).toUpperCase(),
+      name: name || "",
+      phone: phone || "",
+      email: email || "",
+      businessName: businessName || "",
+      businessUrl: businessUrl || "",
+      service: service || "General Consultation",
+      budget: budget || "Not Specified",
+      message: message || "",
+      date: new Date().toISOString(),
+      leadSource: leadSource || "Contact Form",
+      status: "New"
+    };
+
+    // 1. Save to local fallback persistence
+    const leads = await readLeads();
+    leads.unshift(newLead);
+    await writeLeads(leads);
+
+    // 2. Try to save to Supabase Database if configured
+    const sb = getSupabase();
+    if (sb) {
+      try {
+        const { error } = await sb.from("leads").insert([newLead]);
+        if (error) {
+          console.error("Supabase storage sync error:", error);
+        } else {
+          console.log(`Lead ${newLead.id} synchronized successfully with Supabase.`);
+        }
+      } catch (err) {
+        console.error("Unhandled Supabase insert exception:", err);
+      }
+    }
+
+    res.status(201).json({ success: true, lead: newLead });
+  } catch (error: any) {
+    console.error("Error creating lead:", error);
+    res.status(500).json({ error: "Internal server error saving lead data." });
+  }
+});
+
+// Admin Route: Authenticate / Login (NO USERNAME, NO EMAIL, ONLY PASSWORD)
+app.post("/api/admin/login", (req, res) => {
+  const { password } = req.body;
+  const configPassword = process.env.ADMIN_PASSWORD || "LOCAL45090";
+
+  if (!password || password !== configPassword) {
+    return res.status(401).json({ error: "Invalid Password" });
+  }
+
+  // Create a secure token session
+  const token = "TOK_" + Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+  sessions.set(token, { lastActive: Date.now() });
+
+  res.json({
+    success: true,
+    token,
+    message: "Authorization successful."
+  });
+});
+
+// Admin Route: Check Session status
+app.post("/api/admin/check-session", (req, res) => {
+  const { token } = req.body;
+  if (!token) return res.status(401).json({ valid: false });
+
+  const session = sessions.get(token);
+  if (!session) return res.status(401).json({ valid: false });
+
+  const now = Date.now();
+  if (now - session.lastActive > SESSION_INACTIVITY_LIMIT) {
+    sessions.delete(token);
+    return res.status(401).json({ valid: false });
+  }
+
+  // Update session active
+  session.lastActive = now;
+  sessions.set(token, session);
+
+  res.json({ valid: true });
+});
+
+// Admin Route: Get all leads to display in CRM Dashboard
+app.get("/api/admin/leads", requireAuth, async (req, res) => {
+  try {
+    const sb = getSupabase();
+    if (sb) {
+      try {
+        // Try getting latest live data from Supabase first
+        const { data, error } = await sb.from("leads").select("*").order("date", { ascending: false });
+        if (!error && data) {
+          // Sync state back to local cache so fallback is always up to date
+          await writeLeads(data);
+          return res.json(data);
+        }
+        console.warn("Supabase fetch failed, fallback to local database logs:", error);
+      } catch (err) {
+        console.error("Supabase select exception:", err);
+      }
+    }
+
+    const leads = await readLeads();
+    res.json(leads);
+  } catch (error) {
+    console.error("Error reading leads:", error);
+    res.status(500).json({ error: "Internal error reading Leads collection" });
+  }
+});
+
+// Admin Route: Update lead status
+app.post("/api/admin/leads/:id/status", requireAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const allowedStatuses = ["New", "Contacted", "Interested", "Closed"];
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({ error: "Invalid status value" });
+    }
+
+    // 1. Update local cache
+    const leads = await readLeads();
+    const idx = leads.findIndex((l: any) => l.id === id);
+    if (idx === -1) {
+      return res.status(404).json({ error: "Lead not found" });
+    }
+
+    leads[idx].status = status;
+    await writeLeads(leads);
+
+    // 2. Update Supabase if available
+    const sb = getSupabase();
+    if (sb) {
+      try {
+        const { error } = await sb.from("leads").update({ status }).eq("id", id);
+        if (error) {
+          console.error("Supabase status update link error:", error);
+        }
+      } catch (err) {
+        console.error("Supabase status update exception:", err);
+      }
+    }
+
+    res.json({ success: true, lead: leads[idx] });
+  } catch (err) {
+    console.error("Error in status modification:", err);
+    res.status(500).json({ error: "Internal server error updating Lead status" });
+  }
+});
+
+// Admin Route: Handle manual sign out
+app.post("/api/admin/logout", (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    const token = authHeader.split(" ")[1];
+    sessions.delete(token);
+  }
+  res.json({ success: true });
+});
+
+// ==========================================
+// VITE OR STATIC FRONTEND SERVING
+// ==========================================
+async function start() {
+  if (process.env.NODE_ENV !== "production") {
+    const vite = await createViteServer({
+      server: { middlewareMode: true },
+      appType: "spa",
+    });
+    app.use(vite.middlewares);
+    console.log("Vite development middleware integrated.");
+  } else {
+    const distPath = path.join(process.cwd(), "dist");
+    app.use(express.static(distPath));
+    // Serve index.html for all non-API paths (routing fallback)
+    app.get("*", (req, res) => {
+      res.sendFile(path.join(distPath, "index.html"));
+    });
+    console.log("Static production assets mounted.");
+  }
+
+  // Bind to host 0.0.0.0 and port 3000
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server listening on http://0.0.0.0:${PORT}`);
+  });
+}
+
+start();
