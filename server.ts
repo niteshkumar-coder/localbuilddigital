@@ -278,7 +278,7 @@ async function start() {
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
     // Serve index.html for all non-API paths (routing fallback)
-    app.get("*", (req, res) => {
+    app.get("*all", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
     });
     console.log("Static production assets mounted.");
