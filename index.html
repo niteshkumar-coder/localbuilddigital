@@ -1,22 +1,6 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <script>
-      // Support environments or test tools that attempt to mock or override window.fetch
-      (function() {
-        try {
-          var _originalFetch = window.fetch;
-          Object.defineProperty(window, 'fetch', {
-            get: function() { return _originalFetch; },
-            set: function(val) { _originalFetch = val; },
-            configurable: true,
-            enumerable: true
-          });
-        } catch (e) {
-          console.warn("Could not patch window.fetch property descriptor:", e);
-        }
-      })();
-    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LocalBuild</title>
