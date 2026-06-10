@@ -56,10 +56,20 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
         }
         throw new Error("Could not retrieve leads from secure records.");
       }
+
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("text/html")) {
+        throw new Error("Cookie access is being blocked inside this iframe. Please open the application in a new tab using the toolbar button above to bypass this cookie security check.");
+      }
+
       const data = await res.json();
       setLeads(data);
     } catch (err: any) {
-      setError(err?.message || "Communication failure fetching metrics.");
+      if (err?.message?.includes("Unexpected token")) {
+        setError("Cookie access is blocked inside the iframe. Please click the 'Open in New Tab' button in the toolbar to bypass cookie restrictions.");
+      } else {
+        setError(err?.message || "Communication failure fetching metrics.");
+      }
     } finally {
       setLoading(false);
       setSyncing(false);
