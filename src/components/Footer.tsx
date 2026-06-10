@@ -61,10 +61,30 @@ export default function Footer({ onNavigate, onQuoteClick, onAdminClick }: Foote
             {/* Social Icons: center align, 32px each, 12px gap */}
             <div className="flex items-center justify-center md:justify-start gap-3 pt-2">
               {[
-                { icon: Facebook, label: "Facebook", href: "https://www.facebook.com/localbuild1" },
-                { icon: Twitter, label: "Twitter", href: "https://x.com/NiteshK7765796" },
-                { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/nitesh-kumar-27428a397" },
-                { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/localbuild1?igsh=YzljYTk1ODg3Zg%3D%3D" },
+                { 
+                  icon: Facebook, 
+                  label: "Facebook", 
+                  href: "https://www.facebook.com/localbuild1",
+                  colorClass: "text-[#1877F2] bg-[#1877F2]/10 border-[#1877F2]/30 hover:bg-[#1877F2] hover:border-[#1877F2] hover:text-white"
+                },
+                { 
+                  icon: Twitter, 
+                  label: "Twitter", 
+                  href: "https://x.com/NiteshK7765796",
+                  colorClass: "text-[#1DA1F2] bg-[#1DA1F2]/10 border-[#1DA1F2]/30 hover:bg-[#1DA1F2] hover:border-[#1DA1F2] hover:text-white"
+                },
+                { 
+                  icon: Linkedin, 
+                  label: "LinkedIn", 
+                  href: "https://www.linkedin.com/in/nitesh-kumar-27428a397",
+                  colorClass: "text-[#0A66C2] bg-[#0A66C2]/10 border-[#0A66C2]/30 hover:bg-[#0A66C2] hover:border-[#0A66C2] hover:text-white"
+                },
+                { 
+                  icon: Instagram, 
+                  label: "Instagram", 
+                  href: "https://www.instagram.com/localbuild1?igsh=YzljYTk1ODg3Zg%3D%3D",
+                  colorClass: "text-[#E4405F] bg-[#E4405F]/10 border-[#E4405F]/30 hover:bg-gradient-to-tr hover:from-[#f9ce34] hover:via-[#ee2a7b] hover:to-[#6228d7] hover:border-[#ee2a7b] hover:text-white"
+                },
               ].map((social, idx) => {
                 const IconComp = social.icon;
                 return (
@@ -74,7 +94,7 @@ export default function Footer({ onNavigate, onQuoteClick, onAdminClick }: Foote
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="w-8 h-8 rounded-full border border-zinc-800 hover:border-blue-500 hover:text-white text-zinc-400 bg-zinc-900/50 flex items-center justify-center transition-all shadow-xs"
+                    className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all shadow-xs ${social.colorClass}`}
                     style={{ width: "32px", height: "32px" }} // exact 32px
                   >
                     <IconComp className="w-4 h-4" />
