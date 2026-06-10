@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { 
   Users, Calendar, Database, Search, Download, Phone, MessageSquare, 
   LogOut, RefreshCw, Layers, CheckCircle2, AlertCircle, Sparkles, Building, 
-  MapPin, IndianRupee, Clock, Filter, Printer, FileText, ChevronRight
+  MapPin, IndianRupee, Clock, Filter, Printer, FileText, ChevronRight, Trash2
 } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -151,6 +151,31 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
       }
     } catch (err) {
       alert("Error synchronizing status change with database.");
+    }
+  };
+
+  // Delete lead permanently
+  const handleDeleteLead = async (leadId: string) => {
+    if (!window.confirm("Are you sure you want to permanently delete this lead? This action cannot be undone.")) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/portal-leads-v2/${leadId}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      if (res.ok) {
+        // Remove from client state list of leads
+        setLeads(prevLeads => prevLeads.filter(lead => lead.id !== leadId));
+      } else {
+        const data = await res.json();
+        alert(`Deletion failed: ${data.error || "Server rejected deletion."}`);
+      }
+    } catch (err) {
+      alert("Error synchronizing lead deletion with database.");
     }
   };
 
@@ -652,6 +677,15 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
                           >
                             <MessageSquare className="w-3.5 h-3.5" />
                           </a>
+
+                          {/* Delete Lead Permanently */}
+                          <button
+                            onClick={() => handleDeleteLead(lead.id)}
+                            className="w-8 h-8 rounded-lg bg-red-50 hover:bg-red-600 text-red-650 hover:text-white border border-red-100 hover:border-red-600 flex items-center justify-center transition-all cursor-pointer hover:shadow-sm active:scale-95"
+                            title="Delete Lead Permanently"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
                         </div>
                       </td>
 

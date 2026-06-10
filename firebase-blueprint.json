@@ -1,0 +1,30 @@
+{
+  "entities": {
+    "lead": {
+      "title": "Lead",
+      "description": "Represents a user contact submission or marketing planner lead.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier of the lead" },
+        "name": { "type": "string", "description": "Full name of the lead" },
+        "phone": { "type": "string", "description": "Phone number of the lead" },
+        "email": { "type": "string", "format": "email", "description": "Email address of the lead" },
+        "businessName": { "type": "string", "description": "Business Name" },
+        "businessUrl": { "type": "string", "description": "Business Website URL" },
+        "service": { "type": "string", "description": "Service of interest" },
+        "budget": { "type": "string", "description": "Budget tier of interest" },
+        "message": { "type": "string", "description": "Custom submission message" },
+        "date": { "type": "string", "format": "date-time", "description": "Date of lead submission" },
+        "leadSource": { "type": "string", "description": "Source form (e.g. Contact, Planner)" },
+        "status": { "type": "string", "enum": ["New", "Contacted", "Interested", "Closed"], "description": "Current tracking status of the lead" }
+      },
+      "required": ["name", "email", "status", "date"]
+    }
+  },
+  "firestore": {
+    "leads/{leadId}": {
+      "schema": "lead",
+      "description": "Lead storage for CRM dashboard and contact queries"
+    }
+  }
+}

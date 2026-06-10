@@ -2,7 +2,8 @@ import express from "express";
 import path from "path";
 import fs from "fs/promises";
 import { createServer as createViteServer } from "vite";
-import { createClient } from "@supabase/supabase-js";
+import { initializeApp, getApps, getApp } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
 
 // Initialize express app
 const app = express();
@@ -19,22 +20,31 @@ interface Session {
 const sessions = new Map<string, Session>();
 const SESSION_INACTIVITY_LIMIT = 30 * 60 * 1000; // 30 minutes in milliseconds
 
-// Supabase client lazy-initializer
-let supabaseClient: any = null;
-function getSupabase() {
-  if (supabaseClient) return supabaseClient;
-  const url = process.env.SUPABASE_URL;
-  const anonKey = process.env.SUPABASE_ANON_KEY;
-  if (url && anonKey) {
-    try {
-      supabaseClient = createClient(url, anonKey);
-      console.log("Supabase Client initialized successfully.");
-      return supabaseClient;
-    } catch (err) {
-      console.error("Failed to initialize Supabase client:", err);
+// Firebase Admin SDK lazy-initializer
+let firebaseDb: any = null;
+async function getFirebaseDb() {
+  if (firebaseDb) return firebaseDb;
+  try {
+    const configPath = path.join(process.cwd(), "firebase-applet-config.json");
+    const configFile = await fs.readFile(configPath, "utf-8");
+    const firebaseConfig = JSON.parse(configFile);
+
+    let fApp;
+    if (getApps().length > 0) {
+      fApp = getApp();
+    } else {
+      fApp = initializeApp({
+        projectId: firebaseConfig.projectId
+      });
     }
+
+    firebaseDb = getFirestore(fApp, firebaseConfig.firestoreDatabaseId);
+    console.log("Firebase Admin SDK initialized successfully with DB ID:", firebaseConfig.firestoreDatabaseId);
+    return firebaseDb;
+  } catch (err) {
+    console.error("Failed to initialize Firebase Admin SDK:", err);
+    return null;
   }
-  return null;
 }
 
 // Ensure the local fallback database file exists
@@ -122,18 +132,14 @@ app.post("/api/intake-records-v2", async (req, res) => {
     leads.unshift(newLead);
     await writeLeads(leads);
 
-    // 2. Try to save to Supabase Database if configured
-    const sb = getSupabase();
-    if (sb) {
+    // 2. Try to save to Firestore Database
+    const dbInstance = await getFirebaseDb();
+    if (dbInstance) {
       try {
-        const { error } = await sb.from("leads").insert([newLead]);
-        if (error) {
-          console.error("Supabase storage sync error:", error);
-        } else {
-          console.log(`Lead ${newLead.id} synchronized successfully with Supabase.`);
-        }
+        await dbInstance.collection("leads").doc(newLead.id).set(newLead);
+        console.log(`Lead ${newLead.id} synchronized successfully with Firestore.`);
       } catch (err) {
-        console.error("Unhandled Supabase insert exception:", err);
+        console.error("Firestore insert exception:", err);
       }
     }
 
@@ -188,19 +194,16 @@ app.post("/api/portal-session-v2", (req, res) => {
 // Admin Route: Get all leads to display in CRM Dashboard
 app.get("/api/portal-leads-v2", requireAuth, async (req, res) => {
   try {
-    const sb = getSupabase();
-    if (sb) {
+    const dbInstance = await getFirebaseDb();
+    if (dbInstance) {
       try {
-        // Try getting latest live data from Supabase first
-        const { data, error } = await sb.from("leads").select("*").order("date", { ascending: false });
-        if (!error && data) {
-          // Sync state back to local cache so fallback is always up to date
-          await writeLeads(data);
-          return res.json(data);
-        }
-        console.warn("Supabase fetch failed, fallback to local database logs:", error);
+        const snapshot = await dbInstance.collection("leads").orderBy("date", "desc").get();
+        const firebaseLeads = snapshot.docs.map((doc: any) => doc.data());
+        // Sync state back to local cache so fallback is always up to date
+        await writeLeads(firebaseLeads);
+        return res.json(firebaseLeads);
       } catch (err) {
-        console.error("Supabase select exception:", err);
+        console.warn("Firestore fetch failed, fallback to local database logs:", err);
       }
     }
 
@@ -233,16 +236,14 @@ app.post("/api/portal-leads-v2/:id/status", requireAuth, async (req, res) => {
     leads[idx].status = status;
     await writeLeads(leads);
 
-    // 2. Update Supabase if available
-    const sb = getSupabase();
-    if (sb) {
+    // 2. Update Firestore if available
+    const dbInstance = await getFirebaseDb();
+    if (dbInstance) {
       try {
-        const { error } = await sb.from("leads").update({ status }).eq("id", id);
-        if (error) {
-          console.error("Supabase status update link error:", error);
-        }
+        await dbInstance.collection("leads").doc(id).update({ status });
+        console.log(`Lead ${id} status updated successfully with Firestore.`);
       } catch (err) {
-        console.error("Supabase status update exception:", err);
+        console.error("Firestore status update exception:", err);
       }
     }
 
@@ -250,6 +251,39 @@ app.post("/api/portal-leads-v2/:id/status", requireAuth, async (req, res) => {
   } catch (err) {
     console.error("Error in status modification:", err);
     res.status(500).json({ error: "Internal server error updating Lead status" });
+  }
+});
+
+// Admin Route: Delete lead permanently
+app.delete("/api/portal-leads-v2/:id", requireAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // 1. Delete from local cache
+    const leads = await readLeads();
+    const idx = leads.findIndex((l: any) => l.id === id);
+    if (idx === -1) {
+      return res.status(404).json({ error: "Lead not found" });
+    }
+
+    leads.splice(idx, 1);
+    await writeLeads(leads);
+
+    // 2. Delete from Firestore if available
+    const dbInstance = await getFirebaseDb();
+    if (dbInstance) {
+      try {
+        await dbInstance.collection("leads").doc(id).delete();
+        console.log(`Lead ${id} permanently deleted from Firestore.`);
+      } catch (err) {
+        console.error("Firestore permanent deletion exception:", err);
+      }
+    }
+
+    res.json({ success: true, message: "Lead deleted permanently." });
+  } catch (err) {
+    console.error("Error in lead deletion:", err);
+    res.status(500).json({ error: "Internal server error deleting Lead" });
   }
 });
 
