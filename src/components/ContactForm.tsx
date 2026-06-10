@@ -195,7 +195,7 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
 
                     {/* Estimated Budget */}
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-brand-heading uppercase tracking-wider">Monthly Marketing Budget <span className="text-cta">*</span></label>
+                      <label className="text-xs font-bold text-brand-heading uppercase tracking-wider">Annual Marketing Budget <span className="text-cta">*</span></label>
                       <select
                         required
                         value={budget}
@@ -203,11 +203,11 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
                         className="w-full text-[16px] h-[48px] px-3.5 rounded-lg border border-gray-200 focus:border-accent focus:ring-1 focus:ring-accent bg-white outline-hidden text-brand-heading font-medium"
                       >
                         <option value="" disabled>-- Select Budget --</option>
-                        <option value="Under ₹25,000 / mo">Under ₹25,000 / mo</option>
-                        <option value="₹25,000 - ₹50,000 / mo">₹25,000 - ₹50,000 / mo</option>
-                        <option value="₹50,000 - ₹1,00,000 / mo">₹50,000 - ₹1,00,000 / mo</option>
-                        <option value="₹1,00,000 - ₹2,50,000 / mo">₹1,00,000 - ₹2,50,000 / mo</option>
-                        <option value="₹2,50,000+ / mo">₹2,50,000+ / mo</option>
+                        <option value="Under ₹3,00,000 / year">Under ₹3,00,000 / year</option>
+                        <option value="₹3,00,000 - ₹6,00,000 / year">₹3,00,000 - ₹6,00,000 / year</option>
+                        <option value="₹6,00,000 - ₹12,00,000 / year">₹6,00,000 - ₹12,00,000 / year</option>
+                        <option value="₹12,00,000 - ₹30,00,000 / year">₹12,00,000 - ₹30,00,000 / year</option>
+                        <option value="₹30,00,000+ / year">₹30,00,000+ / year</option>
                       </select>
                     </div>
                   </div>
