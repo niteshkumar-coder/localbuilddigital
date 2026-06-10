@@ -146,10 +146,22 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }: Adm
                 <motion.div
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-red-50 border border-red-100 p-3 rounded-xl flex items-center gap-2.5 text-xs font-semibold text-red-650"
+                  className="bg-red-50 border border-red-100 p-4 rounded-xl flex flex-col gap-3 text-xs font-semibold text-red-650"
                 >
-                  <AlertCircle className="w-4.5 h-4.5 text-red-500 shrink-0" />
-                  <span>{error}</span>
+                  <div className="flex items-center gap-2.5">
+                    <AlertCircle className="w-4.5 h-4.5 text-red-500 shrink-0" />
+                    <span>{error}</span>
+                  </div>
+                  {error.includes("cookie") && (
+                    <a
+                      href={window.location.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-4 bg-red-650 hover:bg-red-700 text-white font-bold rounded-xl transition duration-200 text-center uppercase tracking-widest text-[11px] shadow-sm shadow-red-650/10 cursor-pointer"
+                    >
+                      Open in New Tab
+                    </a>
+                  )}
                 </motion.div>
               )}
 
