@@ -153,9 +153,12 @@ app.post("/api/intake-records-v2", async (req, res) => {
 // Admin Route: Authenticate / Login (NO USERNAME, NO EMAIL, ONLY PASSWORD)
 app.post("/api/portal-auth-v2", (req, res) => {
   const { password } = req.body;
-  const configPassword = process.env.ADMIN_PASSWORD || "LOCAL45090";
+  const configPassword = (process.env.ADMIN_PASSWORD || "LOCAL45090").trim();
+  const inputPassword = (password || "").trim();
 
-  if (!password || password !== configPassword) {
+  console.log(`[AUTH] Admin login attempt. Input exact match: ${inputPassword === configPassword}. Active configured password is: "${configPassword}"`);
+
+  if (!inputPassword || inputPassword !== configPassword) {
     return res.status(401).json({ error: "Invalid Password" });
   }
 
@@ -321,6 +324,7 @@ async function start() {
   // Bind to host 0.0.0.0 and port 3000
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server listening on http://0.0.0.0:${PORT}`);
+    console.log(`[BOOT] ADMIN PASSWORD IS CONFIGURED AS: "${(process.env.ADMIN_PASSWORD || "LOCAL45090").trim()}"`);
   });
 }
 
