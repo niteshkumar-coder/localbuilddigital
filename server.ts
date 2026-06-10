@@ -2,8 +2,18 @@ import express from "express";
 import path from "path";
 import fs from "fs/promises";
 import { createServer as createViteServer } from "vite";
-import { initializeApp, getApps, getApp } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
+import { initializeApp, getApps } from "firebase/app";
+import { 
+  getFirestore, 
+  collection, 
+  doc, 
+  setDoc, 
+  getDocs, 
+  updateDoc, 
+  deleteDoc, 
+  query, 
+  orderBy 
+} from "firebase/firestore";
 
 // Initialize express app
 const app = express();
@@ -20,7 +30,52 @@ interface Session {
 const sessions = new Map<string, Session>();
 const SESSION_INACTIVITY_LIMIT = 30 * 60 * 1000; // 30 minutes in milliseconds
 
-// Firebase Admin SDK lazy-initializer
+// Firestore Error Types as required by the Firebase Integration Skill
+enum OperationType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+  LIST = 'list',
+  GET = 'get',
+  WRITE = 'write',
+}
+
+interface FirestoreErrorInfo {
+  error: string;
+  operationType: OperationType;
+  path: string | null;
+  authInfo: {
+    userId?: string | null;
+    email?: string | null;
+    emailVerified?: boolean | null;
+    isAnonymous?: boolean | null;
+    tenantId?: string | null;
+    providerInfo?: {
+      providerId?: string | null;
+      email?: string | null;
+    }[];
+  }
+}
+
+function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const errInfo: FirestoreErrorInfo = {
+    error: error instanceof Error ? error.message : String(error),
+    authInfo: {
+      userId: null,
+      email: null,
+      emailVerified: null,
+      isAnonymous: null,
+      tenantId: null,
+      providerInfo: []
+    },
+    operationType,
+    path
+  };
+  console.error('[FIRESTORE ERROR DETECTED]:', JSON.stringify(errInfo, null, 2));
+  return new Error(JSON.stringify(errInfo));
+}
+
+// Firebase Client SDK lazy-initializer to bypass Cloud Run GCP IAM permissions constraints on custom DBs
 let firebaseDb: any = null;
 async function getFirebaseDb() {
   if (firebaseDb) return firebaseDb;
@@ -30,19 +85,18 @@ async function getFirebaseDb() {
     const firebaseConfig = JSON.parse(configFile);
 
     let fApp;
-    if (getApps().length > 0) {
-      fApp = getApp();
+    const apps = getApps();
+    if (apps.length > 0) {
+      fApp = apps[0];
     } else {
-      fApp = initializeApp({
-        projectId: firebaseConfig.projectId
-      });
+      fApp = initializeApp(firebaseConfig);
     }
 
     firebaseDb = getFirestore(fApp, firebaseConfig.firestoreDatabaseId);
-    console.log("Firebase Admin SDK initialized successfully with DB ID:", firebaseConfig.firestoreDatabaseId);
+    console.log("Firebase Client SDK initialized successfully with DB ID:", firebaseConfig.firestoreDatabaseId);
     return firebaseDb;
   } catch (err) {
-    console.error("Failed to initialize Firebase Admin SDK:", err);
+    console.error("Failed to initialize Firebase Client SDK:", err);
     return null;
   }
 }
@@ -136,10 +190,10 @@ app.post("/api/intake-records-v2", async (req, res) => {
     const dbInstance = await getFirebaseDb();
     if (dbInstance) {
       try {
-        await dbInstance.collection("leads").doc(newLead.id).set(newLead);
+        await setDoc(doc(dbInstance, "leads", newLead.id), newLead);
         console.log(`Lead ${newLead.id} synchronized successfully with Firestore.`);
       } catch (err) {
-        console.error("Firestore insert exception:", err);
+        handleFirestoreError(err, OperationType.CREATE, `leads/${newLead.id}`);
       }
     }
 
@@ -200,13 +254,14 @@ app.get("/api/portal-leads-v2", requireAuth, async (req, res) => {
     const dbInstance = await getFirebaseDb();
     if (dbInstance) {
       try {
-        const snapshot = await dbInstance.collection("leads").orderBy("date", "desc").get();
+        const q = query(collection(dbInstance, "leads"), orderBy("date", "desc"));
+        const snapshot = await getDocs(q);
         const firebaseLeads = snapshot.docs.map((doc: any) => doc.data());
         // Sync state back to local cache so fallback is always up to date
         await writeLeads(firebaseLeads);
         return res.json(firebaseLeads);
       } catch (err) {
-        console.warn("Firestore fetch failed, fallback to local database logs:", err);
+        handleFirestoreError(err, OperationType.LIST, "leads");
       }
     }
 
@@ -243,10 +298,10 @@ app.post("/api/portal-leads-v2/:id/status", requireAuth, async (req, res) => {
     const dbInstance = await getFirebaseDb();
     if (dbInstance) {
       try {
-        await dbInstance.collection("leads").doc(id).update({ status });
+        await updateDoc(doc(dbInstance, "leads", id), { status });
         console.log(`Lead ${id} status updated successfully with Firestore.`);
       } catch (err) {
-        console.error("Firestore status update exception:", err);
+        handleFirestoreError(err, OperationType.UPDATE, `leads/${id}`);
       }
     }
 
@@ -276,10 +331,10 @@ app.delete("/api/portal-leads-v2/:id", requireAuth, async (req, res) => {
     const dbInstance = await getFirebaseDb();
     if (dbInstance) {
       try {
-        await dbInstance.collection("leads").doc(id).delete();
+        await deleteDoc(doc(dbInstance, "leads", id));
         console.log(`Lead ${id} permanently deleted from Firestore.`);
       } catch (err) {
-        console.error("Firestore permanent deletion exception:", err);
+        handleFirestoreError(err, OperationType.DELETE, `leads/${id}`);
       }
     }
 

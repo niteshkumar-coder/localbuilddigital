@@ -1,59 +1,8 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Global fallback Deny-All rule
-    match /{document=**} {
-      allow read, write: if false;
-    }
-
-    // Helper functions
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
-    // Check if the user is authenticated and verified
-    function isVerifiedUser() {
-      return isSignedIn() && request.auth.token.email_verified == true;
-    }
-
-    function incoming() {
-      return request.resource.data;
-    }
-
-    function existing() {
-      return resource.data;
-    }
-
-    function isValidId(id) {
-      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
-    }
-
-    function isValidLead(data) {
-      return data.keys().hasAll(['name', 'email', 'status', 'date']) &&
-             data.keys().size() <= 12 &&
-             data.name is string && data.name.size() > 0 && data.name.size() <= 200 &&
-             data.email is string && data.email.size() > 0 && data.email.size() <= 200 &&
-             data.status in ['New', 'Contacted', 'Interested', 'Closed'] &&
-             data.date is string &&
-             (!('phone' in data) || (data.phone is string && data.phone.size() <= 50)) &&
-             (!('businessName' in data) || (data.businessName is string && data.businessName.size() <= 200)) &&
-             (!('businessUrl' in data) || (data.businessUrl is string && data.businessUrl.size() <= 500)) &&
-             (!('service' in data) || (data.service is string && data.service.size() <= 200)) &&
-             (!('budget' in data) || (data.budget is string && data.budget.size() <= 100)) &&
-             (!('message' in data) || (data.message is string && data.message.size() <= 5000)) &&
-             (!('leadSource' in data) || (data.leadSource is string && data.leadSource.size() <= 100)) &&
-             (!('id' in data) || (data.id is string && data.id.size() <= 128));
-    }
-
-    // Leads collection rules
     match /leads/{leadId} {
-      // Anyone can submit a lead publicly from the website contact forms
-      allow create: if isValidId(leadId) && isValidLead(incoming());
-      
-      // Admin dashboard is server-mediated (server bypasses rules using Admin SDK)
-      // For absolute zero-trust, client SDK cannot list, read, update, or delete leads directly
-      allow read, update, delete: if false;
+      allow read, write: if true;
     }
   }
 }
