@@ -94,7 +94,7 @@ function requireAuth(req: express.Request, res: express.Response, next: express.
 // ==========================================
 
 // Public Route: Submit new lead from any form (Contact, Quote, Consultation, Planner, etc.)
-app.post("/api/leads", async (req, res) => {
+app.post("/api/intake-records-v2", async (req, res) => {
   try {
     const { name, phone, email, businessName, businessUrl, service, budget, message, leadSource } = req.body;
 
@@ -145,7 +145,7 @@ app.post("/api/leads", async (req, res) => {
 });
 
 // Admin Route: Authenticate / Login (NO USERNAME, NO EMAIL, ONLY PASSWORD)
-app.post("/api/admin/login", (req, res) => {
+app.post("/api/portal-auth-v2", (req, res) => {
   const { password } = req.body;
   const configPassword = process.env.ADMIN_PASSWORD || "LOCAL45090";
 
@@ -165,7 +165,7 @@ app.post("/api/admin/login", (req, res) => {
 });
 
 // Admin Route: Check Session status
-app.post("/api/admin/check-session", (req, res) => {
+app.post("/api/portal-session-v2", (req, res) => {
   const { token } = req.body;
   if (!token) return res.status(401).json({ valid: false });
 
@@ -186,7 +186,7 @@ app.post("/api/admin/check-session", (req, res) => {
 });
 
 // Admin Route: Get all leads to display in CRM Dashboard
-app.get("/api/admin/leads", requireAuth, async (req, res) => {
+app.get("/api/portal-leads-v2", requireAuth, async (req, res) => {
   try {
     const sb = getSupabase();
     if (sb) {
@@ -213,7 +213,7 @@ app.get("/api/admin/leads", requireAuth, async (req, res) => {
 });
 
 // Admin Route: Update lead status
-app.post("/api/admin/leads/:id/status", requireAuth, async (req, res) => {
+app.post("/api/portal-leads-v2/:id/status", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
@@ -254,7 +254,7 @@ app.post("/api/admin/leads/:id/status", requireAuth, async (req, res) => {
 });
 
 // Admin Route: Handle manual sign out
-app.post("/api/admin/logout", (req, res) => {
+app.post("/api/portal-verify-logout-v2", (req, res) => {
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith("Bearer ")) {
     const token = authHeader.split(" ")[1];

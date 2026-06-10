@@ -56,7 +56,7 @@ export default function WhyChooseUs() {
                   className="flex flex-col sm:flex-row gap-4 p-4 md:p-6 bg-white border border-gray-200/80 rounded-2xl shadow-xs hover:shadow-md transition-all duration-200"
                 >
                   {/* Icon */}
-                  <div className="w-[44px] h-[44px] sm:w-[52px] sm:h-[52px] rounded-xl bg-[#EFF6FF] flex items-center justify-center text-accent shrink-0 select-none">
+                  <div className="w-[44px] h-[44px] sm:w-[52px] sm:h-[52px] rounded-xl bg-[#EFF6FF] flex items-center justify-center text-accent shrink-0">
                     <IconComp className="w-7 h-7 sm:w-8 sm:h-8" />
                   </div>
                   <div>

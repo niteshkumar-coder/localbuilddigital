@@ -168,7 +168,7 @@ export default function ROICalculator({ onQuoteClick }: ROICalculatorProps) {
           {/* Results Output Canvas (Right Column) */}
           <div className="lg:col-span-5 space-y-6">
             {/* Main Profit Card */}
-            <div className="bg-primary text-white border-0 rounded-2xl p-6 sm:p-8 shadow-lg shadow-primary/20 flex flex-col justify-between h-full relative overflow-hidden select-none">
+            <div className="bg-primary text-white border-0 rounded-2xl p-6 sm:p-8 shadow-lg shadow-primary/20 flex flex-col justify-between h-full relative overflow-hidden">
               {/* background dynamic circular shapes */}
               <div className="absolute -top-10 -right-10 w-36 h-36 bg-accent/20 rounded-full blur-2xl pointer-events-none" />
               <div className="absolute -bottom-10 -left-10 w-36 h-36 bg-cta/15 rounded-full blur-2xl pointer-events-none" />
@@ -229,7 +229,7 @@ export default function ROICalculator({ onQuoteClick }: ROICalculatorProps) {
               </div>
 
               {/* Conversion metrics sub-row */}
-              <div className="grid grid-cols-3 gap-2 text-center bg-black/15 rounded-xl p-3 mb-6 select-none border border-white/5">
+              <div className="grid grid-cols-3 gap-2 text-center bg-black/15 rounded-xl p-3 mb-6 border border-white/5">
                 <div>
                   <p className="text-[9px] text-white/40 uppercase font-bold">Clicks</p>
                   <p className="font-mono text-sm font-bold text-white">{estimatedClicks}</p>

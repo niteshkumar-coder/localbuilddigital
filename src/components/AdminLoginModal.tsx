@@ -36,7 +36,7 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }: Adm
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/admin/login", {
+      const response = await fetch("/api/portal-auth-v2", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
@@ -50,8 +50,9 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }: Adm
       } else {
         setError(data.error || "Invalid Password");
       }
-    } catch (err) {
-      setError("Communication failed. Ensure server is active.");
+    } catch (err: any) {
+      console.error("Login failure exception details:", err);
+      setError(`Communication failed (${err?.message || "unknown connection issue"}). Ensure server is active.`);
     } finally {
       setIsSubmitting(false);
     }

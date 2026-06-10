@@ -261,7 +261,7 @@ export default function MarketingPlanner({ onQuoteClick }: PlannerProps) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="p-16 flex-1 flex flex-col items-center justify-center text-center select-none"
+                className="p-16 flex-1 flex flex-col items-center justify-center text-center"
               >
                 <div className="relative mb-6">
                   <div className="w-16 h-16 rounded-full border-4 border-gray-100 border-t-accent animate-spin" />
@@ -307,7 +307,7 @@ export default function MarketingPlanner({ onQuoteClick }: PlannerProps) {
 
                 {/* Budget Split Visual Indicator */}
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center mb-8">
-                  <div className="md:col-span-5 bg-gray-50 rounded-xl p-5 border border-gray-100 select-none">
+                  <div className="md:col-span-5 bg-gray-50 rounded-xl p-5 border border-gray-100">
                     <p className="text-[11px] uppercase tracking-wider font-extrabold text-brand-heading mb-4">
                       Recommended Investment Split
                     </p>

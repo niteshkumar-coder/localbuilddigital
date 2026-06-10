@@ -44,7 +44,7 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
     setSyncing(true);
     setError("");
     try {
-      const res = await fetch("/api/admin/leads", {
+      const res = await fetch("/api/portal-leads-v2", {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -119,7 +119,7 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
   // Update lead status
   const handleUpdateStatus = async (leadId: string, newStatus: string) => {
     try {
-      const res = await fetch(`/api/admin/leads/${leadId}/status`, {
+      const res = await fetch(`/api/portal-leads-v2/${leadId}/status`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -269,7 +269,7 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-zinc-900 select-none pb-12 print:bg-white print:pb-0">
+    <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-zinc-900 pb-12 print:bg-white print:pb-0">
       
       {/* HEADER BAR */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50 px-4 sm:px-6 md:px-8 py-4 flex items-center justify-between shadow-xs print:hidden">
@@ -292,7 +292,7 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
 
         <div className="flex items-center gap-3.5 sm:gap-5">
           {/* Active timer badge */}
-          <div className="flex items-center gap-1.5 bg-zinc-100 border border-zinc-200 rounded-lg px-2.5 py-1.5 text-xs text-zinc-600 font-semibold select-none">
+          <div className="flex items-center gap-1.5 bg-zinc-100 border border-zinc-200 rounded-lg px-2.5 py-1.5 text-xs text-zinc-600 font-semibold">
             <Clock className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
             <span>Secure Out: {formatTimeRemaining()}</span>
           </div>
@@ -514,7 +514,7 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
             <div className="w-full overflow-x-auto min-h-[400px]">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-zinc-50/70 border-b border-gray-200 text-zinc-500 font-extrabold uppercase select-none tracking-wider text-[10px]">
+                  <tr className="bg-zinc-50/70 border-b border-gray-200 text-zinc-500 font-extrabold uppercase tracking-wider text-[10px]">
                     <th className="p-4 pl-6">Lead ID</th>
                     <th className="p-4">Contact Info</th>
                     <th className="p-4">Business / Website</th>
@@ -606,7 +606,7 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
                         <select
                           value={lead.status}
                           onChange={(e) => handleUpdateStatus(lead.id, e.target.value)}
-                          className={`font-semibold border text-[11px] rounded px-2.5 py-1.5 outline-hidden transition cursor-pointer font-bold select-none ${
+                          className={`font-semibold border text-[11px] rounded px-2.5 py-1.5 outline-hidden transition cursor-pointer font-bold ${
                             lead.status === "New" ? "bg-blue-50 border-blue-200 text-blue-700 font-bold" :
                             lead.status === "Contacted" ? "bg-amber-50 border-amber-200 text-amber-700" :
                             lead.status === "Interested" ? "bg-purple-50 border-purple-200 text-purple-700" :
@@ -621,7 +621,7 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
                       </td>
 
                       {/* Phone & Whatsapp Call Direct triggers */}
-                      <td className="p-4 pr-6 align-top text-right select-none print:hidden">
+                      <td className="p-4 pr-6 align-top text-right print:hidden">
                         <div className="flex justify-end gap-1.5 mt-0.5">
                           {/* Dial Now */}
                           <a

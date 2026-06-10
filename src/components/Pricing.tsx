@@ -139,7 +139,7 @@ export default function Pricing({ onQuoteClick }: PricingProps) {
         </div>
 
         {/* General Disclaimer FAQ */}
-        <div className="mt-16 bg-gray-50 rounded-2xl p-6 sm:p-8 border border-gray-200/60 max-w-3xl mx-auto flex flex-col sm:flex-row items-center gap-6 justify-between select-none">
+        <div className="mt-16 bg-gray-50 rounded-2xl p-6 sm:p-8 border border-gray-200/60 max-w-3xl mx-auto flex flex-col sm:flex-row items-center gap-6 justify-between">
           <div className="flex gap-3.5 items-start">
             <HelpCircle className="w-6 h-6 text-cta shrink-0 mt-0.5" />
             <div>

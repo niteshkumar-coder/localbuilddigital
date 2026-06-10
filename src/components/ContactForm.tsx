@@ -62,7 +62,7 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
         else source = "Service Card Lead";
       }
 
-      await fetch("/api/leads", {
+      await fetch("/api/intake-records-v2", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -117,7 +117,7 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
         initial={{ opacity: 0, scale: 0.95, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 15 }}
-        className="bg-white rounded-[20px] border border-gray-200 shadow-xl overflow-hidden max-w-3xl w-full select-none my-auto"
+        className="bg-white rounded-[20px] border border-gray-200 shadow-xl overflow-hidden max-w-3xl w-full my-auto"
       >
         {/* Header toolbar */}
         <div className="bg-primary text-white py-3.5 px-5 sm:px-6 flex items-center justify-between border-b border-white/10">
@@ -317,7 +317,7 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
                 {/* Contact Sidebar Column - Padding: 16px (p-4), Phone link, WhatsApp button, Map iframe */}
                 <div className="md:col-span-5 bg-gray-50/70 p-4 rounded-xl border border-gray-100 flex flex-col space-y-3">
                   <div>
-                    <h4 className="font-display font-bold text-xs uppercase text-primary tracking-widest mb-0.5 select-none">Connect Instantly</h4>
+                    <h4 className="font-display font-bold text-xs uppercase text-primary tracking-widest mb-0.5">Connect Instantly</h4>
                     <p className="text-[11px] text-brand-body">Speak with an acquisition architect directly or navigate to our headquarters.</p>
                   </div>
 
@@ -423,7 +423,7 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
                 </div>
 
                 {/* Visual Custom Proposal Document container */}
-                <div className="border border-gray-200 rounded-xl p-5 bg-gray-50 select-none space-y-4">
+                <div className="border border-gray-200 rounded-xl p-5 bg-gray-50 space-y-4">
                   <div className="flex justify-between items-start border-b border-gray-200 pb-3">
                     <div className="flex items-center gap-2">
                       <FileText className="w-5 h-5 text-primary" />

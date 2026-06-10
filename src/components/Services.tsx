@@ -330,7 +330,7 @@ export default function Services({ onQuoteClick, onNavigate }: ServicesProps) {
   };
 
   return (
-    <section id="services" className="pt-20 pb-20 sm:py-24 bg-white border-t border-zinc-100 relative overflow-hidden select-none">
+    <section id="services" className="pt-20 pb-20 sm:py-24 bg-white border-t border-zinc-100 relative overflow-hidden">
       
       {/* Background patterns */}
       <div className="absolute inset-0 bg-white -z-20" />
@@ -1133,7 +1133,7 @@ export default function Services({ onQuoteClick, onNavigate }: ServicesProps) {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 15 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
-                className="relative bg-white rounded-2xl border border-zinc-200 shadow-2xl select-none max-w-xl w-full max-h-[85vh] overflow-y-auto z-10 p-6 sm:p-8"
+                className="relative bg-white rounded-2xl border border-zinc-200 shadow-2xl max-w-xl w-full max-h-[85vh] overflow-y-auto z-10 p-6 sm:p-8"
               >
                 <button
                   onClick={handleCloseDetail}

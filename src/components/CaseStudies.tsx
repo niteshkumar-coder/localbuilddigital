@@ -102,10 +102,10 @@ export default function CaseStudies({ onQuoteClick }: CaseStudiesProps) {
                 className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col justify-between w-full"
               >
                 {/* 180px height width 100% Image placeholder */}
-                <div className="h-[180px] w-full bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center relative p-6 select-none overflow-hidden border-b border-gray-100">
+                <div className="h-[180px] w-full bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center relative p-6 overflow-hidden border-b border-gray-100">
                   <div className="absolute inset-0 bg-radial-to-t from-white/30 to-transparent pointer-events-none" />
                   <div className="relative text-center">
-                    <span className="text-3xl filter drop-shadow-sm select-none">📊</span>
+                    <span className="text-3xl filter drop-shadow-sm">📊</span>
                     <p className="mt-2 text-slate-400 text-xs tracking-wider uppercase font-mono">Case-Study Blueprint #{cs.id.split("-").pop()}</p>
                     <p className="text-[#0F2167] text-md font-bold mt-1">{cs.company}</p>
                   </div>

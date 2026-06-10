@@ -27,7 +27,7 @@ export default function Footer({ onNavigate, onQuoteClick, onAdminClick }: Foote
   ];
 
   return (
-    <footer className="bg-zinc-950 border-t border-zinc-900 pt-16 pb-12 select-none font-sans text-zinc-400">
+    <footer className="bg-zinc-950 border-t border-zinc-900 pt-16 pb-12 font-sans text-zinc-400">
       <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
         
         {/* 4 Column Layout on Desktop -> Stacks to 1 Column on Mobile */}

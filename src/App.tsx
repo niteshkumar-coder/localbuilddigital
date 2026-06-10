@@ -48,7 +48,7 @@ export default function App() {
       }
 
       try {
-        const res = await fetch("/api/admin/check-session", {
+        const res = await fetch("/api/portal-session-v2", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token: adminToken })
@@ -83,7 +83,7 @@ export default function App() {
   const handleAdminLogout = async () => {
     if (adminToken) {
       try {
-        await fetch("/api/admin/logout", {
+        await fetch("/api/portal-verify-logout-v2", {
           method: "POST",
           headers: { "Authorization": `Bearer ${adminToken}` }
         });

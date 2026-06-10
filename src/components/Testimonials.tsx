@@ -62,7 +62,7 @@ export default function Testimonials() {
         </div>
 
         {/* Carousel slide box */}
-        <div className="relative bg-white border border-gray-100 rounded-2xl p-4 sm:p-10 shadow-xs select-none">
+        <div className="relative bg-white border border-gray-100 rounded-2xl p-4 sm:p-10 shadow-xs">
           <div className="absolute top-6 right-6 text-gray-100">
             <Quote className="w-16 h-16 opacity-30" />
           </div>

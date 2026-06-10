@@ -52,7 +52,7 @@ export default function Hero({ onQuoteClick, onNavigate }: HeroProps) {
   return (
     <section
       id="hero"
-      className="relative pt-[90px] md:pt-[130px] pb-20 md:pb-32 overflow-hidden bg-white select-none"
+      className="relative pt-[90px] md:pt-[130px] pb-20 md:pb-32 overflow-hidden bg-white"
     >
       {/* SaaS Stripe/Framer Styled Background Atmosphere */}
       {/* Pure white base with soft blue radial overlays */}

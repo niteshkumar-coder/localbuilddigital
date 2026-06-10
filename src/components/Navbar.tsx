@@ -54,7 +54,7 @@ export default function Navbar({ onQuoteClick, onNavigate }: NavbarProps) {
           {/* Logo */}
           <div
             onClick={() => handleLinkClick("hero")}
-            className="flex items-center space-x-2 cursor-pointer group select-none"
+            className="flex items-center space-x-2 cursor-pointer group"
           >
             <div className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden flex items-center justify-center border border-gray-100 shadow-sm shrink-0">
               <img 
