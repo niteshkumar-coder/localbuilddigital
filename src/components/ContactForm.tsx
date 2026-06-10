@@ -111,31 +111,32 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex justify-center items-start sm:items-center p-2 sm:p-4 md:py-6">
       {/* Container */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 15 }}
-        className="bg-white rounded-2xl border border-gray-200 shadow-xl overflow-hidden max-w-4xl w-full select-none"
+        className="bg-white rounded-[20px] border border-gray-200 shadow-xl overflow-hidden max-w-3xl w-full select-none my-auto"
       >
         {/* Header toolbar */}
-        <div className="bg-primary text-white p-5 px-6 sm:px-8 flex items-center justify-between">
+        <div className="bg-primary text-white py-3.5 px-5 sm:px-6 flex items-center justify-between border-b border-white/10">
           <div>
-            <span className="text-[10px] bg-accent/20 text-accent font-extrabold uppercase tracking-widest px-2.5 py-1 rounded">Proposal Engine</span>
-            <h3 className="font-display font-semibold text-lg sm:text-xl mt-1">Get Your Free Local Dominance Proposal</h3>
+            <span className="text-[9px] bg-accent/20 text-accent font-extrabold uppercase tracking-widest px-2 py-0.5 rounded">Proposal Engine</span>
+            <h3 className="font-display font-semibold text-base sm:text-lg mt-0.5">Get Your Free Local Dominance Proposal</h3>
           </div>
           <button
             onClick={onClose}
-            className="text-white/60 hover:text-white p-2 rounded-lg hover:bg-white/5 transition-all cursor-pointer font-bold"
+            className="text-white/60 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-all cursor-pointer font-bold text-lg leading-none"
             aria-label="Close"
+            id="close-proposal-modal-btn"
           >
             ✕
           </button>
         </div>
 
         {/* Dynamic Inner displays */}
-        <div className="p-4 sm:p-6 max-h-[85vh] overflow-y-auto">
+        <div className="p-4 sm:p-5 max-h-[60vh] sm:max-h-[68vh] md:max-h-[72vh] overflow-y-auto">
           <AnimatePresence mode="wait">
             {/* Display State A: Standard Intake Form with split Contact Info Sidebar */}
             {!isSubmitting && !isSuccess && (
@@ -144,14 +145,14 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="grid grid-cols-1 md:grid-cols-12 gap-6"
+                className="grid grid-cols-1 md:grid-cols-12 gap-5"
               >
                 {/* Form Intake Column */}
                 <form
                   onSubmit={handleSubmit}
-                  className="md:col-span-7 space-y-4 w-full"
+                  className="md:col-span-7 space-y-3.5 w-full"
                 >
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     {/* Name */}
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-brand-heading uppercase tracking-wider">Your Name <span className="text-cta">*</span></label>
@@ -161,7 +162,8 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Marcus Vance"
-                        className="w-full text-[16px] h-[48px] px-3.5 rounded-lg border border-gray-200 focus:border-accent focus:ring-1 focus:ring-accent outline-hidden"
+                        className="w-full text-sm h-[40px] px-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-1 focus:ring-accent outline-hidden"
+                        id="proposal-name-input"
                       />
                     </div>
 
@@ -174,12 +176,13 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="marcus@deltaplumbing.com"
-                        className="w-full text-[16px] h-[48px] px-3.5 rounded-lg border border-gray-200 focus:border-accent focus:ring-1 focus:ring-accent outline-hidden"
+                        className="w-full text-sm h-[40px] px-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-1 focus:ring-accent outline-hidden"
+                        id="proposal-email-input"
                       />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     {/* Phone Number */}
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-brand-heading uppercase tracking-wider">Phone Number <span className="text-cta">*</span></label>
@@ -189,7 +192,8 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="+91 98765 43210"
-                        className="w-full text-[16px] h-[48px] px-3.5 rounded-lg border border-gray-200 focus:border-accent focus:ring-1 focus:ring-accent outline-hidden"
+                        className="w-full text-sm h-[40px] px-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-1 focus:ring-accent outline-hidden"
+                        id="proposal-phone-input"
                       />
                     </div>
 
@@ -200,19 +204,20 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
                         required
                         value={budget}
                         onChange={(e) => setBudget(e.target.value)}
-                        className="w-full text-[16px] h-[48px] px-3.5 rounded-lg border border-gray-200 focus:border-accent focus:ring-1 focus:ring-accent bg-white outline-hidden text-brand-heading font-medium"
+                        className="w-full text-sm h-[40px] px-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-1 focus:ring-accent bg-white outline-hidden text-brand-heading font-medium"
+                        id="proposal-budget-select"
                       >
                         <option value="" disabled>-- Select Budget --</option>
-                        <option value="Under ₹3,00,000 / year">Under ₹3,00,000 / year</option>
-                        <option value="₹3,00,000 - ₹6,00,000 / year">₹3,00,000 - ₹6,00,000 / year</option>
-                        <option value="₹6,00,000 - ₹12,00,000 / year">₹6,00,000 - ₹12,00,000 / year</option>
-                        <option value="₹12,00,000 - ₹30,00,000 / year">₹12,00,000 - ₹30,00,000 / year</option>
-                        <option value="₹30,00,000+ / year">₹30,00,000+ / year</option>
+                        <option value="Under ₹3,00,000 / year">Under ₹3,0,000 / year</option>
+                        <option value="₹3,00,000 - ₹6,00,000 / year">₹3,0,000 - ₹6,0,000 / year</option>
+                        <option value="₹6,00,000 - ₹12,00,000 / year">₹6,0,000 - ₹12,0,000 / year</option>
+                        <option value="₹12,00,000 - ₹30,00,000 / year">₹12,0,000 - ₹30,0,000 / year</option>
+                        <option value="₹30,00,000+ / year">₹30,0,000+ / year</option>
                       </select>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     {/* Business Name */}
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-brand-heading uppercase tracking-wider">Business Name <span className="text-cta">*</span></label>
@@ -222,7 +227,8 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
                         value={businessName}
                         onChange={(e) => setBusinessName(e.target.value)}
                         placeholder="Delta Air Plumbing"
-                        className="w-full text-[16px] h-[48px] px-3.5 rounded-lg border border-gray-200 focus:border-accent focus:ring-1 focus:ring-accent outline-hidden"
+                        className="w-full text-sm h-[40px] px-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-1 focus:ring-accent outline-hidden"
+                        id="proposal-business-name-input"
                       />
                     </div>
 
@@ -234,7 +240,8 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
                         value={businessUrl}
                         onChange={(e) => setBusinessUrl(e.target.value)}
                         placeholder="deltaplumbing.com"
-                        className="w-full text-[16px] h-[48px] px-3.5 rounded-lg border border-gray-200 focus:border-accent focus:ring-1 focus:ring-accent outline-hidden"
+                        className="w-full text-sm h-[40px] px-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-1 focus:ring-accent outline-hidden"
+                        id="proposal-business-url-input"
                       />
                     </div>
                   </div>
@@ -246,7 +253,8 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
                       required
                       value={selectedService || ""}
                       onChange={(e) => setSelectedService(e.target.value)}
-                      className="w-full text-[16px] h-[48px] px-3.5 rounded-lg border border-gray-200 focus:border-accent focus:ring-1 focus:ring-accent bg-white outline-hidden text-brand-heading font-medium"
+                      className="w-full text-sm h-[40px] px-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-1 focus:ring-accent bg-white outline-hidden text-brand-heading font-medium"
+                      id="proposal-service-select"
                     >
                       <option value="" disabled>-- Select a Service --</option>
                       <option value="Website Design">Website Design</option>
@@ -268,74 +276,79 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
                   <div className="space-y-1">
                     <label className="text-xs font-bold text-brand-heading uppercase tracking-wider">Current Constraints & Target Milestone</label>
                     <textarea
-                      rows={3}
+                      rows={2}
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                       placeholder="Briefly tell us what you're trying to solve (or keep the strategy simulator notes from your quiz!)."
-                      className="w-full text-[16px] min-h-[120px] p-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-1 focus:ring-accent outline-hidden font-sans"
+                      className="w-full text-sm min-h-[70px] p-2.5 rounded-lg border border-gray-200 focus:border-accent focus:ring-1 focus:ring-accent outline-hidden font-sans"
+                      id="proposal-notes-textarea"
                     />
                   </div>
 
                   {/* Advisory micro-note */}
-                  <div className="bg-orange-50/50 border border-orange-100 p-3 rounded-xl flex gap-2.5 text-xs text-brand-heading">
-                    <AlertCircle className="w-5 h-5 text-cta shrink-0" />
+                  <div className="bg-orange-50/50 border border-orange-100 p-2.5 rounded-xl flex gap-2 text-[11px] text-brand-heading">
+                    <AlertCircle className="w-4 h-4 text-cta shrink-0 mt-0.5" />
                     <p className="leading-snug">
                       Submitting this form launches our <strong>dynamic competitor diagnostic scanner</strong>. You'll unlock a customized visual growth proposal immediately.
                     </p>
                   </div>
 
                   {/* Submit buttons */}
-                  <div className="pt-3 border-t border-gray-150 flex flex-col sm:flex-row justify-end gap-3.5">
+                  <div className="pt-2.5 border-t border-gray-150 flex flex-col sm:flex-row justify-end gap-2.5">
                     <button
                       type="button"
                       onClick={onClose}
-                      className="text-sm font-semibold h-[48px] text-brand-body hover:text-brand-heading px-5 rounded-xl border border-gray-200 hover:bg-gray-50 transition cursor-pointer"
+                      className="text-xs font-semibold h-[40px] text-brand-body hover:text-brand-heading px-4 rounded-xl border border-gray-200 hover:bg-gray-50 transition cursor-pointer"
+                      id="proposal-cancel-btn"
                     >
                       Close Window
                     </button>
                     <button
                       type="submit"
-                      className="bg-cta hover:bg-cta/90 text-white font-bold h-[50px] w-full sm:w-auto px-6 rounded-xl flex items-center justify-center gap-1.5 transition shadow-md shadow-cta/15 cursor-pointer text-base"
+                      className="bg-cta hover:bg-cta/90 text-white font-bold h-[40px] w-full sm:w-auto px-5 rounded-xl flex items-center justify-center gap-1.5 transition shadow-md shadow-cta/15 cursor-pointer text-sm"
+                      id="proposal-submit-btn"
                     >
                       Submit & Build Proposal
-                      <Send className="w-5 h-5" />
+                      <Send className="w-4 h-4" />
                     </button>
                   </div>
                 </form>
 
-                {/* Contact Sidebar Column - Padding: 20px (p-5), Phone link, WhatsApp button, Map iframe */}
-                <div className="md:col-span-5 bg-gray-50/70 p-5 rounded-2xl border border-gray-100 flex flex-col space-y-4">
+                {/* Contact Sidebar Column - Padding: 16px (p-4), Phone link, WhatsApp button, Map iframe */}
+                <div className="md:col-span-5 bg-gray-50/70 p-4 rounded-xl border border-gray-100 flex flex-col space-y-3">
                   <div>
-                    <h4 className="font-display font-bold text-sm uppercase text-primary tracking-widest mb-1 select-none">Connect Instantly</h4>
-                    <p className="text-xs text-brand-body">Speak with an acquisition architect directly or navigate to our headquarters.</p>
+                    <h4 className="font-display font-bold text-xs uppercase text-primary tracking-widest mb-0.5 select-none">Connect Instantly</h4>
+                    <p className="text-[11px] text-brand-body">Speak with an acquisition architect directly or navigate to our headquarters.</p>
                   </div>
 
                   {/* Tap-To-Call Phone link */}
                   <a
                     href="tel:+919142645990"
-                    className="flex items-center gap-3 bg-white p-3.5 rounded-xl border border-gray-200/80 hover:border-accent hover:shadow-xs transition duration-200 cursor-pointer"
+                    className="flex items-center gap-2.5 bg-white p-2.5 rounded-xl border border-gray-200/80 hover:border-accent hover:shadow-xs transition duration-200 cursor-pointer"
+                    id="proposal-hotline-link"
                   >
-                    <div className="w-9 h-9 bg-accent/10 rounded-lg flex items-center justify-center text-accent shrink-0">
-                      <Phone className="w-4.5 h-4.5 text-accent" />
+                    <div className="w-8 h-8 bg-accent/10 rounded-lg flex items-center justify-center text-accent shrink-0">
+                      <Phone className="w-4 h-4 text-accent" />
                     </div>
                     <div>
-                      <span className="text-[10px] text-brand-body font-bold uppercase tracking-wider block">Local Hotline</span>
-                      <p className="font-mono text-sm font-extrabold text-brand-heading leading-tight">+91 9142645990</p>
+                      <span className="text-[9px] text-brand-body font-bold uppercase tracking-wider block">Local Hotline</span>
+                      <p className="font-mono text-xs font-extrabold text-brand-heading leading-tight">+91 9142645990</p>
                     </div>
                   </a>
 
-                  {/* WhatsApp button - full width, height 48px */}
+                  {/* WhatsApp button - full width, height 40px */}
                   <button
                     type="button"
                     onClick={() => window.open("https://wa.me/919472028969?text=Hi%20LocalBuild!", "_blank")}
-                    className="w-full h-[48px] bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-xs transition cursor-pointer text-[14px]"
+                    className="w-full h-[40px] bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-xs transition cursor-pointer text-[13px]"
+                    id="proposal-whatsapp-btn"
                   >
                     <span>💬</span>
                     Chat on WhatsApp
                   </button>
 
-                  {/* Google Maps iframe - width 100%, height 250px */}
-                  <div className="w-full h-[250px] rounded-xl overflow-hidden border border-gray-200 shadow-xs relative">
+                  {/* Google Maps iframe - width 100%, height 150px */}
+                  <div className="w-full h-[150px] rounded-xl overflow-hidden border border-gray-200 shadow-xs relative">
                     <iframe
                       src="https://maps.google.com/maps?q=Krishna%20Rajendra%20Rd,%20Parvathipuram,%20Basavanagudi,%20Bengaluru,%20Karnataka%20560004&t=&z=16&ie=UTF8&iwloc=&output=embed"
                       className="w-full h-full border-0"
