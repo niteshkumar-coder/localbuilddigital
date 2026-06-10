@@ -2,6 +2,41 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (function() {
+        try {
+          var originalFetch = window.fetch;
+          var currentFetch = originalFetch;
+          // Redefine window.fetch to support both getter and setter safely in iframe security boundaries
+          Object.defineProperty(window, 'fetch', {
+            get: function() {
+              return currentFetch;
+            },
+            set: function(val) {
+              currentFetch = val;
+            },
+            configurable: true,
+            enumerable: true
+          });
+        } catch (e) {
+          try {
+            var protoFetch = window.fetch;
+            Object.defineProperty(Window.prototype, 'fetch', {
+              get: function() {
+                return protoFetch;
+              },
+              set: function(val) {
+                protoFetch = val;
+              },
+              configurable: true,
+              enumerable: true
+            });
+          } catch (err) {
+            console.warn("Could not patch window.fetch setter: ", err);
+          }
+        }
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LocalBuild</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
