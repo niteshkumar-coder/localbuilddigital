@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { 
   Sparkles, 
   X, 
@@ -282,13 +282,37 @@ interface ServicesProps {
 export default function Services({ onQuoteClick, onNavigate }: ServicesProps) {
   const [activeService, setActiveService] = useState<ServiceDetail>(servicesData[0]);
   const [selectedDetail, setSelectedDetail] = useState<ServiceDetail | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const navContainerRef = useRef<HTMLDivElement>(null);
 
-  // Auto Rotate active service mockups for visual engagement in the background (safarer interval)
+  // Auto Rotate active service mockups for visual engagement in the background (runs unless hovered)
   useEffect(() => {
+    if (isHovered) return;
+
     const timer = setInterval(() => {
-      // Rotate active service sequentially if they are just idle with no interaction
-    }, 15000);
+      setActiveService((current) => {
+        const currentIndex = servicesData.findIndex((s) => s.id === current.id);
+        const nextIndex = (currentIndex + 1) % servicesData.length;
+        return servicesData[nextIndex];
+      });
+    }, 2000); // Shift every 2 seconds
+
     return () => clearInterval(timer);
+  }, [activeService, isHovered]);
+
+  // Smooth scroll center active tab chip
+  useEffect(() => {
+    if (navContainerRef.current) {
+      const activeEl = navContainerRef.current.querySelector('[data-active="true"]') as HTMLElement;
+      if (activeEl) {
+        const container = navContainerRef.current;
+        const scrollLeft = activeEl.offsetLeft - (container.clientWidth / 2) + (activeEl.clientWidth / 2);
+        container.scrollTo({
+          left: scrollLeft,
+          behavior: "smooth"
+        });
+      }
+    }
   }, [activeService]);
 
   const handleOpenDetail = (service: ServiceDetail) => {
@@ -352,13 +376,17 @@ export default function Services({ onQuoteClick, onNavigate }: ServicesProps) {
         {/* ------------------------------------------------------------- */}
         {/* HORIZONTAL QUICK NAV BAR (Scrollable on Mobile) */}
         {/* ------------------------------------------------------------- */}
-        <div className="flex overflow-x-auto gap-2 pb-5 mb-10 scrollbar-none scroll-smooth">
+        <div 
+          ref={navContainerRef}
+          className="flex overflow-x-auto gap-2 pb-5 mb-10 scrollbar-none scroll-smooth"
+        >
           {servicesData.map((service) => {
             const IconComponent = service.icon;
             const isActive = activeService.id === service.id;
             return (
               <button
                 key={service.id}
+                data-active={isActive}
                 onClick={() => setActiveService(service)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-300 cursor-pointer ${
                   isActive 
@@ -376,7 +404,11 @@ export default function Services({ onQuoteClick, onNavigate }: ServicesProps) {
         {/* ------------------------------------------------------------- */}
         {/* main interactive 3D platform split-screen */}
         {/* ------------------------------------------------------------- */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center bg-zinc-50/70 border border-zinc-200/65 rounded-3xl p-4 sm:p-10 lg:p-12 shadow-sm relative overflow-hidden backdrop-blur-xs min-h-[500px]">
+        <div 
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center bg-zinc-50/70 border border-zinc-200/65 rounded-3xl p-4 sm:p-10 lg:p-12 shadow-sm relative overflow-hidden backdrop-blur-xs min-h-[500px]"
+        >
           
           {/* Subtle blueprint mesh grid representing premium engineering style */}
           <div 
