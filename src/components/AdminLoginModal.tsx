@@ -42,7 +42,19 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }: Adm
         body: JSON.stringify({ password }),
       });
 
-      const data = await response.json();
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("text/html")) {
+        setError("Your browser is blocking cookie access inside the preview iframe. Please click the 'Open in New Tab' button in the toolbar to access the dashboard!");
+        return;
+      }
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonErr) {
+        setError("Your browser is blocking cookie access inside the preview iframe. Please click the 'Open in New Tab' button in the toolbar to access the dashboard!");
+        return;
+      }
 
       if (response.ok && data.success) {
         onLoginSuccess(data.token);
@@ -52,7 +64,7 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }: Adm
       }
     } catch (err: any) {
       console.error("Login failure exception details:", err);
-      setError(`Communication failed (${err?.message || "unknown connection issue"}). Ensure server is active.`);
+      setError(`Connection refused. Please open the application in a new tab to bypass cookie blocking.`);
     } finally {
       setIsSubmitting(false);
     }
