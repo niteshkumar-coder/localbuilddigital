@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowLeft, MessageCircle, Phone, ArrowRight, Download, CheckCircle, Sparkles, AlertCircle, FileText, LayoutGrid } from "lucide-react";
+import { ArrowLeft, MessageCircle, Phone, ArrowRight, Download, CheckCircle, Sparkles, AlertCircle, FileText, LayoutGrid, TrendingUp, GraduationCap, Scissors, Hotel, Stethoscope, Scale, Dumbbell, Home, Utensils } from "lucide-react";
 
 interface CostViewProps {
   onBack: () => void;
@@ -8,7 +8,7 @@ interface CostViewProps {
 }
 
 export default function CostView({ onBack, onQuoteClick }: CostViewProps) {
-  const [activeTab, setActiveTab] = useState<"primary" | "detailed" | "additional" | "addons">("primary");
+  const [activeTab, setActiveTab] = useState<"primary" | "detailed" | "additional" | "addons" | "growth" | "coaching" | "salon" | "hotel">("primary");
 
   const handleWhatsappClick = () => {
     window.open("https://wa.me/919472028969?text=Hi%20LocalBuild!%20I%20have%20reviewed%20your%2520pricing%20and%20cost%20structure.%20I'd%20like%20to%20discuss%20a%20project.", "_blank");
@@ -25,28 +25,52 @@ export default function CostView({ onBack, onQuoteClick }: CostViewProps) {
 
   const cards = {
     primary: {
-      title: "Cost & Package Table",
-      description: "Direct view of basic campaign budgets, media metrics, and standard package options.",
+      title: "Doctors & Clinics Marketing Packages",
+      description: "Direct view of campaign budgets, patient flow optimization, and specialized healthcare marketing metrics.",
       imgUrl: "https://i.ibb.co/3Yf3pVhH/coust.png",
-      label: "View General Packages",
+      label: "View Doctors & Clinics Plans",
     },
     detailed: {
-      title: "Service Scope & Delivery Checklist",
-      description: "Detailed breakdowns of SEO deliverables, digital infrastructure audits, and specific service rates.",
+      title: "Lawyers & Advocates Marketing Packages",
+      description: "Checklists, localized SEO deliverables, legal compliance, and digital roadmap audits for law firms.",
       imgUrl: "https://i.ibb.co/BKFC7b4M/image.png",
-      label: "View Extended Scope",
+      label: "View Lawyers & Advocates Plans",
     },
     additional: {
-      title: "Premium Options & Special Audits",
-      description: "Comprehensive review of premium custom additions, dynamic audits, and specific platform rates.",
+      title: "Gyms & Fitness Centers Packages",
+      description: "Comprehensive membership marketing, custom high-converting fitness landing pages, and lead generation rates.",
       imgUrl: "https://i.ibb.co/ZRxWBfXy/image.png",
-      label: "View Premium Additions",
+      label: "View Gyms & Fitness Plans",
     },
     addons: {
-      title: "Custom Setup & Ad Campaigns",
-      description: "Specific packages, Google/Meta campaign set up costs, and monthly optimization plans.",
+      title: "Real Estate Agents & Builders Action Plan",
+      description: "Property marketing packages, Meta/Google lead forms configurations, and direct consultation budgets.",
       imgUrl: "https://i.ibb.co/ycwWm0s3/image.png",
-      label: "View Custom Setup Plans",
+      label: "View Real Estate & Builder Plans",
+    },
+    growth: {
+      title: "Restaurants & Cafes Marketing Packages",
+      description: "Google Maps rating amplification, custom food menus optimization, and local targeting strategies.",
+      imgUrl: "https://i.ibb.co/YBLYGvj0/image.png",
+      label: "View Restaurant & Cafe Plans",
+    },
+    coaching: {
+      title: "Coaching & Training Programs",
+      description: "Specialized coaching and marketing training packages with specific local scale checklists.",
+      imgUrl: "https://i.ibb.co/GQKYCcky/image.png",
+      label: "View Coaching Program Rates",
+    },
+    salon: {
+      title: "Salon & Beauty Marketing Packages",
+      description: "Dedicated scaling plans, local SEO targeting, and custom visual catalog updates for beauty salons.",
+      imgUrl: "https://i.ibb.co/vxvL5MXF/image.png",
+      label: "View Salon & Beauty Rates",
+    },
+    hotel: {
+      title: "Hotels & Resorts Marketing Packages",
+      description: "Dedicated digital roadmap, custom booking engine audits, and local tourism optimization scopes designed for premium resorts.",
+      imgUrl: "https://i.ibb.co/TqJsggHV/image.png",
+      label: "View Hotels & Resorts Rates",
     }
   };
 
@@ -132,8 +156,8 @@ export default function CostView({ onBack, onQuoteClick }: CostViewProps) {
                   : "text-zinc-600 hover:text-zinc-950"
               }`}
             >
-              <LayoutGrid className="w-4 h-4" />
-              <span>1. Primary Packages</span>
+              <Stethoscope className="w-4 h-4" />
+              <span>1. Doctors & Clinics</span>
             </button>
             <button
               onClick={() => setActiveTab("detailed")}
@@ -143,8 +167,8 @@ export default function CostView({ onBack, onQuoteClick }: CostViewProps) {
                   : "text-zinc-600 hover:text-zinc-950"
               }`}
             >
-              <FileText className="w-4 h-4" />
-              <span>2. Deliverables & Services</span>
+              <Scale className="w-4 h-4" />
+              <span>2. Lawyers & Advocates</span>
             </button>
             <button
               onClick={() => setActiveTab("additional")}
@@ -154,8 +178,8 @@ export default function CostView({ onBack, onQuoteClick }: CostViewProps) {
                   : "text-zinc-600 hover:text-zinc-950"
               }`}
             >
-              <Sparkles className="w-4 h-4 text-amber-500 fill-amber-300/20" />
-              <span>3. Premium Options</span>
+              <Dumbbell className="w-4 h-4 text-amber-500 fill-amber-300/20" />
+              <span>3. Gyms & Fitness</span>
             </button>
             <button
               onClick={() => setActiveTab("addons")}
@@ -165,8 +189,52 @@ export default function CostView({ onBack, onQuoteClick }: CostViewProps) {
                   : "text-zinc-600 hover:text-zinc-950"
               }`}
             >
-              <Sparkles className="w-4 h-4 text-indigo-500 fill-indigo-300/20" />
-              <span>4. Custom Setup & Ads</span>
+              <Home className="w-4 h-4 text-indigo-500 fill-indigo-300/20" />
+              <span>4. Real Estate & Builders</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("growth")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer relative ${
+                activeTab === "growth"
+                  ? "bg-white text-blue-600 shadow-sm"
+                  : "text-zinc-600 hover:text-zinc-950"
+              }`}
+            >
+              <Utensils className="w-4 h-4 text-emerald-500 fill-emerald-300/20" />
+              <span>5. Restaurants & Cafes</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("coaching")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer relative ${
+                activeTab === "coaching"
+                  ? "bg-white text-blue-600 shadow-sm"
+                  : "text-zinc-600 hover:text-zinc-950"
+              }`}
+            >
+              <GraduationCap className="w-4.5 h-4.5 text-rose-500 fill-rose-300/20" />
+              <span>6. Coaching Packages</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("salon")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer relative ${
+                activeTab === "salon"
+                  ? "bg-white text-blue-600 shadow-sm"
+                  : "text-zinc-600 hover:text-zinc-950"
+              }`}
+            >
+              <Scissors className="w-4 h-4 text-pink-500 fill-pink-300/20" />
+              <span>7. Salon & Beauty</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("hotel")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer relative ${
+                activeTab === "hotel"
+                  ? "bg-white text-blue-600 shadow-sm"
+                  : "text-zinc-650 hover:text-zinc-950"
+              }`}
+            >
+              <Hotel className="w-4 h-4 text-emerald-600 fill-emerald-300/10" />
+              <span>8. Hotels & Resorts</span>
             </button>
           </div>
         </div>
