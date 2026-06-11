@@ -1,5 +1,6 @@
-import { motion } from "motion/react";
-import { ArrowLeft, MessageCircle, Phone, ArrowRight, Download, CheckCircle, Sparkles, AlertCircle } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { ArrowLeft, MessageCircle, Phone, ArrowRight, Download, CheckCircle, Sparkles, AlertCircle, FileText, LayoutGrid } from "lucide-react";
 
 interface CostViewProps {
   onBack: () => void;
@@ -7,8 +8,10 @@ interface CostViewProps {
 }
 
 export default function CostView({ onBack, onQuoteClick }: CostViewProps) {
+  const [activeTab, setActiveTab] = useState<"primary" | "detailed" | "additional" | "addons">("primary");
+
   const handleWhatsappClick = () => {
-    window.open("https://wa.me/919472028969?text=Hi%20LocalBuild!%20I%20have%20reviewed%20your%20pricing%20and%20cost%20structure.%20I'd%20like%20to%20discuss%20a%20project.", "_blank");
+    window.open("https://wa.me/919472028969?text=Hi%20LocalBuild!%20I%20have%20reviewed%20your%2520pricing%20and%20cost%20structure.%20I'd%20like%20to%20discuss%20a%20project.", "_blank");
   };
 
   const benefits = [
@@ -16,7 +19,36 @@ export default function CostView({ onBack, onQuoteClick }: CostViewProps) {
     "Tailored Marketing Plans with complete breakdowns",
     "ROI-centric Campaigns designed for local markets",
     "Includes standard high-grade AI automation updates",
+    "Comprehensive lead reporting dashboard",
+    "Direct expert consultation & weekly sync meetings",
   ];
+
+  const cards = {
+    primary: {
+      title: "Cost & Package Table",
+      description: "Direct view of basic campaign budgets, media metrics, and standard package options.",
+      imgUrl: "https://i.ibb.co/3Yf3pVhH/coust.png",
+      label: "View General Packages",
+    },
+    detailed: {
+      title: "Service Scope & Delivery Checklist",
+      description: "Detailed breakdowns of SEO deliverables, digital infrastructure audits, and specific service rates.",
+      imgUrl: "https://i.ibb.co/BKFC7b4M/image.png",
+      label: "View Extended Scope",
+    },
+    additional: {
+      title: "Premium Options & Special Audits",
+      description: "Comprehensive review of premium custom additions, dynamic audits, and specific platform rates.",
+      imgUrl: "https://i.ibb.co/ZRxWBfXy/image.png",
+      label: "View Premium Additions",
+    },
+    addons: {
+      title: "Custom Setup & Ad Campaigns",
+      description: "Specific packages, Google/Meta campaign set up costs, and monthly optimization plans.",
+      imgUrl: "https://i.ibb.co/ycwWm0s3/image.png",
+      label: "View Custom Setup Plans",
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 text-zinc-950 font-sans pb-16">
@@ -65,7 +97,7 @@ export default function CostView({ onBack, onQuoteClick }: CostViewProps) {
           className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100/50 px-3.5 py-1 rounded-full text-xs font-bold text-blue-600 mb-4"
         >
           <Sparkles className="w-3.5 h-3.5 text-blue-500" />
-          <span>Transparent Packages • LocalBuild Pricing</span>
+          <span>Transparent Packages • LocalBuild Pricing Sheets</span>
         </motion.div>
 
         <motion.h1
@@ -76,7 +108,7 @@ export default function CostView({ onBack, onQuoteClick }: CostViewProps) {
         >
           Our Business{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-            Cost & Package Table
+            Cost & Strategy sheets
           </span>
         </motion.h1>
 
@@ -86,8 +118,58 @@ export default function CostView({ onBack, onQuoteClick }: CostViewProps) {
           transition={{ delay: 0.2 }}
           className="text-zinc-600 max-w-2xl mx-auto text-sm sm:text-base mb-8"
         >
-          Configure and plan your ROI budget. View the complete pricing breakdown for our premium services below.
+          Configure and plan your ROI budget perfectly. Switch between the general package pricing and our detailed service roadmap list below.
         </motion.p>
+
+        {/* Elegant Tab Switcher Button Bar */}
+        <div className="flex justify-center mt-3 mb-8">
+          <div className="inline-flex flex-wrap justify-center p-1.5 bg-zinc-200/60 rounded-2xl border border-zinc-300/40 shadow-xs gap-1 sm:gap-1.5 max-w-full">
+            <button
+              onClick={() => setActiveTab("primary")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer relative ${
+                activeTab === "primary"
+                  ? "bg-white text-blue-600 shadow-sm"
+                  : "text-zinc-600 hover:text-zinc-950"
+              }`}
+            >
+              <LayoutGrid className="w-4 h-4" />
+              <span>1. Primary Packages</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("detailed")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer relative ${
+                activeTab === "detailed"
+                  ? "bg-white text-blue-600 shadow-sm"
+                  : "text-zinc-600 hover:text-zinc-950"
+              }`}
+            >
+              <FileText className="w-4 h-4" />
+              <span>2. Deliverables & Services</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("additional")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer relative ${
+                activeTab === "additional"
+                  ? "bg-white text-blue-600 shadow-sm"
+                  : "text-zinc-600 hover:text-zinc-950"
+              }`}
+            >
+              <Sparkles className="w-4 h-4 text-amber-500 fill-amber-300/20" />
+              <span>3. Premium Options</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("addons")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer relative ${
+                activeTab === "addons"
+                  ? "bg-white text-blue-600 shadow-sm"
+                  : "text-zinc-600 hover:text-zinc-950"
+              }`}
+            >
+              <Sparkles className="w-4 h-4 text-indigo-500 fill-indigo-300/20" />
+              <span>4. Custom Setup & Ads</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Main Image Container and Panel Sheet */}
@@ -95,7 +177,7 @@ export default function CostView({ onBack, onQuoteClick }: CostViewProps) {
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          transition={{ duration: 0.4 }}
           className="bg-white border border-zinc-200/80 rounded-3xl shadow-xl overflow-hidden p-3 sm:p-6 lg:p-8 flex flex-col items-center gap-6"
         >
           {/* Top Panel Actions bar */}
@@ -103,14 +185,18 @@ export default function CostView({ onBack, onQuoteClick }: CostViewProps) {
             <div className="flex gap-2.5 items-start">
               <AlertCircle className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-bold text-zinc-900 text-sm">Official Pricing Card</h4>
-                <p className="text-zinc-500 text-xs mt-0.5">Below is the complete price list updated for the current quarter.</p>
+                <h4 className="font-bold text-zinc-900 text-sm">
+                  {cards[activeTab].title}
+                </h4>
+                <p className="text-zinc-500 text-xs mt-0.5">
+                  {cards[activeTab].description}
+                </p>
               </div>
             </div>
 
             <div className="flex items-center gap-3 w-full sm:w-auto self-end sm:self-center">
               <a
-                href="https://i.ibb.co/3Yf3pVhH/coust.png"
+                href={cards[activeTab].imgUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex-1 sm:flex-none justify-center h-10 px-4 bg-white hover:bg-zinc-100 border border-zinc-200 text-zinc-700 font-bold text-xs rounded-xl flex items-center gap-2 transition duration-200"
@@ -122,20 +208,28 @@ export default function CostView({ onBack, onQuoteClick }: CostViewProps) {
           </div>
 
           {/* Transparent high resolution view structure */}
-          <div className="w-full relative bg-zinc-900 rounded-2xl p-1 sm:p-3 overflow-hidden border border-zinc-800 shadow-inner group">
-            {/* The actual image requested */}
-            <div className="w-full flex justify-center bg-slate-950 rounded-xl overflow-hidden relative">
-              <img
-                src="https://i.ibb.co/3Yf3pVhH/coust.png"
-                alt="LocalBuild Premium Cost Details Table"
-                className="w-full h-auto object-contain max-h-[85vh] sm:max-h-[95vh] self-center transition-all duration-300"
-                referrerPolicy="no-referrer"
-              />
-            </div>
+          <div className="w-full relative bg-zinc-900 rounded-2xl p-1 sm:p-3 overflow-hidden border border-zinc-800 shadow-inner">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                className="w-full flex justify-center bg-slate-950 rounded-xl overflow-hidden relative"
+              >
+                <img
+                  src={cards[activeTab].imgUrl}
+                  alt={`LocalBuild Premium Cost - ${cards[activeTab].title}`}
+                  className="w-full h-auto object-contain max-h-[85vh] sm:max-h-[95vh] self-center transition-all duration-300"
+                  referrerPolicy="no-referrer"
+                />
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           {/* Quick interactive bullet value props below the pricing card */}
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-zinc-100 pt-6 mt-2 text-left">
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 border-t border-zinc-100 pt-6 mt-2 text-left">
             {benefits.map((benefit, idx) => (
               <div key={idx} className="flex gap-3 items-start">
                 <div className="bg-emerald-50 text-emerald-600 rounded-full p-0.5 shrink-0 mt-0.5">
@@ -151,7 +245,7 @@ export default function CostView({ onBack, onQuoteClick }: CostViewProps) {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
+          transition={{ delay: 0.3 }}
           className="bg-linear-to-r from-zinc-900 to-slate-950 text-white rounded-3xl p-6 sm:p-10 mt-10 shadow-lg text-left relative overflow-hidden"
         >
           {/* subtle mesh background */}
