@@ -4,6 +4,19 @@
     <meta charset="UTF-8" />
     <script>
       (function() {
+        // Safe iframe environment fallbacks to prevent SecurityError DOMExceptions
+        try {
+          window.alert = function(msg) {
+            console.warn("[Safe Alert Fallback]:", msg);
+          };
+          window.confirm = function(msg) {
+            console.warn("[Safe Confirm Fallback]:", msg);
+            return true; // Auto-confirm on safe environments
+          };
+        } catch (storageErr) {
+          console.warn("Could not patch window dialog interfaces:", storageErr);
+        }
+
         try {
           var originalFetch = window.fetch;
           var currentFetch = originalFetch;

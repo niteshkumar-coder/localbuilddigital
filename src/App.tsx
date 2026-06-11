@@ -14,6 +14,36 @@ import Footer from "./components/Footer";
 import FloatingButtons from "./components/FloatingButtons";
 import AdminLoginModal from "./components/AdminLoginModal";
 import AdminDashboard from "./components/AdminDashboard";
+import CostView from "./components/CostView";
+
+const memoryStorage = new Map<string, string>();
+
+const safeSessionStorage = {
+  getItem: (key: string): string | null => {
+    try {
+      return sessionStorage.getItem(key);
+    } catch (e) {
+      console.warn("Storage access is blocked or restricted:", e);
+      return memoryStorage.get(key) || null;
+    }
+  },
+  setItem: (key: string, value: string): void => {
+    try {
+      sessionStorage.setItem(key, value);
+    } catch (e) {
+      console.warn("Storage access is blocked or restricted:", e);
+      memoryStorage.set(key, value);
+    }
+  },
+  removeItem: (key: string): void => {
+    try {
+      sessionStorage.removeItem(key);
+    } catch (e) {
+      console.warn("Storage access is blocked or restricted:", e);
+      memoryStorage.delete(key);
+    }
+  }
+};
 
 export default function App() {
   const [isContactOpen, setIsContactOpen] = useState(false);
@@ -22,7 +52,7 @@ export default function App() {
 
   // Custom client router states
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
-  const [adminToken, setAdminToken] = useState<string | null>(sessionStorage.getItem("localbuild_admin_token"));
+  const [adminToken, setAdminToken] = useState<string | null>(safeSessionStorage.getItem("localbuild_admin_token"));
   const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
 
   // Sync client router with popstate history actions (back/forward)
@@ -55,7 +85,7 @@ export default function App() {
         });
         const data = await res.json();
         if (!res.ok || !data.valid) {
-          sessionStorage.removeItem("localbuild_admin_token");
+          safeSessionStorage.removeItem("localbuild_admin_token");
           setAdminToken(null);
           if (currentPath === "/admin-dashboard") {
             window.history.pushState({}, "", "/");
@@ -73,7 +103,7 @@ export default function App() {
 
   // Admin login callbacks
   const handleAdminSuccess = (token: string) => {
-    sessionStorage.setItem("localbuild_admin_token", token);
+    safeSessionStorage.setItem("localbuild_admin_token", token);
     setAdminToken(token);
     // Secure redirect to CRM Dashboard
     window.history.pushState({}, "", "/admin-dashboard");
@@ -91,7 +121,7 @@ export default function App() {
         console.error("Database logout synchronizer warning:", err);
       }
     }
-    sessionStorage.removeItem("localbuild_admin_token");
+    safeSessionStorage.removeItem("localbuild_admin_token");
     setAdminToken(null);
     window.history.pushState({}, "", "/");
     setCurrentPath("/");
@@ -142,12 +172,30 @@ export default function App() {
     );
   }
 
+  if (currentPath === "/cost") {
+    return (
+      <CostView 
+        onBack={() => {
+          window.history.pushState({}, "", "/");
+          setCurrentPath("/");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+        onQuoteClick={() => handleOpenContact()}
+      />
+    );
+  }
+
   return (
     <div className="relative min-h-screen bg-white">
       {/* Structural fixed header bar */}
       <Navbar
         onQuoteClick={() => handleOpenContact()}
         onNavigate={handleNavigate}
+        onCostClick={() => {
+          window.history.pushState({}, "", "/cost");
+          setCurrentPath("/cost");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
       />
 
       {/* Main Single-view Content Stacks */}
@@ -155,6 +203,11 @@ export default function App() {
         <Hero
           onQuoteClick={() => handleOpenContact()}
           onNavigate={handleNavigate}
+          onCostClick={() => {
+            window.history.pushState({}, "", "/cost");
+            setCurrentPath("/cost");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
         />
         
         <Services

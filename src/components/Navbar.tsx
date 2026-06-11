@@ -5,9 +5,10 @@ import { motion, AnimatePresence } from "motion/react";
 interface NavbarProps {
   onQuoteClick: () => void;
   onNavigate: (sectionId: string) => void;
+  onCostClick: () => void;
 }
 
-export default function Navbar({ onQuoteClick, onNavigate }: NavbarProps) {
+export default function Navbar({ onQuoteClick, onNavigate, onCostClick }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -85,6 +86,13 @@ export default function Navbar({ onQuoteClick, onNavigate }: NavbarProps) {
                 {item.name === "S_Roadmap Planner" ? "Plan Strategy" : item.name}
               </button>
             ))}
+            <button
+              onClick={onCostClick}
+              className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors duration-155 cursor-pointer relative py-1 flex items-center gap-1.5"
+            >
+              <Zap className="w-4 h-4 text-amber-500 animate-pulse fill-amber-400" />
+              Package Cost
+            </button>
           </nav>
 
           {/* Actions */}
@@ -168,6 +176,17 @@ export default function Navbar({ onQuoteClick, onNavigate }: NavbarProps) {
                 ))}
                 
                 {/* Contact triggers intake popup directly */}
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    onCostClick();
+                  }}
+                  className="w-full text-left h-[48px] flex items-center text-[20px] font-bold text-blue-600 hover:text-blue-700 transition-all border-b border-gray-50 focus:outline-none gap-2"
+                >
+                  <Zap className="w-5 h-5 text-amber-500 fill-amber-400" />
+                  Package Cost Table
+                </button>
+
                 <button
                   onClick={() => {
                     setIsOpen(false);

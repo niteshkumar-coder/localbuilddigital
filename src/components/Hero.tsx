@@ -25,9 +25,10 @@ import { motion, AnimatePresence } from "motion/react";
 interface HeroProps {
   onQuoteClick: (prefilledNotes?: string) => void;
   onNavigate: (sectionId: string) => void;
+  onCostClick: () => void;
 }
 
-export default function Hero({ onQuoteClick, onNavigate }: HeroProps) {
+export default function Hero({ onQuoteClick, onNavigate, onCostClick }: HeroProps) {
   const [activeTab, setActiveTab] = useState<"ppc" | "seo" | "roi">("ppc");
   const [currentTime, setCurrentTime] = useState<string>("");
 
@@ -136,6 +137,14 @@ export default function Hero({ onQuoteClick, onNavigate }: HeroProps) {
               >
                 Get Free Consultation
                 <ArrowRight className="w-4.5 h-4.5 transition-transform duration-300 group-hover:translate-x-1" />
+              </button>
+
+              <button
+                onClick={onCostClick}
+                className="flex-1 sm:flex-none justify-center h-[52px] px-7 bg-blue-50 hover:bg-blue-100 border border-blue-150 text-blue-600 font-bold rounded-xl flex items-center gap-2 transition-all duration-300 shadow-xs cursor-pointer text-sm tracking-wide"
+              >
+                <Zap className="w-4.5 h-4.5 text-amber-500 fill-amber-400 animate-pulse" />
+                Package Cost
               </button>
 
               <a
@@ -638,6 +647,14 @@ export default function Hero({ onQuoteClick, onNavigate }: HeroProps) {
             >
               Get Free Consultation
               <ArrowRight className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={onCostClick}
+              className="w-full h-[54px] bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-600 font-extrabold text-sm tracking-wide rounded-[14px] flex items-center justify-center gap-2 transition duration-300 shadow-sm active:scale-98 cursor-pointer"
+            >
+              <Zap className="w-4 h-4 text-amber-500 fill-amber-400 animate-pulse" />
+              Package Cost Table
             </button>
             
             <a
