@@ -359,22 +359,42 @@ app.post("/api/portal-verify-logout-v2", (req, res) => {
 // VITE OR STATIC FRONTEND SERVING
 // ==========================================
 async function start() {
+  let viteInstance: any = null;
+
   if (process.env.NODE_ENV !== "production") {
-    const vite = await createViteServer({
+    viteInstance = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
     });
-    app.use(vite.middlewares);
+    app.use(viteInstance.middlewares);
     console.log("Vite development middleware integrated.");
   } else {
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
-    // Serve index.html for all non-API paths (routing fallback)
-    app.get("*all", (req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
-    });
     console.log("Static production assets mounted.");
   }
+
+  // Catch-all SPA fallback route for BOTH development and production
+  app.get("*all", async (req, res, next) => {
+    // Avoid intercepting API routes or actual static physical files (e.g. .css, .js, .png)
+    if (req.originalUrl.startsWith("/api") || path.extname(req.originalUrl)) {
+      return next();
+    }
+
+    try {
+      if (process.env.NODE_ENV !== "production" && viteInstance) {
+        let template = await fs.readFile(path.join(process.cwd(), "index.html"), "utf-8");
+        template = await viteInstance.transformIndexHtml(req.originalUrl, template);
+        res.status(200).set({ "Content-Type": "text/html" }).end(template);
+      } else {
+        const distPath = path.join(process.cwd(), "dist");
+        res.sendFile(path.join(distPath, "index.html"));
+      }
+    } catch (err) {
+      console.error("SPA wildcard fallback error:", err);
+      next(err);
+    }
+  });
 
   // Bind to host 0.0.0.0 and port 3000
   app.listen(PORT, "0.0.0.0", () => {
