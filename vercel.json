@@ -1,5 +1,27 @@
 {
   "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/favicon.ico",
+      "destination": "https://i.ibb.co/G3tMbK2q/image.png",
+      "permanent": true
+    },
+    {
+      "source": "/favicon.png",
+      "destination": "https://i.ibb.co/G3tMbK2q/image.png",
+      "permanent": true
+    },
+    {
+      "source": "/apple-touch-icon.png",
+      "destination": "https://i.ibb.co/G3tMbK2q/image.png",
+      "permanent": true
+    },
+    {
+      "source": "/apple-touch-icon-precomposed.png",
+      "destination": "https://i.ibb.co/G3tMbK2q/image.png",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/:path*",

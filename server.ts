@@ -374,6 +374,11 @@ async function start() {
     console.log("Static production assets mounted.");
   }
 
+  // Direct permanent redirect for search crawlers to get high-res brand favicon
+  app.get(["/favicon.ico", "/favicon.png", "/apple-touch-icon.png", "/apple-touch-icon-precomposed.png"], (req, res) => {
+    res.redirect(301, "https://i.ibb.co/G3tMbK2q/image.png");
+  });
+
   // Catch-all SPA fallback route for BOTH development and production
   app.get("*all", async (req, res, next) => {
     // Avoid intercepting API routes or actual static physical files (e.g. .css, .js, .png)
