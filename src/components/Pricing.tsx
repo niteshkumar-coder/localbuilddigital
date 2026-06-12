@@ -10,7 +10,7 @@ export default function Pricing({ onQuoteClick }: PricingProps) {
     {
       name: "Local Authority",
       price: "₹19,999",
-      period: "year",
+      period: "3 years",
       desc: "Perfect for single-location owner-operators looking to claim top 3 ranks in their local zip code maps.",
       features: [
         "Google Business Profile (GBP) deep optimization",
@@ -26,7 +26,7 @@ export default function Pricing({ onQuoteClick }: PricingProps) {
     {
       name: "Market Dominance",
       price: "₹34,999",
-      period: "year",
+      period: "3 years",
       desc: "Our signature package. Combines local maps dominance with aggressive Google & Meta paid lead generation.",
       features: [
         "Complete GBP optimization & ongoing local search plan",
@@ -43,7 +43,7 @@ export default function Pricing({ onQuoteClick }: PricingProps) {
     {
       name: "City Saturation",
       price: "₹64,999",
-      period: "year",
+      period: "3 years",
       desc: "Designed for scaling service teams with multiple territories, offices, or franchise locations.",
       features: [
         "Multi-city/office maps pack ranking strategy",
@@ -123,7 +123,7 @@ export default function Pricing({ onQuoteClick }: PricingProps) {
               <button
                 onClick={() =>
                   onQuoteClick(
-                    `Hi LocalBuild! I am interested in locking in your [${tier.name}] package at [${tier.price}/yr] for my business. I'd love to schedule our introductory strategy and review session.`
+                    `Hi LocalBuild! I am interested in locking in your [${tier.name}] package at [${tier.price}/3 years] for my business. I'd love to schedule our introductory strategy and review session.`
                   )
                 }
                 className={`w-full py-3 px-4 font-semibold text-sm rounded-lg transition-transform duration-200 hover:-translate-y-0.5 pointer-events-auto cursor-pointer ${
