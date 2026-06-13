@@ -28,7 +28,7 @@
       "destination": "/api/:path*"
     },
     {
-      "source": "/((?!api|assets|favicon|apple-touch|.*\\.).*)",
+      "source": "/:path*",
       "destination": "/index.html"
     }
   ]
