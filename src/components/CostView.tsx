@@ -33,7 +33,7 @@ export default function CostView({ onBack, onQuoteClick }: CostViewProps) {
     detailed: {
       title: "Lawyers & Advocates Marketing Packages",
       description: "Checklists, localized SEO deliverables, legal compliance, and digital roadmap audits for law firms.",
-      imgUrl: "https://i.ibb.co/BKFC7b4M/image.png",
+      imgUrl: "https://i.ibb.co/S4vNMJwP/image.png",
       label: "View Lawyers & Advocates Plans",
     },
     additional: {
