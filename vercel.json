@@ -22,14 +22,25 @@
       "permanent": true
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/:path*",
-      "destination": "https://ais-pre-ayw4frtbyskt45dyw23yue-582044349376.asia-southeast1.run.app/api/:path*"
+      "src": "/api/(.*)",
+      "dest": "https://ais-pre-ayw4frtbyskt45dyw23yue-582044349376.asia-southeast1.run.app/api/$1"
     },
     {
-      "source": "/:path*",
-      "destination": "/index.html"
+      "src": "/robots.txt",
+      "dest": "https://ais-pre-ayw4frtbyskt45dyw23yue-582044349376.asia-southeast1.run.app/robots.txt"
+    },
+    {
+      "src": "/sitemap.xml",
+      "dest": "https://ais-pre-ayw4frtbyskt45dyw23yue-582044349376.asia-southeast1.run.app/sitemap.xml"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
