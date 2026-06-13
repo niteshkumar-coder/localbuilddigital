@@ -1,0 +1,17 @@
+import { initializeApp, getApps } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+
+const firebaseConfig = {
+  projectId: "vocal-atom-6pp0d",
+  appId: "1:1061763458631:web:e941f9726f6c4a7b893362",
+  apiKey: "AIzaSyAtaBB6GqGQofJ3UYKj07py77K6mN8WtH8",
+  authDomain: "vocal-atom-6pp0d.firebaseapp.com",
+  firestoreDatabaseId: "ai-studio-8123d0f2-a83d-4148-b690-f40683b48504",
+  storageBucket: "vocal-atom-6pp0d.firebasestorage.app",
+  messagingSenderId: "1061763458631",
+};
+
+const apps = getApps();
+const app = apps.length > 0 ? apps[0] : initializeApp(firebaseConfig);
+
+export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);

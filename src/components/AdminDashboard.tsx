@@ -5,6 +5,8 @@ import {
   MapPin, IndianRupee, Clock, Filter, Printer, FileText, ChevronRight, Trash2
 } from "lucide-react";
 import { motion } from "motion/react";
+import { db } from "../lib/firebase";
+import { collection, getDocs, doc, updateDoc, deleteDoc, query, orderBy } from "firebase/firestore";
 
 interface Lead {
   id: string;
@@ -43,6 +45,29 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
   const fetchLeads = async () => {
     setSyncing(true);
     setError("");
+
+    // 1. Prioritize direct Client-side Firestore querying for full cross-laptop real-time capabilities (Vercel compliance)
+    try {
+      const q = query(collection(db, "leads"), orderBy("date", "desc"));
+      const snapshot = await getDocs(q);
+      const fsLeads = snapshot.docs.map(d => {
+        const dData = d.data();
+        return {
+          ...dData,
+          // Guarantee format consistency on dates
+          date: dData.date || new Date().toISOString()
+        } as Lead;
+      });
+      if (fsLeads && fsLeads.length > 0) {
+        setLeads(fsLeads);
+        localStorage.setItem("localbuild_backup_leads", JSON.stringify(fsLeads));
+        setLoading(false);
+        setSyncing(false);
+        return;
+      }
+    } catch (fsErr) {
+      console.warn("Direct client-side Firestore fetch had exceptions or is empty, trying proxy...", fsErr);
+    }
 
     try {
       const res = await fetch("/api/portal-leads-v2", {
@@ -175,6 +200,14 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
     setLeads(updatedLeads);
     localStorage.setItem("localbuild_backup_leads", JSON.stringify(updatedLeads));
 
+    // Direct Firestore update client-side for cross-laptop persistence compatibility
+    try {
+      await updateDoc(doc(db, "leads", leadId), { status: newStatus });
+      console.log("Client successfully updated status directly in Firestore:", leadId);
+    } catch (fsErr) {
+      console.warn("Client fallback direct Firestore status update failed:", fsErr);
+    }
+
     try {
       const res = await fetch(`/api/portal-leads-v2/${leadId}/status`, {
         method: "POST",
@@ -203,6 +236,14 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
     const updatedLeads = leads.filter(lead => lead.id !== leadId);
     setLeads(updatedLeads);
     localStorage.setItem("localbuild_backup_leads", JSON.stringify(updatedLeads));
+
+    // Direct Firestore delete client-side for cross-laptop persistence compatibility
+    try {
+      await deleteDoc(doc(db, "leads", leadId));
+      console.log("Client successfully deleted document directly from Firestore:", leadId);
+    } catch (fsErr) {
+      console.warn("Client fallback direct Firestore delete failed:", fsErr);
+    }
 
     try {
       const res = await fetch(`/api/portal-leads-v2/${leadId}`, {

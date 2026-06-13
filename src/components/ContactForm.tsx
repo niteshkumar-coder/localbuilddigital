@@ -1,6 +1,8 @@
 import { useState, useEffect, FormEvent } from "react";
 import { FolderKanban, Sparkles, Send, Download, Phone, Mail, MapPin, CheckCircle, RefreshCw, AlertCircle, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { db } from "../lib/firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 interface ContactFormProps {
   isOpen: boolean;
@@ -53,7 +55,7 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
     setIsSubmitting(true);
     setSubmitStep(0);
 
-    // Synchronize Form input with the live Supabase / JSON permanent DB backend
+    // Synchronize Form input with the live Firestore database (client-side) & secondary proxy
     try {
       let source = "Contact Form";
       if (prefilledNotes) {
@@ -62,23 +64,43 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
         else source = "Service Card Lead";
       }
 
-      await fetch("/api/intake-records-v2", {
+      const generatedId = "LD-" + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 5).toUpperCase();
+      const clientLead = {
+        id: generatedId,
+        name: name || "",
+        phone: phone || "",
+        email: email || "",
+        businessName: businessName || "",
+        businessUrl: businessUrl || "",
+        service: selectedService || "General consultation",
+        budget: budget || "Not specified",
+        message: notes || "",
+        date: new Date().toISOString(),
+        leadSource: source,
+        status: "New"
+      };
+
+      // 1. Direct Store to Firestore for instant multinode syncing (Vercel, Netlify compatibility)
+      try {
+        await setDoc(doc(db, "leads", generatedId), clientLead);
+        console.log("Lead successfully written directly to Firestore client-side:", generatedId);
+      } catch (fError) {
+        console.warn("Client-side direct Firestore write failed, falls back to server proxy:", fError);
+      }
+
+      // 2. Fallback backend file-sync
+      fetch("/api/intake-records-v2", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name,
-          phone,
-          email,
-          businessName,
-          businessUrl,
-          service: selectedService || "General consultation",
-          budget: budget || "Not specified",
-          message: notes,
+          ...clientLead,
           leadSource: source
         })
+      }).catch(err => {
+        console.warn("Server file-sync API was not reachable or errored:", err);
       });
     } catch (err) {
-      console.error("Backend lead synchronization failed:", err);
+      console.error("General intake flow err:", err);
     }
 
     // Dynamic countdown timer representing realistic server audit analysis
