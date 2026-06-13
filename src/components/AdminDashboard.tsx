@@ -44,53 +44,6 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
     setSyncing(true);
     setError("");
 
-    if (token && token.startsWith("LOCAL_SESSION_TOKEN_")) {
-      const localSavedLeadsStr = localStorage.getItem("localbuild_backup_leads");
-      if (localSavedLeadsStr) {
-        try {
-          setLeads(JSON.parse(localSavedLeadsStr));
-        } catch (jsonErr) {
-          setLeads([]);
-        }
-      } else {
-        const defaultMockLeads = [
-          {
-            id: "lead_1",
-            name: "Nitesh Kumar",
-            phone: "+91 91280 45090",
-            email: "niteshkumar9128ku@gmail.com",
-            businessName: "Eklavya Royal Library",
-            businessUrl: "https://eklvyaroyallibrary.site",
-            service: "Local Authority Setup",
-            budget: "₹19,999/yr",
-            message: "Need maps dominance for my premium students workspace.",
-            date: new Date().toLocaleDateString(),
-            leadSource: "Contact Form",
-            status: "Interested"
-          },
-          {
-            id: "lead_2",
-            name: "Tejas Mobile",
-            phone: "+91 98765 43210",
-            email: "contact@tejasmobile.in",
-            businessName: "Tejas Mobile Store",
-            businessUrl: "https://tejasmobile.vercel.app",
-            service: "Market Dominance Package",
-            budget: "₹34,999/yr",
-            message: "Interested in getting more walk-in clients through Google maps packs optimization.",
-            date: new Date().toLocaleDateString(),
-            leadSource: "Strategic Planner Tool",
-            status: "Contacted"
-          }
-        ] as Lead[];
-        setLeads(defaultMockLeads);
-        localStorage.setItem("localbuild_backup_leads", JSON.stringify(defaultMockLeads));
-      }
-      setLoading(false);
-      setSyncing(false);
-      return;
-    }
-
     try {
       const res = await fetch("/api/portal-leads-v2", {
         headers: {
@@ -99,8 +52,10 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
       });
       if (!res.ok) {
         if (res.status === 401) {
-          onLogout();
-          return;
+          if (token && !token.startsWith("LOCAL_SESSION_TOKEN_")) {
+            onLogout();
+            return;
+          }
         }
         throw new Error("Could not retrieve leads from secure records.");
       }
@@ -220,10 +175,6 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
     setLeads(updatedLeads);
     localStorage.setItem("localbuild_backup_leads", JSON.stringify(updatedLeads));
 
-    if (token && token.startsWith("LOCAL_SESSION_TOKEN_")) {
-      return; // Handled client-side locally
-    }
-
     try {
       const res = await fetch(`/api/portal-leads-v2/${leadId}/status`, {
         method: "POST",
@@ -252,10 +203,6 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
     const updatedLeads = leads.filter(lead => lead.id !== leadId);
     setLeads(updatedLeads);
     localStorage.setItem("localbuild_backup_leads", JSON.stringify(updatedLeads));
-
-    if (token && token.startsWith("LOCAL_SESSION_TOKEN_")) {
-      return; // Handled client-side locally
-    }
 
     try {
       const res = await fetch(`/api/portal-leads-v2/${leadId}`, {

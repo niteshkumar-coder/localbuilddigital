@@ -36,8 +36,8 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }: Adm
     setIsSubmitting(true);
 
     const trimmedPassword = password.trim();
-    // Default fallback password matching process.env.ADMIN_PASSWORD
-    const fallbackPassword = "LOCAL45090";
+    // Default fallback password matching process.env.ADMIN_PASSWORD (allowing both LOCAL45090 and LOCA45090)
+    const isMatchingFallback = trimmedPassword === "LOCAL45090" || trimmedPassword === "LOCA45090";
 
     try {
       const response = await fetch("/api/portal-auth-v2", {
@@ -49,7 +49,7 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }: Adm
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("text/html")) {
         // Enforce the local verification fallback directly if server returns HTML
-        if (trimmedPassword === fallbackPassword) {
+        if (isMatchingFallback) {
           onLoginSuccess("LOCAL_SESSION_TOKEN_" + Math.random().toString(36).substring(2));
           onClose();
         } else {
@@ -63,7 +63,7 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }: Adm
         data = await response.json();
       } catch (jsonErr) {
         // Handle json decoding issues due to server overrides
-        if (trimmedPassword === fallbackPassword) {
+        if (isMatchingFallback) {
           onLoginSuccess("LOCAL_SESSION_TOKEN_" + Math.random().toString(36).substring(2));
           onClose();
         } else {
@@ -80,7 +80,7 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }: Adm
       }
     } catch (err: any) {
       console.warn("Express backend authentication is unavailable or erroring. Bypassing with local fallback checks...", err);
-      if (trimmedPassword === fallbackPassword) {
+      if (isMatchingFallback) {
         onLoginSuccess("LOCAL_SESSION_TOKEN_" + Math.random().toString(36).substring(2));
         onClose();
       } else {
