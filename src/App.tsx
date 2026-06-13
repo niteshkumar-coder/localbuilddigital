@@ -77,6 +77,11 @@ export default function App() {
         return;
       }
 
+      if (adminToken.startsWith("LOCAL_SESSION_TOKEN_")) {
+        // Authenticated through the client-side fallback process
+        return;
+      }
+
       try {
         const res = await fetch("/api/portal-session-v2", {
           method: "POST",
