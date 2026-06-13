@@ -22,19 +22,20 @@ export default function Navbar({ onQuoteClick, onNavigate, onCostClick }: Navbar
 
   const desktopNavItems = [
     { name: "Services", id: "services" },
+    { name: "Blog Insights", id: "blog" },
     { name: "S_Roadmap Planner", id: "planner", label: "Interactive Strategy Planner" },
     { name: "ROI Simulator", id: "roi" },
     { name: "Case Studies", id: "case-studies" },
     { name: "Pricing", id: "pricing" },
   ];
 
-  // Specific 6 sections for food / service mobile order: Home | Services | About | Portfolio | Testimonials | Contact
+  // Specific sections for mobile menu
   const mobileNavItems = [
     { name: "Home", id: "hero" },
     { name: "Services", id: "services" },
     { name: "About", id: "planner" },
     { name: "Portfolio", id: "case-studies" },
-    { name: "Testimonials", id: "testimonials" },
+    { name: "Blog Insights", id: "blog" },
   ];
 
   const handleLinkClick = (id: string) => {

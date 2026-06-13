@@ -15,6 +15,8 @@ import FloatingButtons from "./components/FloatingButtons";
 import AdminLoginModal from "./components/AdminLoginModal";
 import AdminDashboard from "./components/AdminDashboard";
 import CostView from "./components/CostView";
+import ServicePage from "./components/ServicePage";
+import BlogPage from "./components/BlogPage";
 
 const memoryStorage = new Map<string, string>();
 
@@ -139,16 +141,31 @@ export default function App() {
   };
 
   const handleNavigate = (sectionId: string) => {
-    // If we are currently on the Admin Dashboard view, return home and scroll
+    if (sectionId === "blog") {
+      window.history.pushState({}, "", "/blog");
+      setCurrentPath("/blog");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    // If we are currently on a sub-view / details page, return home and scroll
     if (currentPath !== "/") {
       window.history.pushState({}, "", "/");
       setCurrentPath("/");
       setTimeout(() => {
         const element = document.getElementById(sectionId);
         if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
+          const offset = 85; 
+          const elementRect = element.getBoundingClientRect().top;
+          const bodyRect = document.body.getBoundingClientRect().top;
+          const elementPosition = elementRect - bodyRect;
+          const offsetPosition = elementPosition - offset;
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
         }
-      }, 100);
+      }, 150);
       return;
     }
 
@@ -187,6 +204,97 @@ export default function App() {
         }}
         onQuoteClick={() => handleOpenContact()}
       />
+    );
+  }
+
+  // SERVICES DEDICATED SEO PAGES INTERCEPTOR
+  if (currentPath.startsWith("/services/")) {
+    const slug = currentPath.substring("/services/".length);
+    return (
+      <div className="relative min-h-screen bg-slate-50">
+        <Navbar
+          onQuoteClick={() => handleOpenContact()}
+          onNavigate={handleNavigate}
+          onCostClick={() => {
+            window.history.pushState({}, "", "/cost");
+            setCurrentPath("/cost");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+        />
+        <div className="pt-4">
+          <ServicePage
+            slug={slug}
+            onBack={() => {
+              window.history.pushState({}, "", "/");
+              setCurrentPath("/");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            onNavigateToOtherService={(otherSlug) => {
+              window.history.pushState({}, "", `/services/${otherSlug}`);
+              setCurrentPath(`/services/${otherSlug}`);
+            }}
+            onQuoteClick={(notes, service) => handleOpenContact(notes, service)}
+          />
+        </div>
+        <Footer
+          onNavigate={handleNavigate}
+          onQuoteClick={() => handleOpenContact()}
+          onAdminClick={() => setIsAdminLoginOpen(true)}
+        />
+        <FloatingButtons />
+        <ContactForm
+          isOpen={isContactOpen}
+          onClose={() => setIsContactOpen(false)}
+          prefilledNotes={prefilledNotes}
+          preselectedService={preselectedService}
+        />
+      </div>
+    );
+  }
+
+  // BLOG ENGINE INTERCEPTOR
+  if (currentPath === "/blog" || currentPath.startsWith("/blog/")) {
+    const isDetail = currentPath.startsWith("/blog/");
+    const slug = isDetail ? currentPath.substring("/blog/".length) : null;
+    return (
+      <div className="relative min-h-screen bg-slate-50">
+        <Navbar
+          onQuoteClick={() => handleOpenContact()}
+          onNavigate={handleNavigate}
+          onCostClick={() => {
+            window.history.pushState({}, "", "/cost");
+            setCurrentPath("/cost");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+        />
+        <div className="pt-4">
+          <BlogPage
+            currentBlogSlug={slug}
+            onSelectBlog={(newSlug) => {
+              const nextPath = newSlug ? `/blog/${newSlug}` : "/blog";
+              window.history.pushState({}, "", nextPath);
+              setCurrentPath(nextPath);
+            }}
+            onNavigateToService={(serviceSlug) => {
+              window.history.pushState({}, "", `/services/${serviceSlug}`);
+              setCurrentPath(`/services/${serviceSlug}`);
+            }}
+            onQuoteClick={() => handleOpenContact()}
+          />
+        </div>
+        <Footer
+          onNavigate={handleNavigate}
+          onQuoteClick={() => handleOpenContact()}
+          onAdminClick={() => setIsAdminLoginOpen(true)}
+        />
+        <FloatingButtons />
+        <ContactForm
+          isOpen={isContactOpen}
+          onClose={() => setIsContactOpen(false)}
+          prefilledNotes={prefilledNotes}
+          preselectedService={preselectedService}
+        />
+      </div>
     );
   }
 

@@ -12,18 +12,18 @@ export default function Footer({ onNavigate, onQuoteClick, onAdminClick }: Foote
   };
 
   const services = [
-    "Website Design",
-    "Google Ads",
-    "Meta Ads",
-    "GBP Optimize",
-    "Local Service Ads",
-    "YouTube Growth",
-    "AI Automation",
-    "App Design",
-    "Ecommerce",
-    "Dropshipping",
-    "Affiliate",
-    "SaaS Systems",
+    { name: "Website Design", slug: "website-design" },
+    { name: "Google Ads", slug: "google-ads-management" },
+    { name: "Meta Ads", slug: "meta-ads-management" },
+    { name: "GBP Optimize", slug: "google-business-profile-optimization" },
+    { name: "Local Service Ads", slug: "local-service-ads" },
+    { name: "YouTube Growth", slug: "youtube-growth" },
+    { name: "AI Automation", slug: "ai-automation-solutions" },
+    { name: "App Design", slug: "application-design" },
+    { name: "Ecommerce", slug: "ecommerce-management" },
+    { name: "Dropshipping", slug: "dropshipping-systems" },
+    { name: "Affiliate", slug: "affiliate-marketing-setup" },
+    { name: "SaaS Systems", slug: "business-automation-systems" }
   ];
 
   return (
@@ -110,10 +110,14 @@ export default function Footer({ onNavigate, onQuoteClick, onAdminClick }: Foote
             <ul className="space-y-1 text-[14px] leading-[2]">
               <li>
                 <button
-                  onClick={() => onNavigate("services")}
+                  onClick={() => {
+                    window.history.pushState({}, "", "/blog");
+                    window.dispatchEvent(new PopStateEvent("popstate"));
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
                   className="text-zinc-400 hover:text-blue-400 font-medium cursor-pointer transition-colors"
                 >
-                  Conversion Services
+                  SEO Blog Insights
                 </button>
               </li>
               <li>
@@ -150,10 +154,14 @@ export default function Footer({ onNavigate, onQuoteClick, onAdminClick }: Foote
               {services.map((svc, idx) => (
                 <button
                   key={idx}
-                  onClick={() => onNavigate("services")}
-                  className="hover:text-blue-400 text-left transition-colors truncate hover:underline"
+                  onClick={() => {
+                    window.history.pushState({}, "", `/services/${svc.slug}`);
+                    window.dispatchEvent(new PopStateEvent("popstate"));
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  className="hover:text-blue-400 text-left transition-colors truncate hover:underline cursor-pointer"
                 >
-                  • {svc}
+                  • {svc.name}
                 </button>
               ))}
             </div>
