@@ -345,7 +345,7 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
 
                   {/* Tap-To-Call Phone link */}
                   <a
-                    href="tel:+919142645990"
+                    href="tel:+919472028969"
                     className="flex items-center gap-2.5 bg-white p-2.5 rounded-xl border border-gray-200/80 hover:border-accent hover:shadow-xs transition duration-200 cursor-pointer"
                     id="proposal-hotline-link"
                   >
@@ -354,7 +354,7 @@ export default function ContactForm({ isOpen, onClose, prefilledNotes, preselect
                     </div>
                     <div>
                       <span className="text-[9px] text-brand-body font-bold uppercase tracking-wider block">Local Hotline</span>
-                      <p className="font-mono text-xs font-extrabold text-brand-heading leading-tight">+91 9142645990</p>
+                      <p className="font-mono text-xs font-extrabold text-brand-heading leading-tight">+91 9472028969</p>
                     </div>
                   </a>
 

@@ -262,7 +262,7 @@ export default function SEOStrategyHub({ onBack, onQuoteClick }: SEOStrategyHubP
   "image": "https://i.ibb.co/G3tMbK2q/image.png",
   "@id": "https://www.localbuild.site/#localbusiness",
   "url": "https://www.localbuild.site",
-  "telephone": "+919142645990",
+  "telephone": "+919472028969",
   "priceRange": "$$",
   "address": {
     "@type": "PostalAddress",
@@ -312,7 +312,7 @@ export default function SEOStrategyHub({ onBack, onQuoteClick }: SEOStrategyHubP
   ],
   "contactPoint": {
     "@type": "ContactPoint",
-    "telephone": "+91-9142645990",
+    "telephone": "+91-9472028969",
     "contactType": "customer service",
     "email": "localbuildhelp@gmail.com",
     "areaServed": "IN",

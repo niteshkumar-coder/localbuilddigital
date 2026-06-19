@@ -5,7 +5,7 @@ export default function FloatingButtons() {
     <>
       {/* Floating Call Button (Bottom Left) */}
       <a
-        href="tel:+919142645990"
+        href="tel:+919472028969"
         className="fixed bottom-[20px] left-[16px] w-[52px] h-[52px] bg-primary text-white rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-all active:scale-95 border border-white/15 cursor-pointer z-[9998] select-none"
         aria-label="Call LocalHotline"
       >

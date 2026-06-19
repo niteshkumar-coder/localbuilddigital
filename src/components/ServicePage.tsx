@@ -442,7 +442,7 @@ Web/Maps Link: ${businessProfile || "Not supplied."}
     "logo": "https://i.ibb.co/G3tMbK2q/image.png",
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+91-9142645990",
+      "telephone": "+91-9472028969",
       "contactType": "sales",
       "areaServed": "IN",
       "availableLanguage": ["en", "hi", "kn"]
@@ -457,7 +457,7 @@ Web/Maps Link: ${businessProfile || "Not supplied."}
       "@type": "LocalBusiness",
       "name": "LocalBuild",
       "image": "https://i.ibb.co/G3tMbK2q/image.png",
-      "telephone": "+919142645990",
+      "telephone": "+919472028969",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "Bangalore Institute of Technology (BIT), KR Road",
@@ -685,7 +685,7 @@ Web/Maps Link: ${businessProfile || "Not supplied."}
                   </div>
                   <div className="flex items-center gap-1.5 justify-center">
                     <span className="text-white font-bold font-sans">Phone:</span>
-                    <a href="tel:+919142645990" className="hover:text-white transition">+91 9142645990</a>
+                    <a href="tel:+919472028969" className="hover:text-white transition">+91 9472028969</a>
                   </div>
                   <div className="flex items-center gap-1.5 justify-center">
                     <span className="text-white font-bold font-sans">Corporate Hub:</span>
@@ -780,7 +780,7 @@ Web/Maps Link: ${businessProfile || "Not supplied."}
                   <input 
                     type="tel" 
                     required 
-                    placeholder="e.g., +91 9142645990" 
+                    placeholder="e.g., +91 9472028969" 
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
                     className="w-full text-xs font-medium border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-hidden px-3.5 py-2.5 rounded-lg text-slate-800 bg-slate-50/50"

@@ -173,8 +173,8 @@ export default function Hero({ onQuoteClick, onNavigate, onCostClick }: HeroProp
               <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
                 <div className="flex items-center gap-2 text-[13px] text-zinc-700 font-semibold font-mono">
                   <Phone className="w-4 h-4 text-blue-600" />
-                  <a href="tel:+919142645990" className="hover:text-blue-600 transition-colors">
-                    +91 9142645990
+                  <a href="tel:+919472028969" className="hover:text-blue-600 transition-colors">
+                    +91 9472028969
                   </a>
                 </div>
                 
@@ -677,8 +677,8 @@ export default function Hero({ onQuoteClick, onNavigate, onCostClick }: HeroProp
           >
             <div className="flex items-center gap-2 text-zinc-700 hover:text-blue-600 transition-colors">
               <Phone className="w-4 h-4 text-blue-600 shrink-0" />
-              <a href="tel:+919142645990" className="text-sm font-bold font-mono">
-                +91 9142645990
+              <a href="tel:+919472028969" className="text-sm font-bold font-mono">
+                +91 9472028969
               </a>
             </div>
             

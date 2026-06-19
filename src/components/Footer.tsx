@@ -193,8 +193,8 @@ export default function Footer({ onNavigate, onQuoteClick, onAdminClick }: Foote
               </div>
               <div className="flex items-center gap-2.5 justify-center md:justify-start">
                 <Phone className="w-4 h-4 text-emerald-500 shrink-0" />
-                <a href="tel:+919142645990" className="hover:text-emerald-400 font-mono font-bold hover:underline transition-colors text-zinc-400">
-                  +91 9142645990
+                <a href="tel:+919472028969" className="hover:text-emerald-400 font-mono font-bold hover:underline transition-colors text-zinc-400">
+                  +91 9472028969
                 </a>
               </div>
             </div>
