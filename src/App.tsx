@@ -17,6 +17,7 @@ import AdminDashboard from "./components/AdminDashboard";
 import CostView from "./components/CostView";
 import ServicePage from "./components/ServicePage";
 import BlogPage from "./components/BlogPage";
+import SEOStrategyHub from "./components/SEOStrategyHub";
 
 const memoryStorage = new Map<string, string>();
 
@@ -191,6 +192,43 @@ export default function App() {
         token={adminToken} 
         onLogout={handleAdminLogout} 
       />
+    );
+  }
+
+  // SEO STRATEGY HUB ROUTE
+  if (currentPath === "/seo") {
+    return (
+      <div className="relative min-h-screen bg-slate-50">
+        <Navbar
+          onQuoteClick={() => handleOpenContact()}
+          onNavigate={handleNavigate}
+          onCostClick={() => {
+            window.history.pushState({}, "", "/cost");
+            setCurrentPath("/cost");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+        />
+        <SEOStrategyHub
+          onBack={() => {
+            window.history.pushState({}, "", "/");
+            setCurrentPath("/");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+          onQuoteClick={() => handleOpenContact()}
+        />
+        <Footer
+          onNavigate={handleNavigate}
+          onQuoteClick={() => handleOpenContact()}
+          onAdminClick={() => setIsAdminLoginOpen(true)}
+        />
+        <FloatingButtons />
+        <ContactForm
+          isOpen={isContactOpen}
+          onClose={() => setIsContactOpen(false)}
+          prefilledNotes={prefilledNotes}
+          preselectedService={preselectedService}
+        />
+      </div>
     );
   }
 

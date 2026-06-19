@@ -122,6 +122,18 @@ export default function Footer({ onNavigate, onQuoteClick, onAdminClick }: Foote
               </li>
               <li>
                 <button
+                  onClick={() => {
+                    window.history.pushState({}, "", "/seo");
+                    window.dispatchEvent(new PopStateEvent("popstate"));
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  className="text-zinc-400 hover:text-blue-400 font-medium cursor-pointer transition-colors animate-pulse"
+                >
+                  SEO Strategy Hub ★
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={() => onNavigate("planner")}
                   className="text-zinc-400 hover:text-blue-400 font-medium cursor-pointer transition-colors"
                 >
