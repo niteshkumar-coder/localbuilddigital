@@ -80,7 +80,7 @@ export default function Pricing({ onQuoteClick }: PricingProps) {
         </div>
 
         {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
           {tiers.map((tier) => (
             <div
               key={tier.name}

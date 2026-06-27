@@ -89,7 +89,7 @@ export default function CaseStudies({ onQuoteClick }: CaseStudiesProps) {
         </div>
 
         {/* Case Studies grid with animations */}
-        <motion.div layout className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <AnimatePresence mode="popLayout">
             {filteredCases.map((cs) => (
               <motion.div
