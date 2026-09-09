@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { 
   Users, Calendar, Database, Search, Download, Phone, MessageSquare, 
   LogOut, RefreshCw, Layers, CheckCircle2, AlertCircle, Sparkles, Building, 
-  MapPin, IndianRupee, Clock, Filter, Printer, FileText, ChevronRight, Trash2
+  MapPin, IndianRupee, Clock, Filter, Printer, FileText, ChevronRight, Trash2,
+  Code2, Copy, Check, X
 } from "lucide-react";
 import { motion } from "motion/react";
 import { db } from "../lib/firebase";
@@ -23,6 +24,75 @@ interface Lead {
   status: "New" | "Contacted" | "Interested" | "Closed";
 }
 
+export const RESULT_MODULE_JAVA_CODE = `package module_3;
+
+import java.util.Scanner;
+
+public class ResultModule {
+
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+
+        System.out.println("--- Campus Academic Management System (CAMS) ---");
+
+        System.out.print("Enter the number of students: ");
+        int n = sc.nextInt();
+
+        int[] studentMarks = new int[n];
+
+        // Read marks
+        readMarks(studentMarks);
+
+        System.out.print("Enter the marks to search: ");
+        int searchMark = sc.nextInt();
+
+        // Search marks
+        int position = searchMarks(studentMarks, searchMark);
+
+        // Display result
+        displaySearchResult(position);
+    }
+
+    // Method to read marks
+    static void readMarks(int studentMarks[]) {
+
+        for (int i = 0; i < studentMarks.length; i++) {
+
+            System.out.print("Enter marks of Student " + (i + 1) + ": ");
+            studentMarks[i] = sc.nextInt();
+        }
+    }
+
+    // Method to search marks
+    static int searchMarks(int studentMarks[], int searchMark) {
+
+        for (int i = 0; i < studentMarks.length; i++) {
+
+            if (studentMarks[i] == searchMark) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    // Method to display search result
+    static void displaySearchResult(int position) {
+
+        if (position != -1) {
+
+            System.out.println(
+                "Marks found at Student " + (position + 1)
+            );
+
+        } else {
+
+            System.out.println("Marks not found.");
+        }
+    }
+}`;
+
 interface AdminDashboardProps {
   token: string;
   onLogout: () => void;
@@ -36,6 +106,8 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
   const [statusFilter, setStatusFilter] = useState("All");
   const [sourceFilter, setSourceFilter] = useState("All");
   const [syncing, setSyncing] = useState(false);
+  const [showLogicModal, setShowLogicModal] = useState(false);
+  const [copiedLogic, setCopiedLogic] = useState(false);
   
   // Inactivity tracking
   const [timeLeft, setTimeLeft] = useState(1800); // 30 minutes in seconds
@@ -408,12 +480,24 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
           </div>
         </div>
 
-        <div className="flex items-center gap-3.5 sm:gap-5">
+        <div className="flex items-center gap-2.5 sm:gap-4">
           {/* Active timer badge */}
           <div className="flex items-center gap-1.5 bg-zinc-100 border border-zinc-200 rounded-lg px-2.5 py-1.5 text-xs text-zinc-600 font-semibold">
             <Clock className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
             <span>Secure Out: {formatTimeRemaining()}</span>
           </div>
+
+          {/* View Logic Button */}
+          <button
+            type="button"
+            onClick={() => setShowLogicModal(true)}
+            id="admin-view-logic-btn"
+            className="flex items-center gap-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold py-1.5 px-3 rounded-lg transition cursor-pointer active:scale-95 shadow-xs"
+            title="View ResultModule Search Logic"
+          >
+            <Code2 className="w-3.5 h-3.5 text-blue-600" />
+            <span>View Logic</span>
+          </button>
 
           {/* Sync Button */}
           <button 
@@ -781,6 +865,103 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
         </section>
 
       </main>
+
+      {/* ResultModule Java Logic Reference Modal */}
+      {showLogicModal && (
+        <div
+          id="admin-logic-modal-backdrop"
+          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowLogicModal(false);
+          }}
+        >
+          <div
+            id="admin-logic-modal-container"
+            className="bg-zinc-900 border border-zinc-700/80 rounded-2xl shadow-2xl max-w-3xl w-full max-h-[85vh] flex flex-col overflow-hidden text-zinc-100 animate-in fade-in zoom-in-95 duration-150"
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-800 bg-zinc-950/80 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+                  <Code2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+                    ResultModule.java
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20">
+                      Module 3
+                    </span>
+                  </h3>
+                  <p className="text-xs text-zinc-400">
+                    Campus Academic Management System (CAMS) • Internal Search Logic
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                {/* Copy Button */}
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(RESULT_MODULE_JAVA_CODE);
+                      setCopiedLogic(true);
+                      setTimeout(() => setCopiedLogic(false), 2000);
+                    } catch (e) {
+                      console.error("Clipboard copy failed:", e);
+                    }
+                  }}
+                  id="copy-logic-code-btn"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 transition cursor-pointer active:scale-95"
+                  title="Copy Java Code"
+                >
+                  {copiedLogic ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      <span className="text-emerald-400">Copied</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5 text-zinc-400" />
+                      <span>Copy</span>
+                    </>
+                  )}
+                </button>
+
+                {/* Close Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowLogicModal(false)}
+                  id="close-logic-modal-btn"
+                  className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition cursor-pointer"
+                  aria-label="Close modal"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body - Preformatted Java Code */}
+            <div className="flex-1 overflow-auto p-4 sm:p-6 bg-zinc-950 font-mono text-xs sm:text-[13px] text-zinc-200 select-text leading-relaxed">
+              <pre className="whitespace-pre font-mono">
+                <code>{RESULT_MODULE_JAVA_CODE}</code>
+              </pre>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-5 py-3 border-t border-zinc-800 bg-zinc-950/80 flex items-center justify-between text-xs text-zinc-400 shrink-0">
+              <span className="text-[11px] sm:text-xs">Class: ResultModule • Method: searchMarks(studentMarks[], searchMark)</span>
+              <button
+                type="button"
+                onClick={() => setShowLogicModal(false)}
+                className="px-3.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold transition cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
