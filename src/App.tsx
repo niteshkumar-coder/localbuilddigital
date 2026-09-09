@@ -18,6 +18,7 @@ import CostView from "./components/CostView";
 import ServicePage from "./components/ServicePage";
 import BlogPage from "./components/BlogPage";
 import SEOStrategyHub from "./components/SEOStrategyHub";
+import LogicModal from "./components/LogicModal";
 
 const memoryStorage = new Map<string, string>();
 
@@ -57,6 +58,7 @@ export default function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
   const [adminToken, setAdminToken] = useState<string | null>(safeSessionStorage.getItem("localbuild_admin_token"));
   const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
+  const [isLogicModalOpen, setIsLogicModalOpen] = useState(false);
 
   // Sync client router with popstate history actions (back/forward)
   useEffect(() => {
@@ -207,6 +209,7 @@ export default function App() {
             setCurrentPath("/cost");
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
+          onViewLogicClick={() => setIsLogicModalOpen(true)}
         />
         <SEOStrategyHub
           onBack={() => {
@@ -227,6 +230,10 @@ export default function App() {
           onClose={() => setIsContactOpen(false)}
           prefilledNotes={prefilledNotes}
           preselectedService={preselectedService}
+        />
+        <LogicModal
+          isOpen={isLogicModalOpen}
+          onClose={() => setIsLogicModalOpen(false)}
         />
       </div>
     );
@@ -258,6 +265,7 @@ export default function App() {
             setCurrentPath("/cost");
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
+          onViewLogicClick={() => setIsLogicModalOpen(true)}
         />
         <div className="pt-4">
           <ServicePage
@@ -286,6 +294,10 @@ export default function App() {
           prefilledNotes={prefilledNotes}
           preselectedService={preselectedService}
         />
+        <LogicModal
+          isOpen={isLogicModalOpen}
+          onClose={() => setIsLogicModalOpen(false)}
+        />
       </div>
     );
   }
@@ -304,6 +316,7 @@ export default function App() {
             setCurrentPath("/cost");
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
+          onViewLogicClick={() => setIsLogicModalOpen(true)}
         />
         <div className="pt-4">
           <BlogPage
@@ -332,6 +345,10 @@ export default function App() {
           prefilledNotes={prefilledNotes}
           preselectedService={preselectedService}
         />
+        <LogicModal
+          isOpen={isLogicModalOpen}
+          onClose={() => setIsLogicModalOpen(false)}
+        />
       </div>
     );
   }
@@ -347,6 +364,7 @@ export default function App() {
           setCurrentPath("/cost");
           window.scrollTo({ top: 0, behavior: "smooth" });
         }}
+        onViewLogicClick={() => setIsLogicModalOpen(true)}
       />
 
       {/* Main Single-view Content Stacks */}
@@ -359,6 +377,7 @@ export default function App() {
             setCurrentPath("/cost");
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
+          onViewLogicClick={() => setIsLogicModalOpen(true)}
         />
         
         <Services
@@ -414,6 +433,12 @@ export default function App() {
         isOpen={isAdminLoginOpen}
         onClose={() => setIsAdminLoginOpen(false)}
         onLoginSuccess={handleAdminSuccess}
+      />
+
+      {/* ResultModule Java Logic Modal */}
+      <LogicModal
+        isOpen={isLogicModalOpen}
+        onClose={() => setIsLogicModalOpen(false)}
       />
     </div>
   );

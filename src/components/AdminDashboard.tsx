@@ -8,6 +8,7 @@ import {
 import { motion } from "motion/react";
 import { db } from "../lib/firebase";
 import { collection, getDocs, doc, updateDoc, deleteDoc, query, orderBy } from "firebase/firestore";
+import LogicModal from "./LogicModal";
 
 interface Lead {
   id: string;
@@ -867,101 +868,10 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
       </main>
 
       {/* ResultModule Java Logic Reference Modal */}
-      {showLogicModal && (
-        <div
-          id="admin-logic-modal-backdrop"
-          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setShowLogicModal(false);
-          }}
-        >
-          <div
-            id="admin-logic-modal-container"
-            className="bg-zinc-900 border border-zinc-700/80 rounded-2xl shadow-2xl max-w-3xl w-full max-h-[85vh] flex flex-col overflow-hidden text-zinc-100 animate-in fade-in zoom-in-95 duration-150"
-          >
-            {/* Modal Header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-800 bg-zinc-950/80 shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
-                  <Code2 className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
-                    ResultModule.java
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20">
-                      Module 3
-                    </span>
-                  </h3>
-                  <p className="text-xs text-zinc-400">
-                    Campus Academic Management System (CAMS) • Internal Search Logic
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                {/* Copy Button */}
-                <button
-                  type="button"
-                  onClick={async () => {
-                    try {
-                      await navigator.clipboard.writeText(RESULT_MODULE_JAVA_CODE);
-                      setCopiedLogic(true);
-                      setTimeout(() => setCopiedLogic(false), 2000);
-                    } catch (e) {
-                      console.error("Clipboard copy failed:", e);
-                    }
-                  }}
-                  id="copy-logic-code-btn"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 transition cursor-pointer active:scale-95"
-                  title="Copy Java Code"
-                >
-                  {copiedLogic ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
-                      <span className="text-emerald-400">Copied</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5 text-zinc-400" />
-                      <span>Copy</span>
-                    </>
-                  )}
-                </button>
-
-                {/* Close Button */}
-                <button
-                  type="button"
-                  onClick={() => setShowLogicModal(false)}
-                  id="close-logic-modal-btn"
-                  className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition cursor-pointer"
-                  aria-label="Close modal"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Modal Body - Preformatted Java Code */}
-            <div className="flex-1 overflow-auto p-4 sm:p-6 bg-zinc-950 font-mono text-xs sm:text-[13px] text-zinc-200 select-text leading-relaxed">
-              <pre className="whitespace-pre font-mono">
-                <code>{RESULT_MODULE_JAVA_CODE}</code>
-              </pre>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="px-5 py-3 border-t border-zinc-800 bg-zinc-950/80 flex items-center justify-between text-xs text-zinc-400 shrink-0">
-              <span className="text-[11px] sm:text-xs">Class: ResultModule • Method: searchMarks(studentMarks[], searchMark)</span>
-              <button
-                type="button"
-                onClick={() => setShowLogicModal(false)}
-                className="px-3.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold transition cursor-pointer"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <LogicModal
+        isOpen={showLogicModal}
+        onClose={() => setShowLogicModal(false)}
+      />
     </div>
   );
 }
