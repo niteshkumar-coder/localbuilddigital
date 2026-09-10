@@ -2,13 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { 
   Users, Calendar, Database, Search, Download, Phone, MessageSquare, 
   LogOut, RefreshCw, Layers, CheckCircle2, AlertCircle, Sparkles, Building, 
-  MapPin, IndianRupee, Clock, Filter, Printer, FileText, ChevronRight, Trash2,
-  Code2, Copy, Check, X
+  MapPin, IndianRupee, Clock, Filter, Printer, FileText, ChevronRight, Trash2
 } from "lucide-react";
 import { motion } from "motion/react";
 import { db } from "../lib/firebase";
 import { collection, getDocs, doc, updateDoc, deleteDoc, query, orderBy } from "firebase/firestore";
-import LogicModal from "./LogicModal";
 
 interface Lead {
   id: string;
@@ -25,75 +23,6 @@ interface Lead {
   status: "New" | "Contacted" | "Interested" | "Closed";
 }
 
-export const RESULT_MODULE_JAVA_CODE = `package module_3;
-
-import java.util.Scanner;
-
-public class ResultModule {
-
-    static Scanner sc = new Scanner(System.in);
-
-    public static void main(String[] args) {
-
-        System.out.println("--- Campus Academic Management System (CAMS) ---");
-
-        System.out.print("Enter the number of students: ");
-        int n = sc.nextInt();
-
-        int[] studentMarks = new int[n];
-
-        // Read marks
-        readMarks(studentMarks);
-
-        System.out.print("Enter the marks to search: ");
-        int searchMark = sc.nextInt();
-
-        // Search marks
-        int position = searchMarks(studentMarks, searchMark);
-
-        // Display result
-        displaySearchResult(position);
-    }
-
-    // Method to read marks
-    static void readMarks(int studentMarks[]) {
-
-        for (int i = 0; i < studentMarks.length; i++) {
-
-            System.out.print("Enter marks of Student " + (i + 1) + ": ");
-            studentMarks[i] = sc.nextInt();
-        }
-    }
-
-    // Method to search marks
-    static int searchMarks(int studentMarks[], int searchMark) {
-
-        for (int i = 0; i < studentMarks.length; i++) {
-
-            if (studentMarks[i] == searchMark) {
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
-    // Method to display search result
-    static void displaySearchResult(int position) {
-
-        if (position != -1) {
-
-            System.out.println(
-                "Marks found at Student " + (position + 1)
-            );
-
-        } else {
-
-            System.out.println("Marks not found.");
-        }
-    }
-}`;
-
 interface AdminDashboardProps {
   token: string;
   onLogout: () => void;
@@ -107,8 +36,6 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
   const [statusFilter, setStatusFilter] = useState("All");
   const [sourceFilter, setSourceFilter] = useState("All");
   const [syncing, setSyncing] = useState(false);
-  const [showLogicModal, setShowLogicModal] = useState(false);
-  const [copiedLogic, setCopiedLogic] = useState(false);
   
   // Inactivity tracking
   const [timeLeft, setTimeLeft] = useState(1800); // 30 minutes in seconds
@@ -488,18 +415,6 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
             <span>Secure Out: {formatTimeRemaining()}</span>
           </div>
 
-          {/* View Logic Button */}
-          <button
-            type="button"
-            onClick={() => setShowLogicModal(true)}
-            id="admin-view-logic-btn"
-            className="flex items-center gap-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold py-1.5 px-3 rounded-lg transition cursor-pointer active:scale-95 shadow-xs"
-            title="View ResultModule Search Logic"
-          >
-            <Code2 className="w-3.5 h-3.5 text-blue-600" />
-            <span>View Logic</span>
-          </button>
-
           {/* Sync Button */}
           <button 
             onClick={fetchLeads}
@@ -866,12 +781,6 @@ export default function AdminDashboard({ token, onLogout }: AdminDashboardProps)
         </section>
 
       </main>
-
-      {/* ResultModule Java Logic Reference Modal */}
-      <LogicModal
-        isOpen={showLogicModal}
-        onClose={() => setShowLogicModal(false)}
-      />
     </div>
   );
 }

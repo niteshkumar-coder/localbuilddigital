@@ -1,15 +1,14 @@
 import { useState, useEffect } from "react";
-import { Menu, X, ArrowRight, Zap, Code2 } from "lucide-react";
+import { Menu, X, ArrowRight, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 interface NavbarProps {
   onQuoteClick: () => void;
   onNavigate: (sectionId: string) => void;
   onCostClick: () => void;
-  onViewLogicClick?: () => void;
 }
 
-export default function Navbar({ onQuoteClick, onNavigate, onCostClick, onViewLogicClick }: NavbarProps) {
+export default function Navbar({ onQuoteClick, onNavigate, onCostClick }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -98,19 +97,7 @@ export default function Navbar({ onQuoteClick, onNavigate, onCostClick, onViewLo
           </nav>
 
           {/* Actions */}
-          <div className="hidden md:flex items-center space-x-3">
-            {onViewLogicClick && (
-              <button
-                type="button"
-                onClick={onViewLogicClick}
-                id="navbar-view-logic-btn"
-                className="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold text-xs py-2 px-3 rounded-lg transition-all duration-200 flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
-                title="View ResultModule Java Logic"
-              >
-                <Code2 className="w-3.5 h-3.5 text-blue-600" />
-                <span>View Logic</span>
-              </button>
-            )}
+          <div className="hidden md:flex items-center space-x-4">
             <button
               onClick={onQuoteClick}
               className="bg-cta hover:bg-cta/90 text-white font-medium text-sm py-2.5 px-5 rounded-lg transition-all duration-200 flex items-center gap-1.5 shadow-md shadow-cta/15 hover:shadow-lg hover:shadow-cta/25 hover:-translate-y-0.5 cursor-pointer"
@@ -120,20 +107,8 @@ export default function Navbar({ onQuoteClick, onNavigate, onCostClick, onViewLo
             </button>
           </div>
 
-          {/* Mobile Menu & Top Action */}
-          <div className="md:hidden flex items-center gap-2">
-            {onViewLogicClick && (
-              <button
-                type="button"
-                onClick={onViewLogicClick}
-                id="mobile-header-view-logic-btn"
-                className="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold text-xs py-1.5 px-2.5 rounded-lg flex items-center gap-1 cursor-pointer active:scale-95"
-                title="View ResultModule Java Logic"
-              >
-                <Code2 className="w-3.5 h-3.5 text-blue-600" />
-                <span>View Logic</span>
-              </button>
-            )}
+          {/* Mobile Menu Trigger Icon */}
+          <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(true)}
               className="text-brand-heading w-[44px] h-[44px] flex items-center justify-center focus:outline-none cursor-pointer"
@@ -212,19 +187,6 @@ export default function Navbar({ onQuoteClick, onNavigate, onCostClick, onViewLo
                   <Zap className="w-5 h-5 text-amber-500 fill-amber-400" />
                   Package Cost Table
                 </button>
-
-                {onViewLogicClick && (
-                  <button
-                    onClick={() => {
-                      setIsOpen(false);
-                      onViewLogicClick();
-                    }}
-                    className="w-full text-left h-[48px] flex items-center text-[20px] font-bold text-blue-700 hover:text-blue-800 transition-all border-b border-gray-50 focus:outline-none gap-2"
-                  >
-                    <Code2 className="w-5 h-5 text-blue-600" />
-                    View Logic (Java Code)
-                  </button>
-                )}
 
                 <button
                   onClick={() => {

@@ -18,8 +18,7 @@ import {
   Globe, 
   Layers, 
   LineChart, 
-  Award,
-  Code2
+  Award
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -27,10 +26,9 @@ interface HeroProps {
   onQuoteClick: (prefilledNotes?: string) => void;
   onNavigate: (sectionId: string) => void;
   onCostClick: () => void;
-  onViewLogicClick?: () => void;
 }
 
-export default function Hero({ onQuoteClick, onNavigate, onCostClick, onViewLogicClick }: HeroProps) {
+export default function Hero({ onQuoteClick, onNavigate, onCostClick }: HeroProps) {
   const [activeTab, setActiveTab] = useState<"ppc" | "seo" | "roi">("ppc");
   const [currentTime, setCurrentTime] = useState<string>("");
 
@@ -148,19 +146,6 @@ export default function Hero({ onQuoteClick, onNavigate, onCostClick, onViewLogi
                 <Zap className="w-4.5 h-4.5 text-amber-500 fill-amber-400 animate-pulse" />
                 Package Cost
               </button>
-
-              {onViewLogicClick && (
-                <button
-                  type="button"
-                  onClick={onViewLogicClick}
-                  id="hero-desktop-view-logic-btn"
-                  className="flex-1 sm:flex-none justify-center h-[52px] px-6 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 font-bold rounded-xl flex items-center gap-2 transition-all duration-300 shadow-xs cursor-pointer text-sm tracking-wide active:scale-95"
-                  title="View ResultModule Java Logic"
-                >
-                  <Code2 className="w-4.5 h-4.5 text-blue-600" />
-                  View Logic
-                </button>
-              )}
 
               <a
                 href="https://wa.me/919472028969?text=Hi%20LocalBuild!%20I'm%20interested%20in%20your%20expert%20AI-Powered%20Digital%20Marketing%20services.%20I'd%20like%20to%20get%20a%20free%20consultation."
@@ -671,18 +656,6 @@ export default function Hero({ onQuoteClick, onNavigate, onCostClick, onViewLogi
               <Zap className="w-4 h-4 text-amber-500 fill-amber-400 animate-pulse" />
               Package Cost Table
             </button>
-
-            {onViewLogicClick && (
-              <button
-                type="button"
-                onClick={onViewLogicClick}
-                id="hero-mobile-view-logic-btn"
-                className="w-full h-[54px] bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 font-extrabold text-sm tracking-wide rounded-[14px] flex items-center justify-center gap-2 transition duration-300 shadow-sm active:scale-98 cursor-pointer"
-              >
-                <Code2 className="w-4 h-4 text-blue-600" />
-                View Logic (Java Code)
-              </button>
-            )}
             
             <a
               href="https://wa.me/919472028969?text=Hi%20LocalBuild!%20I'm%20interested%20in%20your%20expert%20AI-Powered%20Digital%20Marketing%20services.%20I'd%20like%20to%20get%20a%20free%20consultation."
