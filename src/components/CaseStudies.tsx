@@ -1,175 +1,378 @@
 import { useState } from "react";
-import { Sparkles, ArrowRight, CheckCircle2, TrendingUp, Calendar, AlertCircle } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { ArrowRight, MessageSquare, Sparkles, CheckCircle2, TrendingUp, ChevronDown, ChevronUp, Layers } from "lucide-react";
+import { CASE_STUDIES } from "../data/caseStudies";
+import { getWhatsAppUrl } from "../utils/whatsapp";
 
 interface CaseStudiesProps {
   onQuoteClick: (prefilledNotes?: string) => void;
 }
 
 export default function CaseStudies({ onQuoteClick }: CaseStudiesProps) {
-  const [filter, setFilter] = useState<"all" | "home" | "health" | "professional">("all");
+  const [selectedService, setSelectedService] = useState<string>("All");
+  const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({});
 
-  const cases = [
-    {
-      id: "case-1",
-      category: "home",
-      company: "Delta Air Plumbing",
-      type: "Home Services & Contracting",
-      metrics: "+245% Call Volume",
-      challenge: "Inconsistent daily dispatch leads and heavy reliance on expensive lead brokers costing ₹6,500 per lead.",
-      strategy: "Optimized the Google Map Pack rankings across 9 premium local service ZIP codes and built a high-speed mobile callback funnel.",
-      result: "Generated 342 direct high-intent call bookings in 90 days, bringing lead acquisition expense down from ₹6,500 to ₹1,800 per lead.",
-      timeline: "3 Months",
-    },
-    {
-      id: "case-2",
-      category: "health",
-      company: "Apex Dental Care",
-      type: "Dental & General Healthcare",
-      metrics: "-52% Patient CPL",
-      challenge: "Losing cosmetic and implant patient inquiries to massive multi-location corporate dental centers spending heavily on generic PPC.",
-      strategy: "Constructed targeted local search campaigns focusing on exact high-value services (implant listings), paired with a seamless scheduling form.",
-      result: "Secured 542 real cosmetic patient consult submissions in 6 months while slashing overall PPC cost-per-lead by 52%.",
-      timeline: "6 Months",
-    },
-    {
-      id: "case-3",
-      category: "professional",
-      company: "Stonegate Luxury Homes",
-      type: "Real Estate & Brokerage Partner",
-      metrics: "₹65 Cr Local Volume",
-      challenge: "Capturing highly unqualified clicks on generic home-buyer ads that inflated monthly advertising budgets with zero closed sales.",
-      strategy: "Engineered high-scoring target filter funnels and established targeted location-bound YouTube ads targeted at active local inventory seekers.",
-      result: "Generated 37 pre-screened home buyers, leading directly to ₹65 Crores in verified closed transaction value within two quarters.",
-      timeline: "6 Months",
-    },
-  ];
+  const toggleExpand = (id: string) => {
+    setExpandedCards((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
-  const filteredCases = filter === "all" ? cases : cases.filter((c) => c.category === filter);
+  const handleFilterClick = (serviceCategory: string, serviceNumber?: string) => {
+    setSelectedService(serviceCategory);
+    if (serviceCategory === "All") {
+      const top = document.getElementById("case-studies");
+      if (top) {
+        top.scrollIntoView({ behavior: "smooth" });
+      }
+    } else if (serviceNumber) {
+      const el = document.getElementById(`case-study-${serviceNumber}`);
+      if (el) {
+        const offset = 80;
+        const elPos = el.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: elPos - offset, behavior: "smooth" });
+      }
+    }
+  };
+
+  const handleApplyStrategy = (serviceName: string, domain: string) => {
+    onQuoteClick(`Inquiry regarding ${serviceName} (${domain})`);
+  };
 
   return (
-    <section id="case-studies" className="py-24 bg-white border-t border-gray-100">
+    <section id="case-studies" className="py-12 sm:py-20 bg-[#FFFFFF] border-b border-[#DDE3EC]">
+      {/* Required CSS rules: aspect-ratio: 6/5, max 600px desktop, responsive metrics */}
+      <style>{`
+        .case__media {
+          aspect-ratio: 6/5;
+          border: 1px solid #DDE3EC;
+          border-radius: 8px;
+          overflow: hidden;
+          background: #FFFFFF;
+        }
+        .case__media img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center;
+          display: block;
+        }
+        @media (min-width: 1024px) {
+          .case__media {
+            max-width: 520px;
+          }
+        }
+        @media (max-width: 640px) {
+          .case {
+            display: flex;
+            flex-direction: column;
+          }
+          .case__media {
+            max-width: 100%;
+          }
+          .metrics {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 6px;
+          }
+          .metrics__row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            padding: 8px 0;
+            border-top: 1px solid #DDE3EC;
+          }
+          .metrics__label {
+            grid-column: 1 / -1;
+            font-weight: 600;
+            font-size: 0.7rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #667085;
+          }
+        }
+      `}</style>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-1.5 bg-accent/5 border border-accent/10 px-3 py-1 rounded-full text-xs font-semibold text-accent uppercase tracking-wide mb-4">
-            <TrendingUp className="w-3.5 h-3.5" />
-            <span>Success Blueprints</span>
+        
+        {/* Section 7 Header */}
+        <div className="max-w-3xl mb-8 sm:mb-12">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#3157D5]/10 border border-[#3157D5]/20 text-[#3157D5] text-[11px] font-bold uppercase tracking-wider mb-2.5">
+            <Sparkles className="w-3.5 h-3.5 text-[#3157D5]" />
+            <span>SELECTED WORK</span>
           </div>
-
-          <h2 className="font-display font-bold text-3xl sm:text-4xl text-brand-heading tracking-tight mb-4">
-            Real performance studies with absolute transparency
+          <h2 className="font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl text-[#071126] tracking-tight leading-tight mb-2.5">
+            Commercial outcomes, documented in plain English.
           </h2>
-
-          <p className="text-brand-body text-md">
-            We don't count vanity metrics like impressions and social shares. We measure direct inbound phone inquiries, closed contracts, and real pipeline growth.
+          <p className="text-xs sm:text-sm text-[#667085] leading-relaxed max-w-2xl">
+            Real challenges solved with straightforward conversion architecture and disciplined campaign execution.
           </p>
         </div>
 
-        {/* Filter row */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
-          {([
-            { id: "all", label: "All Cases" },
-            { id: "home", label: "Home Services" },
-            { id: "health", label: "Healthcare & Clinics" },
-            { id: "professional", label: "Professional Services" },
-          ] as const).map((btn) => (
+        {/* Quick Service Jump Bar */}
+        <div className="mb-10 border-b border-[#DDE3EC] pb-3 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-1.5 min-w-max text-xs">
+            <span className="text-[#667085] font-semibold pr-1.5 text-xs">Services:</span>
             <button
-              key={btn.id}
-              onClick={() => setFilter(btn.id)}
-              className={`px-4.5 py-2 rounded-lg text-xs font-semibold transition-all duration-200 cursor-pointer border ${
-                filter === btn.id
-                  ? "bg-primary border-primary text-white shadow-sm"
-                  : "bg-white border-gray-200 text-brand-heading hover:border-gray-300 hover:bg-gray-50"
+              type="button"
+              onClick={() => handleFilterClick("All")}
+              className={`px-3 py-1 rounded-full transition-colors cursor-pointer text-xs ${
+                selectedService === "All"
+                  ? "bg-[#071126] text-white font-bold"
+                  : "bg-[#F2F5FA] text-[#263044] hover:bg-[#DDE3EC]"
               }`}
             >
-              {btn.label}
+              All (12)
             </button>
-          ))}
+            {CASE_STUDIES.map((cs) => (
+              <button
+                key={cs.id}
+                type="button"
+                onClick={() => handleFilterClick(cs.serviceCategory, cs.serviceNumber)}
+                className={`px-2.5 py-1 rounded-full transition-colors cursor-pointer text-xs ${
+                  selectedService === cs.serviceCategory
+                    ? "bg-[#3157D5] text-white font-bold"
+                    : "bg-[#F2F5FA] text-[#263044] hover:bg-[#DDE3EC]"
+                }`}
+              >
+                {cs.serviceNumber} {cs.serviceCategory}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Case Studies grid with animations */}
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <AnimatePresence mode="popLayout">
-            {filteredCases.map((cs) => (
-              <motion.div
-                layout
+        {/* 12 Case Study Cards — In Service Order 01 → 12, Consistent Alignment */}
+        <div className="space-y-12 sm:space-y-16">
+          {CASE_STUDIES.map((cs) => {
+            const isExpanded = !!expandedCards[cs.id];
+
+            return (
+              <article
                 key={cs.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-                className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col justify-between w-full"
+                id={`case-study-${cs.serviceNumber}`}
+                className="case border-b border-[#DDE3EC] pb-12 sm:pb-16 last:border-b-0 last:pb-0"
               >
-                {/* 180px height width 100% Image placeholder */}
-                <div className="h-[180px] w-full bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center relative p-6 overflow-hidden border-b border-gray-100">
-                  <div className="absolute inset-0 bg-radial-to-t from-white/30 to-transparent pointer-events-none" />
-                  <div className="relative text-center">
-                    <span className="text-3xl filter drop-shadow-sm">📊</span>
-                    <p className="mt-2 text-slate-400 text-xs tracking-wider uppercase font-mono">Case-Study Blueprint #{cs.id.split("-").pop()}</p>
-                    <p className="text-[#0F2167] text-md font-bold mt-1">{cs.company}</p>
-                  </div>
-                </div>
-
-                <div className="p-4 sm:p-8 flex-1">
-                  {/* Top bar category & time */}
-                  <div className="flex justify-between items-center mb-5 pb-4 border-b border-gray-100">
-                    <span className="text-[12px] uppercase tracking-wider font-extrabold text-accent bg-accent/5 px-2.5 py-1 rounded">
-                      {cs.type}
-                    </span>
-                    <span className="text-[12px] text-brand-body font-semibold flex items-center gap-1 font-mono">
-                      <Calendar className="w-3.5 h-3.5 text-cta" />
-                      {cs.timeline}
-                    </span>
-                  </div>
-
-                  {/* Brand and large metric */}
-                  <h3 className="font-display font-bold text-lg sm:text-xl text-brand-heading mb-1">{cs.company}</h3>
-                  <div className="text-2xl sm:text-3xl font-display font-extrabold text-primary mb-6 flex items-center gap-2">
-                    {cs.metrics}
-                  </div>
-
-                  {/* Body challenge/strategy list */}
-                  <div className="space-y-4">
-                    {/* Challenge block */}
-                    <div className="bg-gray-50/55 border border-dashed border-gray-200 rounded-xl p-4">
-                      <p className="text-[10px] uppercase font-bold text-brand-heading mb-1 flex items-center gap-1.5 leading-none">
-                        <AlertCircle className="w-3.5 h-3.5 text-cta" /> Business Obstacle
-                      </p>
-                      <p className="text-xs text-brand-body leading-normal">{cs.challenge}</p>
+                {/* 2-Column Consistent Grid: Image consistently on Left, Clean Compact Text on Right */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start">
+                  
+                  {/* Image Column — Fixed left alignment across all cards */}
+                  <div className="lg:col-span-5 w-full">
+                    <div className="case__media w-full shadow-xs">
+                      <img
+                        src={cs.imageUrl}
+                        alt={cs.altText}
+                        width={cs.imageWidth}
+                        height={cs.imageHeight}
+                        loading="lazy"
+                        decoding="async"
+                      />
                     </div>
+                  </div>
 
-                    {/* Strategist action */}
+                  {/* Content Column — Small, compact, concise */}
+                  <div className="lg:col-span-7 space-y-4">
+                    
+                    {/* Header: Service Category & Scanned Title */}
                     <div>
-                      <p className="text-[10px] uppercase font-bold text-accent mb-1 flex items-center gap-1.5 leading-none">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> High-impact Execution
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <span className="text-[11px] font-bold tracking-wider uppercase text-[#3157D5] font-mono">
+                          SERVICE {cs.serviceNumber}
+                        </span>
+                        <span className="text-[#DDE3EC]">•</span>
+                        <span className="text-[11px] font-medium text-[#667085] bg-[#F2F5FA] px-2 py-0.5 rounded border border-[#DDE3EC]">
+                          {cs.clientDomain}
+                        </span>
+                      </div>
+
+                      {/* Scanned Service Title */}
+                      <h3 className="font-display font-extrabold text-xl sm:text-2xl text-[#071126] tracking-tight leading-snug">
+                        {cs.title}
+                      </h3>
+
+                      {/* Scanned Tagline */}
+                      <p className="text-xs sm:text-sm text-[#475467] font-medium mt-0.5">
+                        {cs.tagline}
                       </p>
-                      <p className="text-xs text-brand-heading leading-normal font-medium">{cs.strategy}</p>
                     </div>
 
-                    {/* Financial Outcome */}
-                    <div className="pt-2">
-                      <p className="text-[9px] uppercase font-extrabold tracking-widest text-emerald-600 mb-0.5">Verified Commercial Outcome</p>
-                      <p className="text-xs text-brand-body leading-normal">{cs.result}</p>
+                    {/* Compact Key Outcome Banner */}
+                    <div className="px-3.5 py-2.5 bg-[#F2F5FA] border border-[#DDE3EC] rounded-lg flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <TrendingUp className="w-4 h-4 text-[#3157D5] shrink-0" />
+                        <span className="text-xs sm:text-sm font-bold text-[#071126] truncate">
+                          {cs.keyOutcome.replace(" [Illustrative]", "")}
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-white text-[#667085] border border-[#DDE3EC] shrink-0">
+                        Illustrative
+                      </span>
                     </div>
+
+                    {/* Small Summary (1 concise line) */}
+                    <p className="text-xs text-[#475467] leading-relaxed">
+                      {cs.shortSummary}
+                    </p>
+
+                    {/* Compact Before vs After Comparison (Small 3-row table) */}
+                    <div>
+                      {/* Desktop / Tablet: Small clean table */}
+                      <div className="hidden sm:block border border-[#DDE3EC] rounded-lg overflow-hidden bg-white text-xs">
+                        <table className="w-full text-left border-collapse">
+                          <thead>
+                            <tr className="bg-[#F8FAFC] border-b border-[#DDE3EC] text-[#667085] text-[10px] font-bold uppercase tracking-wider">
+                              <th className="py-1.5 px-3 font-semibold">Key Metric</th>
+                              <th className="py-1.5 px-3 font-semibold text-[#667085]">Before</th>
+                              <th className="py-1.5 px-3 font-bold text-[#168A62]">With LocalBuild</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-[#DDE3EC]">
+                            {cs.metrics.map((m, mIdx) => (
+                              <tr key={mIdx} className="hover:bg-[#F8FAFC] transition-colors">
+                                <td className="py-1.5 px-3 font-medium text-[#263044]">{m.metric}</td>
+                                <td className="py-1.5 px-3 text-[#667085] font-mono">{m.before}</td>
+                                <td className="py-1.5 px-3 font-bold text-[#168A62] font-mono">
+                                  {m.withLocalBuild}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Mobile: Compact stacked rows */}
+                      <div className="sm:hidden metrics bg-white border border-[#DDE3EC] rounded-lg p-2.5">
+                        {cs.metrics.map((m, mIdx) => (
+                          <div key={mIdx} className="metrics__row first:border-t-0 first:pt-0">
+                            <span className="metrics__label">{m.metric}</span>
+                            <div className="text-[11px]">
+                              <span className="text-[#667085] font-mono">{m.before}</span>
+                            </div>
+                            <div className="text-[11px]">
+                              <span className="font-mono font-bold text-[#168A62]">{m.withLocalBuild}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Hidden Details Toggle: Hide heavy explanation by default per user request */}
+                    <div className="pt-1">
+                      <button
+                        type="button"
+                        onClick={() => toggleExpand(cs.id)}
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#3157D5] hover:text-[#2546B8] cursor-pointer"
+                        aria-expanded={isExpanded}
+                      >
+                        <Layers className="w-3.5 h-3.5" />
+                        <span>{isExpanded ? "Hide Detailed Strategy Breakdown" : "View Strategy & Implementation Details"}</span>
+                        {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                      </button>
+
+                      {/* Collapsible content (Challenge, Strategy points, Result) */}
+                      {isExpanded && (
+                        <div className="mt-3 p-3.5 bg-[#F8FAFC] border border-[#DDE3EC] rounded-lg space-y-3 text-xs animate-in fade-in duration-200">
+                          <div>
+                            <h4 className="font-bold uppercase tracking-wider text-[#667085] text-[10px] mb-1">
+                              The Challenge
+                            </h4>
+                            <p className="text-[#263044] leading-relaxed">
+                              {cs.challenge}
+                            </p>
+                          </div>
+
+                          <div>
+                            <h4 className="font-bold uppercase tracking-wider text-[#3157D5] text-[10px] mb-1">
+                              LocalBuild Growth Strategy
+                            </h4>
+                            <p className="text-[#263044] leading-relaxed mb-1.5">
+                              {cs.strategy}
+                            </p>
+                            <ul className="space-y-1">
+                              {cs.strategyPoints.map((pt, pIdx) => (
+                                <li key={pIdx} className="flex items-start gap-1.5 text-[#263044]">
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-[#3157D5] shrink-0 mt-0.5" />
+                                  <span>{pt}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          <div>
+                            <h4 className="font-bold uppercase tracking-wider text-[#168A62] text-[10px] mb-1">
+                              Business Result
+                            </h4>
+                            <p className="text-[#263044] leading-relaxed">
+                              {cs.result}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Compact Direct Actions */}
+                    <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleApplyStrategy(cs.title, cs.clientDomain)}
+                        className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-white bg-[#3157D5] hover:bg-[#2546B8] rounded-md transition-colors cursor-pointer shadow-xs"
+                      >
+                        <span>Apply Similar Strategy</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                      <a
+                        href={getWhatsAppUrl(`Hi LocalBuild, I reviewed the case study for "${cs.title}" and would like to discuss this for my business.`)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-[#168A62] bg-[#F0FDF4] hover:bg-emerald-100 border border-emerald-200 rounded-md transition-colors"
+                      >
+                        <MessageSquare className="w-3 h-3 text-[#168A62]" />
+                        <span>Discuss on WhatsApp</span>
+                      </a>
+                    </div>
+
                   </div>
+
                 </div>
 
-                {/* Card action button - Mobile full width */}
-                <div className="p-4 sm:px-6 sm:py-4 border-t border-gray-100 bg-gray-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <span className="text-[11px] text-brand-body font-semibold hidden sm:inline">Scale similar results</span>
-                  <button
-                    onClick={() => onQuoteClick(`Hi LocalBuild! I saw your case study on [${cs.company}]. I would love a customized growth strategy review matching their model of [+245% call volume] for my local business.`)}
-                    className="w-full sm:w-auto h-[44px] sm:h-auto bg-[#0F2167] hover:bg-[#0F2167]/90 text-white sm:text-primary sm:bg-transparent sm:hover:text-accent font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer border border-[#0F2167] sm:border-none"
-                  >
-                    Discuss Case Study
-                    <ArrowRight className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+              </article>
+            );
+          })}
+        </div>
+
+        {/* Section 7 Closing: View all case studies & references + Final CTA pair */}
+        <div className="mt-12 sm:mt-16 pt-8 border-t border-[#DDE3EC] text-center max-w-2xl mx-auto">
+          <p className="text-xs font-semibold uppercase tracking-wider text-[#667085] mb-2">
+            View all case studies & references
+          </p>
+          <h3 className="font-display font-extrabold text-xl sm:text-2xl text-[#071126] tracking-tight mb-2">
+            Every business problem requires its own measured solution.
+          </h3>
+          <p className="text-xs sm:text-sm text-[#667085] leading-relaxed mb-6">
+            Tell us about your conversion bottlenecks or operational workflows. We will evaluate your current metrics and outline a clear implementation plan.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => onQuoteClick("Case Studies Portfolio Inquiry")}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-xs font-bold text-white bg-[#3157D5] hover:bg-[#2546B8] active:bg-[#1D3A9E] shadow-xs transition-colors cursor-pointer"
+            >
+              <span>Start a Conversation</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+
+            <a
+              href={getWhatsAppUrl("Hi LocalBuild, I reviewed your case studies and would like to start a conversation about growing my business.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold text-[#168A62] bg-[#F0FDF4] hover:bg-emerald-100 border border-emerald-200 transition-colors"
+            >
+              <MessageSquare className="w-3.5 h-3.5 text-[#168A62]" />
+              <span>WhatsApp Us</span>
+            </a>
+          </div>
+        </div>
+
       </div>
     </section>
   );

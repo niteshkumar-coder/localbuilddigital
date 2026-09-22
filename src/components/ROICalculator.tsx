@@ -1,260 +1,398 @@
 import { useState } from "react";
-import { Calculator, Sparkles, HelpCircle, ArrowRight, TrendingUp, HandCoins, CheckCircle } from "lucide-react";
-import { motion } from "motion/react";
+import { Calculator, ArrowRight, RotateCcw, AlertCircle } from "lucide-react";
 
 interface ROICalculatorProps {
   onQuoteClick: (prefilledNotes?: string) => void;
 }
 
 export default function ROICalculator({ onQuoteClick }: ROICalculatorProps) {
-  // Input states
-  const [budget, setBudget] = useState(25000); // Monthly spending in Rupees
-  const [cpc, setCpc] = useState(15.0); // Cost Per Click in Rupees
-  const [convRate, setConvRate] = useState(5.0); // Website Lead Conversion %
-  const [closeRate, setCloseRate] = useState(25); // Close lead %
-  const [customerValue, setCustomerValue] = useState(15000); // Contract Value / LTV in Rupees
+  // Controlled input states to allow user direct editing and edge-case testing
+  const [budgetStr, setBudgetStr] = useState<string>("35000");
+  const [cpcStr, setCpcStr] = useState<string>("20");
+  const [convRateStr, setConvRateStr] = useState<string>("6");
+  const [closeRateStr, setCloseRateStr] = useState<string>("25");
+  const [customerValueStr, setCustomerValueStr] = useState<string>("15000");
 
-  // Intermediate computations
-  const estimatedClicks = Math.floor(budget / cpc);
-  const estimatedLeads = Math.floor(estimatedClicks * (convRate / 100));
-  const estimatedCloses = Math.floor(estimatedLeads * (closeRate / 100));
-  const totalRevenue = estimatedCloses * customerValue;
-  const netProfit = totalRevenue - budget;
-  const roi = budget > 0 ? ((totalRevenue - budget) / budget) * 100 : 0;
+  // Reset to shipped defaults
+  const handleReset = () => {
+    setBudgetStr("35000");
+    setCpcStr("20");
+    setConvRateStr("6");
+    setCloseRateStr("25");
+    setCustomerValueStr("15000");
+  };
 
-  // Visual highlights
-  const isHealthy = roi > 100;
-  const isOptimal = roi >= 300;
+  // Validation
+  const budgetNum = Number(budgetStr.trim());
+  const cpcNum = Number(cpcStr.trim());
+  const convRateNum = Number(convRateStr.trim());
+  const closeRateNum = Number(closeRateStr.trim());
+  const customerValueNum = Number(customerValueStr.trim());
 
-  const handlePreFill = () => {
-    const prefilledNotes = `Hi LocalBuild team! I simulated my target campaign on your Campaign ROI Simulator. Here are my numbers: Monthly Budget: [₹${budget.toLocaleString()}], Cost Per Click: [₹${cpc.toFixed(2)}], Conversion Rate: [${convRate}%], Win/Close Rate: [${closeRate}%], Customer Value: [₹${customerValue.toLocaleString()}]. This produces simulated monthly revenues of [₹${totalRevenue.toLocaleString()}] (${roi.toFixed(0)}% ROI). I'd love to discuss how to make this simulation a reality!`;
-    onQuoteClick(prefilledNotes);
+  let budgetError: string | null = null;
+  if (budgetStr.trim() === "") {
+    budgetError = "Budget cannot be empty.";
+  } else if (isNaN(budgetNum) || budgetNum < 0) {
+    budgetError = "Budget cannot be negative.";
+  }
+
+  let cpcError: string | null = null;
+  if (cpcStr.trim() === "") {
+    cpcError = "CPC cannot be empty.";
+  } else if (isNaN(cpcNum) || cpcNum <= 0) {
+    cpcError = "Cost per click must be greater than 0.";
+  }
+
+  let convRateError: string | null = null;
+  if (convRateStr.trim() === "") {
+    convRateError = "Conversion rate cannot be empty.";
+  } else if (isNaN(convRateNum) || convRateNum <= 0) {
+    convRateError = "Conversion rate must be greater than 0%.";
+  } else if (convRateNum > 100) {
+    convRateError = "Conversion rate cannot exceed 100%.";
+  }
+
+  let closeRateError: string | null = null;
+  if (closeRateStr.trim() === "") {
+    closeRateError = "Close rate cannot be empty.";
+  } else if (isNaN(closeRateNum) || closeRateNum <= 0) {
+    closeRateError = "Close rate must be greater than 0%.";
+  } else if (closeRateNum > 100) {
+    closeRateError = "Close rate cannot exceed 100%.";
+  }
+
+  let customerValueError: string | null = null;
+  if (customerValueStr.trim() === "") {
+    customerValueError = "Customer value cannot be empty.";
+  } else if (isNaN(customerValueNum) || customerValueNum <= 0) {
+    customerValueError = "Customer value must be greater than 0.";
+  }
+
+  const hasError = !!(budgetError || cpcError || convRateError || closeRateError || customerValueError);
+
+  // Literal formulas:
+  // Clicks    = Budget / CPC
+  // Leads     = Clicks × Conversion Rate
+  // Customers = Leads × Close Rate (rounded DOWN)
+  // Revenue   = Customers × Customer Value
+  // Profit    = Revenue − Budget
+  // ROI       = (Profit / Budget) × 100
+  let estimatedLeads = 0;
+  let estimatedCustomers = 0;
+  let estimatedRevenue = 0;
+  let estimatedProfit = 0;
+  let estimatedROI = 0;
+
+  if (!hasError && budgetNum > 0 && cpcNum > 0) {
+    const clicks = budgetNum / cpcNum;
+    estimatedLeads = clicks * (convRateNum / 100);
+    estimatedCustomers = Math.floor(estimatedLeads * (closeRateNum / 100));
+    estimatedRevenue = Math.round(estimatedCustomers * customerValueNum);
+    estimatedProfit = Math.round(estimatedRevenue - budgetNum);
+    estimatedROI = Math.round((estimatedProfit / budgetNum) * 100);
+  }
+
+  const handleApply = () => {
+    if (hasError) return;
+    const notes = `ROI Estimate Plan:
+Monthly Budget: ₹${budgetNum.toLocaleString("en-IN")}
+CPC: ₹${cpcNum}
+Conversion Rate: ${convRateNum}%
+Close Rate: ${closeRateNum}%
+Customer Value: ₹${customerValueNum.toLocaleString("en-IN")}
+Est. Leads: ${Math.round(estimatedLeads)}
+Est. Customers: ${estimatedCustomers}
+Est. Revenue: ₹${estimatedRevenue.toLocaleString("en-IN")}
+Est. ROI: ${estimatedROI}%`;
+    onQuoteClick(notes);
   };
 
   return (
-    <section id="roi" className="py-24 bg-white border-t border-gray-100">
+    <section id="roi" className="py-16 sm:py-24 bg-[#EBF1FA] border-b border-[#DDE3EC]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-1.5 bg-accent/5 border border-accent/10 px-3 py-1 rounded-full text-xs font-semibold text-accent uppercase tracking-wide mb-4">
-            <Calculator className="w-3.5 h-3.5" />
-            <span>ROI Calculator & Estimator</span>
+        <div className="max-w-3xl mb-12 sm:mb-14">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-white border border-[#DDE3EC] text-[#263044] text-xs font-semibold uppercase tracking-wider mb-3">
+            <Calculator className="w-3.5 h-3.5 text-[#3157D5]" />
+            <span>Interactive Tool</span>
           </div>
 
-          <h2 className="font-display font-bold text-3xl sm:text-4xl text-brand-heading tracking-tight mb-4">
-            Simulate your marketing return on investment
+          <h2 className="font-display font-extrabold text-2xl sm:text-4xl lg:text-5xl text-[#263044] tracking-tight leading-[1.15] mb-3">
+            Commercial Marketing ROI Calculator
           </h2>
 
-          <p className="text-brand-body text-md">
-            Slide the values to match your specific industry parameters and see how optimizing search conversion yields massive pipeline revenue increases.
+          <p className="text-base sm:text-lg text-[#667085] leading-relaxed max-w-2xl">
+            Test your budget assumptions to estimate the revenue and customer volume needed to make your local marketing profitable.
+          </p>
+
+          <p className="text-xs text-[#667085] font-medium mt-3">
+            * Illustrative estimate — actual results vary based on competition and sales conversion.
           </p>
         </div>
 
-        {/* Dashboard Grid Container */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Slider Panel (Left Column) */}
-          <div className="lg:col-span-7 bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-6">
-            <div className="border-b border-gray-100 pb-4 mb-2 flex items-center justify-between">
-              <h3 className="font-display font-semibold text-brand-heading text-lg">Campaign Parameters</h3>
-              <span className="text-[10px] text-brand-body uppercase tracking-wider font-extrabold bg-gray-50 px-2 py-1 rounded">Interactive</span>
+        {/* 2-Column Calculator Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          
+          {/* Inputs Column (7 cols) */}
+          <div className="lg:col-span-7 bg-white rounded-2xl border border-[#DDE3EC] p-6 sm:p-8 space-y-6 shadow-2xs">
+            <div className="flex items-center justify-between pb-3 border-b border-[#DDE3EC]">
+              <span className="font-display font-bold text-base text-[#263044]">
+                Campaign Inputs
+              </span>
+              <button
+                type="button"
+                onClick={handleReset}
+                className="inline-flex items-center gap-1.5 text-xs text-[#667085] hover:text-[#263044] transition-colors cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Reset</span>
+              </button>
             </div>
 
-            {/* Slider 1: Budget */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <label className="text-xs font-bold text-brand-heading uppercase tracking-wider">Monthly Spend Budget</label>
-                <span className="font-mono text-sm font-extrabold text-primary">₹{budget.toLocaleString()}</span>
+            {/* Field 1: Monthly Ad Budget */}
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center text-xs sm:text-sm font-semibold text-[#263044]">
+                <label htmlFor="roi-field-budget">Monthly Ad Budget</label>
+                <div className="flex items-center gap-1">
+                  <span className="text-[#667085] text-xs">₹</span>
+                  <input
+                    id="roi-field-budget"
+                    type="number"
+                    value={budgetStr}
+                    onChange={(e) => setBudgetStr(e.target.value)}
+                    className={`w-28 px-2 py-1 text-right font-mono font-bold text-sm rounded border ${
+                      budgetError ? "border-red-500 bg-red-50/30 text-red-700" : "border-[#DDE3EC] text-[#3157D5]"
+                    }`}
+                  />
+                </div>
               </div>
               <input
                 type="range"
                 min="5000"
                 max="250000"
                 step="5000"
-                value={budget}
-                onChange={(e) => setBudget(Number(e.target.value))}
-                className="w-full h-1.5 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-primary"
+                value={budgetNum > 0 ? budgetNum : 35000}
+                onChange={(e) => setBudgetStr(e.target.value)}
+                className="w-full accent-[#3157D5] cursor-pointer"
               />
-              <div className="flex justify-between text-[10px] text-brand-body font-medium">
-                <span>₹5,000/mo</span>
-                <span>₹2,50,000/mo</span>
-              </div>
+              {budgetError && (
+                <p className="text-xs text-red-600 flex items-center gap-1 mt-1">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{budgetError}</span>
+                </p>
+              )}
             </div>
 
-            {/* Slider 2: CPC */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <label className="text-xs font-bold text-brand-heading uppercase tracking-wider">Average Cost Per Click (CPC)</label>
-                <span className="font-mono text-sm font-extrabold text-primary">₹{cpc.toFixed(1)}</span>
-              </div>
-              <input
-                type="range"
-                min="2"
-                max="200"
-                step="1"
-                value={cpc}
-                onChange={(e) => setCpc(Number(e.target.value))}
-                className="w-full h-1.5 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-primary"
-              />
-              <div className="flex justify-between text-[10px] text-brand-body font-medium">
-                <span>₹2</span>
-                <span>₹200 (High Competition)</span>
-              </div>
-            </div>
-
-            {/* Slider 3: Conversion Rate */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <label className="text-xs font-bold text-brand-heading uppercase tracking-wider">Website Lead Conv. Rate</label>
-                <span className="font-mono text-sm font-extrabold text-accent">{convRate.toFixed(1)}%</span>
-              </div>
-              <input
-                type="range"
-                min="1.0"
-                max="15.0"
-                step="0.1"
-                value={convRate}
-                onChange={(e) => setConvRate(Number(e.target.value))}
-                className="w-full h-1.5 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-accent"
-              />
-              <div className="flex justify-between text-[10px] text-brand-body font-medium">
-                <span>1% (Low)</span>
-                <span>15% (LocalBuild CRO Engine Target)</span>
-              </div>
-            </div>
-
-            {/* Slider 4: Lead Close Win Rate */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <label className="text-xs font-bold text-brand-heading uppercase tracking-wider">Lead-to-Close Rate</label>
-                <span className="font-mono text-sm font-extrabold text-accent">{closeRate}%</span>
+            {/* Field 2: Estimated Cost Per Click (CPC) */}
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center text-xs sm:text-sm font-semibold text-[#263044]">
+                <label htmlFor="roi-field-cpc">Estimated Cost Per Click (CPC)</label>
+                <div className="flex items-center gap-1">
+                  <span className="text-[#667085] text-xs">₹</span>
+                  <input
+                    id="roi-field-cpc"
+                    type="number"
+                    value={cpcStr}
+                    onChange={(e) => setCpcStr(e.target.value)}
+                    className={`w-24 px-2 py-1 text-right font-mono font-bold text-sm rounded border ${
+                      cpcError ? "border-red-500 bg-red-50/30 text-red-700" : "border-[#DDE3EC] text-[#263044]"
+                    }`}
+                  />
+                </div>
               </div>
               <input
                 type="range"
                 min="5"
-                max="80"
-                step="5"
-                value={closeRate}
-                onChange={(e) => setCloseRate(Number(e.target.value))}
-                className="w-full h-1.5 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-accent"
+                max="100"
+                step="1"
+                value={cpcNum > 0 ? cpcNum : 20}
+                onChange={(e) => setCpcStr(e.target.value)}
+                className="w-full accent-[#3157D5] cursor-pointer"
               />
-              <div className="flex justify-between text-[10px] text-brand-body font-medium">
-                <span>5%</span>
-                <span>80% (High Close Mastery)</span>
-              </div>
+              {cpcError && (
+                <p className="text-xs text-red-600 flex items-center gap-1 mt-1">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{cpcError}</span>
+                </p>
+              )}
             </div>
 
-            {/* Slider 5: Customer LTV / Contract Value */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <label className="text-xs font-bold text-brand-heading uppercase tracking-wider">Avg Customer Value (LTV)</label>
-                <span className="font-mono text-sm font-extrabold text-cta">₹{customerValue.toLocaleString()}</span>
+            {/* Field 3: Website Conversion Rate */}
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center text-xs sm:text-sm font-semibold text-[#263044]">
+                <label htmlFor="roi-field-conv">Website Conversion Rate (Visitors to Leads)</label>
+                <div className="flex items-center gap-1">
+                  <input
+                    id="roi-field-conv"
+                    type="number"
+                    step="0.5"
+                    value={convRateStr}
+                    onChange={(e) => setConvRateStr(e.target.value)}
+                    className={`w-20 px-2 py-1 text-right font-mono font-bold text-sm rounded border ${
+                      convRateError ? "border-red-500 bg-red-50/30 text-red-700" : "border-[#DDE3EC] text-[#263044]"
+                    }`}
+                  />
+                  <span className="text-[#667085] text-xs">%</span>
+                </div>
+              </div>
+              <input
+                type="range"
+                min="1"
+                max="20"
+                step="0.5"
+                value={convRateNum > 0 && convRateNum <= 100 ? convRateNum : 6}
+                onChange={(e) => setConvRateStr(e.target.value)}
+                className="w-full accent-[#3157D5] cursor-pointer"
+              />
+              {convRateError && (
+                <p className="text-xs text-red-600 flex items-center gap-1 mt-1">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{convRateError}</span>
+                </p>
+              )}
+            </div>
+
+            {/* Field 4: Lead-to-Customer Close Rate */}
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center text-xs sm:text-sm font-semibold text-[#263044]">
+                <label htmlFor="roi-field-close">Lead-to-Customer Close Rate</label>
+                <div className="flex items-center gap-1">
+                  <input
+                    id="roi-field-close"
+                    type="number"
+                    step="1"
+                    value={closeRateStr}
+                    onChange={(e) => setCloseRateStr(e.target.value)}
+                    className={`w-20 px-2 py-1 text-right font-mono font-bold text-sm rounded border ${
+                      closeRateError ? "border-red-500 bg-red-50/30 text-red-700" : "border-[#DDE3EC] text-[#263044]"
+                    }`}
+                  />
+                  <span className="text-[#667085] text-xs">%</span>
+                </div>
+              </div>
+              <input
+                type="range"
+                min="5"
+                max="60"
+                step="1"
+                value={closeRateNum > 0 && closeRateNum <= 100 ? closeRateNum : 25}
+                onChange={(e) => setCloseRateStr(e.target.value)}
+                className="w-full accent-[#3157D5] cursor-pointer"
+              />
+              {closeRateError && (
+                <p className="text-xs text-red-600 flex items-center gap-1 mt-1">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{closeRateError}</span>
+                </p>
+              )}
+            </div>
+
+            {/* Field 5: Average Value Per Customer */}
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center text-xs sm:text-sm font-semibold text-[#263044]">
+                <label htmlFor="roi-field-val">Average Value Per Customer</label>
+                <div className="flex items-center gap-1">
+                  <span className="text-[#667085] text-xs">₹</span>
+                  <input
+                    id="roi-field-val"
+                    type="number"
+                    value={customerValueStr}
+                    onChange={(e) => setCustomerValueStr(e.target.value)}
+                    className={`w-28 px-2 py-1 text-right font-mono font-bold text-sm rounded border ${
+                      customerValueError ? "border-red-500 bg-red-50/30 text-red-700" : "border-[#DDE3EC] text-[#263044]"
+                    }`}
+                  />
+                </div>
               </div>
               <input
                 type="range"
                 min="1000"
-                max="150000"
+                max="100000"
                 step="1000"
-                value={customerValue}
-                onChange={(e) => setCustomerValue(Number(e.target.value))}
-                className="w-full h-1.5 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-cta"
+                value={customerValueNum > 0 ? customerValueNum : 15000}
+                onChange={(e) => setCustomerValueStr(e.target.value)}
+                className="w-full accent-[#3157D5] cursor-pointer"
               />
-              <div className="flex justify-between text-[10px] text-brand-body font-medium">
-                <span>₹1,000</span>
-                <span>₹1,50,000</span>
-              </div>
+              {customerValueError && (
+                <p className="text-xs text-red-600 flex items-center gap-1 mt-1">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{customerValueError}</span>
+                </p>
+              )}
             </div>
+
           </div>
 
-          {/* Results Output Canvas (Right Column) */}
-          <div className="lg:col-span-5 space-y-6">
-            {/* Main Profit Card */}
-            <div className="bg-primary text-white border-0 rounded-2xl p-6 sm:p-8 shadow-lg shadow-primary/20 flex flex-col justify-between h-full relative overflow-hidden">
-              {/* background dynamic circular shapes */}
-              <div className="absolute -top-10 -right-10 w-36 h-36 bg-accent/20 rounded-full blur-2xl pointer-events-none" />
-              <div className="absolute -bottom-10 -left-10 w-36 h-36 bg-cta/15 rounded-full blur-2xl pointer-events-none" />
+          {/* Output Panel (5 cols) */}
+          <div className="lg:col-span-5 flex flex-col justify-between p-6 sm:p-8 rounded-2xl bg-[#0B1633] text-white border border-[#071126] shadow-xl">
+            <div>
+              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#7C8CFF] block mb-6">
+                Calculated Projection
+              </span>
 
-              <div>
-                <span className="text-[10px] tracking-widest font-bold uppercase text-accent/80 flex items-center gap-1.5 mb-3">
-                  <TrendingUp className="w-3.5 h-3.5 text-accent" />
-                  Simulated Monthly Income
-                </span>
-                <p className="font-display font-extrabold text-[40px] sm:text-[46px] leading-none mb-1">
-                  ₹{totalRevenue.toLocaleString()}
-                </p>
-                <p className="text-xs text-white/70">
-                  Gross Pipeline Value
-                </p>
-              </div>
-
-              {/* Middle stats splits indicators */}
-              <div className="grid grid-cols-2 gap-4 py-6 my-6 border-y border-white/10">
-                <div>
-                  <p className="text-[10px] text-white/50 uppercase font-semibold">Net Campaign Profit</p>
-                  <p className={`text-md font-bold mt-1 ${netProfit > 0 ? "text-emerald-400" : "text-rose-400"}`}>
-                    {netProfit >= 0 ? "+" : ""}₹{netProfit.toLocaleString()}
-                  </p>
+              {hasError ? (
+                <div className="p-4 rounded-xl bg-red-950/40 border border-red-800 text-xs text-red-200 mb-6">
+                  Please resolve the input errors on the left to calculate your campaign projection.
                 </div>
-                <div>
-                  <p className="text-[10px] text-white/50 uppercase font-semibold text-right">Computed ROI</p>
-                  <p className={`text-md font-bold text-right mt-1 ${isHealthy ? "text-accent" : "text-gray-300"}`}>
-                    {roi.toFixed(0)}%
-                  </p>
-                </div>
-              </div>
+              ) : (
+                <div className="space-y-4 mb-6">
+                  {/* Estimated Leads */}
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+                    <span className="text-xs text-zinc-300">Estimated Leads</span>
+                    <span className="font-display font-extrabold text-2xl text-white">
+                      {Math.round(estimatedLeads)}
+                    </span>
+                  </div>
 
-              {/* Micro-performance indicators alerts */}
-              <div className="mb-6">
-                {isOptimal ? (
-                  <div className="bg-accent/20 border border-accent/20 rounded-lg p-3 text-xs flex gap-2">
-                    <Sparkles className="w-4 h-4 text-accent shrink-0" />
-                    <div>
-                      <span className="font-bold text-white">Scale Parameter Optimal</span>: Your average contract values comfortably cover localized acquisition expenses. This is a primary search target.
+                  {/* Estimated Customers */}
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+                    <span className="text-xs text-zinc-300">Estimated Customers</span>
+                    <span className="font-display font-extrabold text-2xl text-white">
+                      {estimatedCustomers}
+                    </span>
+                  </div>
+
+                  {/* Estimated Revenue */}
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+                    <span className="text-xs text-zinc-300">Estimated Revenue</span>
+                    <span className="font-display font-extrabold text-2xl sm:text-3xl text-emerald-400 font-mono">
+                      ₹{estimatedRevenue.toLocaleString("en-IN")}
+                    </span>
+                  </div>
+
+                  {/* Estimated ROI */}
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-1">
+                    <div className="flex items-center justify-between text-xs text-zinc-300">
+                      <span>Estimated ROI</span>
+                      <span className="font-mono font-bold text-emerald-400">
+                        {estimatedProfit >= 0 ? `+₹${estimatedProfit.toLocaleString("en-IN")} profit` : `-₹${Math.abs(estimatedProfit).toLocaleString("en-IN")} loss`}
+                      </span>
+                    </div>
+                    <div className="font-display font-extrabold text-3xl sm:text-4xl text-white">
+                      {estimatedROI}%
                     </div>
                   </div>
-                ) : isHealthy ? (
-                  <div className="bg-emerald-500/10 border border-emerald-500/15 rounded-lg p-3 text-xs text-emerald-100 flex gap-2">
-                    <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <div>
-                      <span className="font-bold text-white">Healthy Returns Expected</span>: Stable marketing model with high capture profiles. Proceed with active ad launch.
-                    </div>
-                  </div>
-                ) : (
-                  <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 text-xs text-amber-100 flex gap-2">
-                    <HelpCircle className="w-4 h-4 text-cta shrink-0" />
-                    <div>
-                      <span className="font-bold">Optimization Advisory</span>: Return profiles are tight. Increase conversion rates or customer life value to secure a deeper ROI margin.
-                    </div>
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
+            </div>
 
-              {/* Conversion metrics sub-row */}
-              <div className="grid grid-cols-3 gap-2 text-center bg-black/15 rounded-xl p-3 mb-6 border border-white/5">
-                <div>
-                  <p className="text-[9px] text-white/40 uppercase font-bold">Clicks</p>
-                  <p className="font-mono text-sm font-bold text-white">{estimatedClicks}</p>
-                </div>
-                <div>
-                  <p className="text-[9px] text-white/40 uppercase font-bold">Leads</p>
-                  <p className="font-mono text-sm font-bold text-white">{estimatedLeads}</p>
-                </div>
-                <div>
-                  <p className="text-[9px] text-white/40 uppercase font-bold">Acquisitions</p>
-                  <p className="font-mono text-sm font-bold text-white">{estimatedCloses}</p>
-                </div>
-              </div>
-
-              {/* Action */}
+            <div className="pt-4 border-t border-white/10">
               <button
-                onClick={handlePreFill}
-                className="bg-cta hover:bg-cta/90 text-white text-sm font-bold py-3.5 px-4 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-md shadow-cta/15 cursor-pointer hover:-translate-y-0.5"
+                type="button"
+                disabled={hasError}
+                onClick={handleApply}
+                className="w-full h-[52px] px-4 rounded-md font-bold text-xs sm:text-sm text-white bg-[#3157D5] hover:bg-[#2546B8] active:bg-[#1E3A8A] disabled:opacity-50 transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs uppercase tracking-wide"
               >
-                Claim This ROI Funnel Strategy
+                <span>Plan Campaign With These Numbers</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
+
           </div>
+
         </div>
+
       </div>
     </section>
   );

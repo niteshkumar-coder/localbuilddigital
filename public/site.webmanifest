@@ -1,0 +1,13 @@
+{
+  "name": "LocalBuild",
+  "short_name": "LocalBuild",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F2F5FA",
+  "theme_color": "#0B1633",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

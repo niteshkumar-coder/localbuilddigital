@@ -1,222 +1,290 @@
-import { useState, useEffect } from "react";
-import { Menu, X, ArrowRight, Zap } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { useState, useEffect, useRef } from "react";
+import { Menu, X, ArrowRight, MessageSquare, Phone } from "lucide-react";
+import { getWhatsAppUrl, LOCALBUILD_PHONE } from "../utils/whatsapp";
 
 interface NavbarProps {
-  onQuoteClick: () => void;
-  onNavigate: (sectionId: string) => void;
-  onCostClick: () => void;
+  onQuoteClick: (prefilledService?: string) => void;
+  onNavigate: (sectionOrPath: string) => void;
+  activeSection?: string;
+  currentPath?: string;
 }
 
-export default function Navbar({ onQuoteClick, onNavigate, onCostClick }: NavbarProps) {
+export default function Navbar({
+  onQuoteClick,
+  onNavigate,
+  activeSection = "hero",
+  currentPath = "/"
+}: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const desktopNavItems = [
-    { name: "Services", id: "services" },
-    { name: "Blog Insights", id: "blog" },
-    { name: "S_Roadmap Planner", id: "planner", label: "Interactive Strategy Planner" },
-    { name: "ROI Simulator", id: "roi" },
-    { name: "Case Studies", id: "case-studies" },
-    { name: "Pricing", id: "pricing" },
+  // Handle escape key to close mobile drawer
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
+
+  // Prevent scroll when mobile menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
+  // Links in exact order required by Section 1.4:
+  // Home · About · Services · Work · Pricing · Blog · Contact
+  const navItems = [
+    { name: "Home", target: "/" },
+    { name: "About", target: "/about" },
+    { name: "Services", target: "/services" },
+    { name: "Work", target: "case-studies" },
+    { name: "Pricing", target: "pricing" },
+    { name: "Blog", target: "/blog" },
+    { name: "Contact", target: "/contact" },
   ];
 
-  // Specific sections for mobile menu
-  const mobileNavItems = [
-    { name: "Home", id: "hero" },
-    { name: "Services", id: "services" },
-    { name: "About", id: "planner" },
-    { name: "Portfolio", id: "case-studies" },
-    { name: "Blog Insights", id: "blog" },
-  ];
+  const isItemActive = (target: string) => {
+    if (target === "/") {
+      return currentPath === "/" && (activeSection === "hero" || !activeSection);
+    }
+    if (target.startsWith("/")) {
+      if (target === "/blog") {
+        return currentPath.startsWith("/blog");
+      }
+      return currentPath === target;
+    }
+    // Anchor on homepage
+    return currentPath === "/" && activeSection === target;
+  };
 
-  const handleLinkClick = (id: string) => {
+  const handleLinkClick = (target: string) => {
     setIsOpen(false);
-    onNavigate(id);
+    onNavigate(target);
   };
 
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-40 h-16 flex items-center transition-all duration-200 ${
           scrolled
-            ? "bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100 h-[60px] md:h-auto py-2.5 md:py-3"
-            : "bg-white/80 backdrop-blur-sm h-[60px] md:h-auto py-2.5 md:py-5"
+            ? "bg-white/95 backdrop-blur-md shadow-xs border-b border-zinc-200/80"
+            : "bg-white/90 backdrop-blur-xs border-b border-zinc-100"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
-          {/* Logo */}
-          <div
-            onClick={() => handleLinkClick("hero")}
-            className="flex items-center space-x-2 cursor-pointer group"
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between">
+          
+          {/* Brand Logo with https://i.ibb.co/G3tMbK2q/image.png */}
+          <button
+            type="button"
+            onClick={() => handleLinkClick("/")}
+            className="flex items-center gap-2.5 text-left cursor-pointer group focus:outline-hidden"
+            aria-label="LocalBuild - Go to Home"
           >
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden flex items-center justify-center border border-gray-100 shadow-sm shrink-0">
-              <img 
-                src="https://i.ibb.co/G3tMbK2q/image.png" 
-                alt="LocalBuild Logo" 
-                className="w-full h-full object-cover"
-                referrerPolicy="no-referrer"
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-[#07080A] border border-zinc-200/90 shadow-xs flex items-center justify-center group-hover:border-[#3157D5] group-hover:scale-105 transition-all p-0.5 shrink-0">
+              <img
+                src="/images/logo.png"
+                alt="LocalBuild Logo"
+                className="w-full h-full object-cover rounded-full"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = "https://i.ibb.co/G3tMbK2q/image.png";
+                }}
               />
             </div>
             <div>
-              <span className="font-display text-[20px] md:text-xl font-bold text-brand-heading tracking-tight leading-none block">
-                Local<span className="text-accent">Build</span>
+              <span className="font-display font-bold text-lg text-zinc-900 tracking-tight block leading-tight">
+                LocalBuild
               </span>
-              <p className="text-[9px] text-brand-body font-medium tracking-widest uppercase font-mono -mt-0.5">
-                Digital Agency
-              </p>
+              <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider block -mt-0.5">
+                Digital Marketing Agency
+              </span>
             </div>
-          </div>
+          </button>
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {desktopNavItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handleLinkClick(item.id)}
-                className="text-sm font-medium text-brand-heading hover:text-accent transition-colors duration-155 cursor-pointer relative py-1"
-              >
-                {item.name === "S_Roadmap Planner" ? "Plan Strategy" : item.name}
-              </button>
-            ))}
-            <button
-              onClick={onCostClick}
-              className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors duration-155 cursor-pointer relative py-1 flex items-center gap-1.5"
-            >
-              <Zap className="w-4 h-4 text-amber-500 animate-pulse fill-amber-400" />
-              Package Cost
-            </button>
+          {/* Desktop Navigation Links (>=1024px) */}
+          <nav className="hidden lg:flex items-center space-x-6" aria-label="Main Navigation">
+            {navItems.map((item) => {
+              const active = isItemActive(item.target);
+              return (
+                <button
+                  key={item.name}
+                  type="button"
+                  onClick={() => handleLinkClick(item.target)}
+                  aria-current={active ? "page" : undefined}
+                  className={`text-sm font-medium transition-colors py-1 cursor-pointer relative ${
+                    active
+                      ? "text-zinc-900 font-semibold"
+                      : "text-zinc-600 hover:text-zinc-900"
+                  }`}
+                >
+                  {item.name}
+                  {active && (
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#3157D5] rounded-full" />
+                  )}
+                </button>
+              );
+            })}
           </nav>
 
-          {/* Actions */}
-          <div className="hidden md:flex items-center space-x-4">
-            <button
-              onClick={onQuoteClick}
-              className="bg-cta hover:bg-cta/90 text-white font-medium text-sm py-2.5 px-5 rounded-lg transition-all duration-200 flex items-center gap-1.5 shadow-md shadow-cta/15 hover:shadow-lg hover:shadow-cta/25 hover:-translate-y-0.5 cursor-pointer"
+          {/* Desktop Primary CTA (right): "Start a Conversation" -> /contact */}
+          <div className="hidden lg:flex items-center gap-3">
+            <a
+              href={getWhatsAppUrl("Hi LocalBuild, I'd like to ask a question about your digital marketing services.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded-md transition-colors border border-emerald-200/80"
+              aria-label="Chat on WhatsApp"
             >
-              Get Free Proposal
+              <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
+              <span>WhatsApp</span>
+            </a>
+
+            <button
+              type="button"
+              onClick={() => handleLinkClick("/contact")}
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs sm:text-sm font-bold text-white bg-[#3157D5] hover:bg-[#2546B8] active:bg-[#1D3A9E] rounded-md transition-colors shadow-xs cursor-pointer uppercase tracking-wider"
+            >
+              <span>Start a Conversation</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Mobile Menu Trigger Icon */}
-          <div className="md:hidden flex items-center">
+          {/* Mobile Header Menu Button (≤ 768px) */}
+          <div className="flex lg:hidden items-center">
             <button
-              onClick={() => setIsOpen(true)}
-              className="text-brand-heading w-[44px] h-[44px] flex items-center justify-center focus:outline-none cursor-pointer"
-              aria-label="Open Menu"
+              type="button"
+              onClick={() => setIsOpen(!isOpen)}
+              className="w-11 h-11 flex items-center justify-center text-zinc-800 hover:text-zinc-950 active:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
+              aria-expanded={isOpen}
+              aria-label="Toggle navigation menu"
             >
-              <Menu className="w-7 h-7" />
+              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
+
         </div>
       </header>
 
-      {/* Fullscreen Mobile Menu Drawer */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", bounce: 0, duration: 0.35 }}
-            className="fixed inset-0 bg-white z-[9999] flex flex-col md:hidden"
-          >
-            {/* Top Bar inside Fullscreen menu */}
-            <div className="h-[60px] px-4 border-b border-gray-100 flex items-center justify-between">
-              {/* Logo duplicator */}
-              <div
-                onClick={() => {
-                  setIsOpen(false);
-                  onNavigate("hero");
-                }}
-                className="flex items-center space-x-2 cursor-pointer"
-              >
-                <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border border-gray-100 shrink-0">
-                  <img 
-                    src="https://i.ibb.co/G3tMbK2q/image.png" 
-                    alt="LocalBuild Logo" 
-                    className="w-full h-full object-cover"
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
-                <span className="font-display text-[20px] font-bold text-brand-heading tracking-tight">
-                  Local<span className="text-accent">Build</span>
+      {/* Mobile Full-Screen Menu Drawer (≤ 768px) */}
+      {isOpen && (
+        <div
+          ref={menuRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile Navigation Menu"
+          className="fixed inset-0 z-50 lg:hidden flex flex-col bg-white"
+        >
+          {/* Top Bar inside Menu */}
+          <div className="h-16 px-4 sm:px-6 flex items-center justify-between border-b border-zinc-200">
+            <button
+              type="button"
+              onClick={() => handleLinkClick("/")}
+              className="flex items-center gap-2.5 text-left"
+            >
+              <div className="w-10 h-10 rounded-full overflow-hidden bg-[#07080A] border border-zinc-200/90 shadow-xs flex items-center justify-center p-0.5 shrink-0">
+                <img
+                  src="/images/logo.png"
+                  alt="LocalBuild Logo"
+                  className="w-full h-full object-cover rounded-full"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = "https://i.ibb.co/G3tMbK2q/image.png";
+                  }}
+                />
+              </div>
+              <div>
+                <span className="font-display font-bold text-lg text-zinc-900 block leading-tight">
+                  LocalBuild
+                </span>
+                <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider block">
+                  Digital Marketing Agency
                 </span>
               </div>
+            </button>
 
-              {/* Close Button button */}
-              <button
-                onClick={() => setIsOpen(false)}
-                className="w-[44px] h-[44px] flex items-center justify-center text-brand-heading focus:outline-none cursor-pointer"
-                aria-label="Close Menu"
-              >
-                <X className="w-7 h-7" />
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              className="w-11 h-11 flex items-center justify-center text-zinc-800 hover:text-zinc-950 active:bg-zinc-100 rounded-lg cursor-pointer"
+              aria-label="Close menu"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
 
-            {/* Links and Actions list */}
-            <div className="flex-1 overflow-y-auto px-6 py-8 flex flex-col justify-between">
-              <nav className="space-y-4">
-                {mobileNavItems.map((item) => (
+          {/* Menu Links with 48px+ touch height */}
+          <div className="flex-1 overflow-y-auto px-6 py-6 flex flex-col justify-between">
+            <nav className="space-y-1" aria-label="Mobile Navigation Links">
+              {navItems.map((item) => {
+                const active = isItemActive(item.target);
+                return (
                   <button
-                    key={item.id}
-                    onClick={() => handleLinkClick(item.id)}
-                    className="w-full text-left h-[48px] flex items-center text-[20px] font-bold text-brand-heading hover:text-accent transition-all border-b border-gray-50 focus:outline-none"
+                    key={item.name}
+                    type="button"
+                    onClick={() => handleLinkClick(item.target)}
+                    aria-current={active ? "page" : undefined}
+                    className={`w-full text-left py-3.5 text-xl font-display font-bold transition-colors border-b border-zinc-100 flex items-center justify-between cursor-pointer min-h-[48px] ${
+                      active ? "text-[#3157D5] font-extrabold" : "text-zinc-900 active:text-[#3157D5]"
+                    }`}
                   >
-                    {item.name}
+                    <span>{item.name}</span>
+                    <ArrowRight className={`w-5 h-5 ${active ? "text-[#3157D5]" : "text-zinc-300"}`} />
                   </button>
-                ))}
-                
-                {/* Contact triggers intake popup directly */}
-                <button
-                  onClick={() => {
-                    setIsOpen(false);
-                    onCostClick();
-                  }}
-                  className="w-full text-left h-[48px] flex items-center text-[20px] font-bold text-blue-600 hover:text-blue-700 transition-all border-b border-gray-50 focus:outline-none gap-2"
-                >
-                  <Zap className="w-5 h-5 text-amber-500 fill-amber-400" />
-                  Package Cost Table
-                </button>
+                );
+              })}
+            </nav>
 
-                <button
-                  onClick={() => {
-                    setIsOpen(false);
-                    onQuoteClick();
-                  }}
-                  className="w-full text-left h-[48px] flex items-center text-[20px] font-bold text-brand-heading hover:text-accent transition-all border-b border-gray-50 focus:outline-none"
-                >
-                  Contact
-                </button>
-              </nav>
+            {/* Mobile Actions in Drawer */}
+            <div className="pt-6 space-y-3">
+              <button
+                type="button"
+                onClick={() => handleLinkClick("/contact")}
+                className="w-full h-[52px] flex items-center justify-center gap-2 text-sm font-bold text-white bg-[#3157D5] active:bg-[#2546B8] rounded-md transition-colors uppercase tracking-wider cursor-pointer shadow-sm"
+              >
+                <span>Start a Conversation</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
 
-              {/* Bottom full-width validation-ready CTA button */}
-              <div className="mt-8 pb-4">
-                <button
-                  onClick={() => {
-                    setIsOpen(false);
-                    // Open the quote popup intake
-                    onQuoteClick();
-                  }}
-                  className="w-full h-[50px] bg-cta hover:bg-cta/90 text-white text-center font-bold text-base rounded-xl transition-all duration-200 shadow-md shadow-cta/20 flex items-center justify-center gap-2 cursor-pointer"
+              <div className="grid grid-cols-2 gap-3 pt-1">
+                <a
+                  href={getWhatsAppUrl("Hi LocalBuild, I'm interested in your digital marketing services.")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="h-12 flex items-center justify-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 active:bg-emerald-100 border border-emerald-200/80 rounded-md transition-colors"
                 >
-                  Get Free Consultation
-                  <ArrowRight className="w-5 h-5" />
-                </button>
+                  <MessageSquare className="w-4 h-4 text-emerald-600" />
+                  <span>WhatsApp</span>
+                </a>
+
+                <a
+                  href={`tel:${LOCALBUILD_PHONE}`}
+                  className="h-12 flex items-center justify-center gap-2 text-xs font-bold text-zinc-700 bg-zinc-100 active:bg-zinc-200 rounded-md transition-colors"
+                >
+                  <Phone className="w-4 h-4 text-zinc-600" />
+                  <span>Call Us</span>
+                </a>
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>
+      )}
     </>
   );
 }

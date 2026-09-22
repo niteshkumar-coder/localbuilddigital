@@ -89,11 +89,11 @@ export default function CostView({ onBack, onQuoteClick }: CostViewProps) {
 
           {/* Logo */}
           <div onClick={onBack} className="flex items-center space-x-2 cursor-pointer">
-            <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border border-gray-100 shrink-0">
+            <div className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center border border-zinc-200/90 shrink-0 bg-[#07080A] p-0.5 shadow-xs">
               <img 
                 src="https://i.ibb.co/G3tMbK2q/image.png" 
                 alt="LocalBuild Logo" 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover rounded-full"
                 referrerPolicy="no-referrer"
               />
             </div>

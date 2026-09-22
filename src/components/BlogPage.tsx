@@ -1,621 +1,613 @@
-import React, { useState, useEffect } from "react";
-import { ArrowLeft, BookOpen, Calendar, Clock, ArrowRight, User, Share2, Star, ChevronRight, CheckCircle, Smartphone, ExternalLink, Sparkles, Mail, MessageSquare, Zap, MapPin } from "lucide-react";
+import React, { useState } from "react";
+import { ArrowLeft, ArrowRight, MessageSquare, Clock, Calendar, CheckCircle } from "lucide-react";
+import { getWhatsAppUrl } from "../utils/whatsapp";
 
 export interface BlogPost {
   slug: string;
-  title: string;
-  metaTitle: string;
-  metaDesc: string;
-  category: string;
+  category: "Local SEO" | "Paid Ads" | "Conversion" | "Automation" | "Transparency" | "Process";
   date: string;
   readTime: string;
-  author: string;
-  intro: string;
-  coverImage: string;
-  relatedServiceSlug: string;
-  relatedServiceName: string;
-  contentHtml: React.ReactNode;
+  title: string;
+  excerpt: string;
+  image: string;
+  takeaways: string[];
+  content: {
+    heading: string;
+    body: string[];
+  }[];
 }
 
-export const blogPostsList: BlogPost[] = [
+export const BLOG_POSTS: BlogPost[] = [
   {
-    slug: "website-design-tips",
-    title: "10 High-Converting Website Design Tips for Local Bangalore Businesses",
-    metaTitle: "Website Design Tips for Bangalore Businesses | Local SEO Growth",
-    metaDesc: "Discover 10 actionable website design tips to triple conversion rates, score 90+ on Google PageSpeed, and dominate commercial search feeds in Bangalore.",
-    category: "Web Design & UI/UX",
-    date: "June 12, 2026",
-    readTime: "6 Min Read",
-    author: "Nitesh Kumar",
-    intro: "In 2026, a static online brochure is a liability. Your website must act as an aggressive conversion machine, securing visitor trust in under 3 seconds.",
-    coverImage: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
-    relatedServiceSlug: "website-design",
-    relatedServiceName: "Website Design",
-    contentHtml: (
-      <article className="space-y-6">
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">1. Score Above 90 On Live PageSpeed Audits</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          Mobile consumers in Bangalore will abandon your page if it doesn't render completely in 2.5 seconds. Optimize your site's codebase by stripping unused frameworks, compressing high-resolution hero banners into modern WebP vector formats, and lazy-loading media blocks.
-        </p>
-
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">2. Put CTA Modules Inside the Immediate View Header (Above the Fold)</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          Never force consumers to play hide-and-seek looking for contact buttons. Introduce strong primary CTA pathways like <strong>&quot;Get Free Proposal&quot;</strong> and <strong>&quot;Talk to Nitesh Kumar&quot;</strong> directly below your primary display title.
-        </p>
-
-        <div className="bg-blue-50 border-l-4 border-blue-600 p-4 rounded-r-xl">
-          <p className="text-xs sm:text-sm text-blue-800 font-bold">
-            💡 Protip: Mobile readers respond exceptionally well to sticky call buttons pinned to their bottom viewports. Live tracking proves this simple addition can increase reservation click rates by up to 34%.
-          </p>
-        </div>
-
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">3. Build Fluid Mobile Touch-Targets Exceeding 44 Pixels</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          Avoid miniature buttons clumped tightly together. Keep navigation links thick, responsive, and spacious enough to resolve accidental clicks.
-        </p>
-
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">4. Leverage Direct Social Proof (NAP & Reviews Integration)</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          Interlock real Google Maps reviews instantly below benefits tables. Ensure your corporate Business Name, Phone Number, and Physical Hub address (NAP consistency) match your Google Business list identically in your footers.
-        </p>
-      </article>
-    )
+    slug: "what-a-20-cpc-buys-in-a-tier-2-city",
+    category: "Paid Ads",
+    date: "12 September 2026",
+    readTime: "6 min",
+    title: "What a ₹20 CPC actually buys in a Tier-2 city",
+    excerpt: "Cost per click is not a price, it is a market reading. Here is how to tell whether your CPC is expensive because your market is competitive, or cheap because your ads are reaching the wrong people — and what to change in each case.",
+    image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=1200",
+    takeaways: [
+      "A cheap CPC (₹5–₹10) often indicates broad match bleed capturing student searches, job seekers, and irrelevant queries.",
+      "A ₹20–₹40 CPC in competitive local verticals (dental, commercial real estate, specialist legal) is healthy if negative match lists are aggressive.",
+      "Calculate your actual Cost Per Qualified Call (CPQC) rather than obsessing over front-end CPC."
+    ],
+    content: [
+      {
+        heading: "Cost per click is a diagnostic metric, not a pricing benchmark",
+        body: [
+          "When business owners look at their Google Ads dashboard in cities like Patna, Ranchi, or Lucknow, the first reaction to a ₹25 click is almost always sticker shock. Agencies often respond by lowering the bid or broadening the match type to drive the average CPC down to ₹8.",
+          "This is almost always a commercial mistake. When you artificially force a lower CPC in a local auction, Google's algorithm does not magically find high-intent buyers for less money. Instead, it serves your impressions on peripheral, low-competition search queries: people looking for free advice, exam syllabus downloads, job vacancies, or DIY tutorials."
+        ]
+      },
+      {
+        heading: "The difference between market competition and query waste",
+        body: [
+          "In Tier-2 service markets, high commercial intent is concentrated in a tight cluster of search phrases. A patient searching 'root canal dentist in Boring Road Patna' is ready to book today. There are only a few hundred of those searches each month. Naturally, three or four clinics will bid on them, driving the CPC up to ₹25 or ₹35.",
+          "If your campaign captures that click, converts 20% of landing page visitors into calls, and 50% of those calls book an appointment, your acquisition cost per patient is under ₹350. On a procedure worth ₹4,000 to ₹12,000, that is an outstanding commercial return.",
+          "Conversely, paying ₹7 for 'dental course admission 2026' or 'teeth anatomy chart pdf' is 100% wasted capital, no matter how cheap the click appears on the spreadsheet."
+        ]
+      },
+      {
+        heading: "How to audit your current search term report",
+        body: [
+          "Open your Google Ads account, navigate to Insights & Reports, and select Search Terms. Sort the list by spend descending.",
+          "Look at the exact phrases that triggered your spend over the last 30 days. If more than 15% of your search terms contain words like 'free', 'jobs', 'salary', 'near me meaning', or competitor names outside your service area, you have an urgent negative keyword deficit. Adding exact and phrase negative matches will immediately lift your lead quality."
+        ]
+      }
+    ]
   },
   {
-    slug: "google-ads-tips",
-    title: "Mastering Google Ads: How to Lower CPC while Multiplying Warm Local Calls",
-    metaTitle: "Google Ads Tips and PPC Optimization | Bangalore Marketing",
-    metaDesc: "Lower cost-per-click and double incoming customer call volume. Explore step-by-step Google Search Ads optimizations for local businesses.",
-    category: "PPC & Lead Generation",
-    date: "June 08, 2026",
-    readTime: "7 Min Read",
-    author: "Nitesh Kumar",
-    intro: "Stop donating money directly to Google's bidding systems. Discover how structuring negative match patterns and improving landing quality secures the #1 position on a budget.",
-    coverImage: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=800",
-    relatedServiceSlug: "google-ads-management",
-    relatedServiceName: "Google Ads Management",
-    contentHtml: (
-      <article className="space-y-6">
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">The quality Score formula: Lower Cost, Greater Rank</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          Google decides your actual cost-per-click based on your Quality Score. Improved quality scores allow you to pay less than competitors while holding higher visibility segments. Ensure your target keyword features in your copy and landing headers.
-        </p>
-
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 overflow-x-auto">
-          <table className="w-full text-left text-xs sm:text-sm font-medium">
-            <thead>
-              <tr className="border-b border-slate-200">
-                <th className="pb-2 text-slate-400 uppercase font-bold text-[10px]">Optimization Vector</th>
-                <th className="pb-2 text-slate-400 uppercase font-bold text-[10px]">Impact Ratio</th>
-                <th className="pb-2 text-slate-400 uppercase font-bold text-[10px]">Action Standard</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              <tr>
-                <td className="py-2.5 font-bold text-slate-800">Negative Mapping</td>
-                <td className="py-2.5 text-blue-600 font-extrabold">High Reduction</td>
-                <td className="py-2.5 text-slate-500">Add negative match terms daily to kill trash clicks.</td>
-              </tr>
-              <tr>
-                <td className="py-2.5 font-bold text-slate-800">Match Type Balance</td>
-                <td className="py-2.5 text-blue-600 font-extrabold">High Efficiency</td>
-                <td className="py-2.5 text-slate-500">Migrate from loose Broad phrase structures into Exact triggers.</td>
-              </tr>
-              <tr>
-                <td className="py-2.5 font-bold text-slate-800">LSA Guaranteed</td>
-                <td className="py-2.5 text-blue-600 font-extrabold">Instant Trust</td>
-                <td className="py-2.5 text-slate-500">Deploy Google Guaranteed tags above standard search bars.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Actionable Check: Implement Phrase Exclusions</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          If you operate a premium website designer service, you do NOT want to waste money paying for search queries containing &quot;free&quot;, &quot;course&quot;, &quot;salary&quot;, or &quot;tutorial&quot;. Create centralized phrase exclusion libraries to preserve ad integrity.
-        </p>
-      </article>
-    )
+    slug: "nine-google-business-profile-fields-left-empty",
+    category: "Local SEO",
+    date: "28 August 2026",
+    readTime: "7 min",
+    title: "The nine Google Business Profile fields most local businesses leave empty",
+    excerpt: "Your profile is usually the first thing a customer sees and the last thing anyone maintains. These are the fields that quietly decide whether you show up for 'near me' searches — and how to fill each one properly.",
+    image: "https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&q=80&w=1200",
+    takeaways: [
+      "Secondary categories carry almost 40% of local discovery search visibility.",
+      "Custom service item descriptions give Google semantic context that keyword-stuffed business titles cannot safely match.",
+      "Setting accurate service area polygons prevents algorithmic dilution across non-service zones."
+    ],
+    content: [
+      {
+        heading: "The invisible levers in the Google Maps algorithm",
+        body: [
+          "Most business owners claim their Google Business Profile, enter their primary category, upload two photos from a smartphone, and never log back in. Meanwhile, competitors who rank consistently in the 3-Pack have completed every single field down to sub-service pricing and accessibility tags.",
+          "Google's local ranking engine evaluates relevance, distance, and prominence. Completing secondary fields gives Google structured attributes to match against conversational voice queries and specific long-tail queries."
+        ]
+      },
+      {
+        heading: "The nine high-leverage fields to audit right now",
+        body: [
+          "1. Secondary Business Categories: You can choose up to 9 secondary categories. If you are a dermatological clinic, adding 'Laser Hair Removal Service' and 'Skin Care Clinic' expands your search footprint instantly.",
+          "2. Service Descriptions: Under each service, Google allows up to 300 characters of description. Write clear, factual descriptions detailing what the service involves.",
+          "3. Service Area Polygons: Explicitly specify the zip codes or localities you physically serve.",
+          "4. Business Attributes: Identify accessibility, payment methods accepted (UPI, credit cards), and appointment booking requirements.",
+          "5. From the Business Story: Use all 750 characters to describe your founding history, certifications, and service principles.",
+          "6. Products Catalog: Even service businesses can use the Products tab to showcase packages with starting prices.",
+          "7. Direct Appointment URL: Link directly to your booking page or WhatsApp consultation URL rather than your generic homepage.",
+          "8. Pre-populated Q&A: Proactively answer the top 5 questions customers ask before visiting.",
+          "9. Verified Opening Hours & Holiday Hours: Inaccurate holiday hours damage trust and lower ranking reliability during festival periods."
+        ]
+      }
+    ]
   },
   {
-    slug: "local-seo-guide",
-    title: "The Ultimate Local SEO Playbook: Dominating the Maps pack in Bangalore",
-    metaTitle: "Local SEO Guide for Bangalore | Local Map Pack Optimization",
-    metaDesc: "Step-by-step local SEO guide targeting top map listings. Learn citation sync, metadata coordination, reviews generation, and local ranking hacks.",
-    category: "Local SEO Packs",
-    date: "June 05, 2026",
-    readTime: "8 Min Read",
-    author: "Nitesh Kumar",
-    intro: "When residents search for urgent assistance nearby, they pick the first top-rated company in the Local 3-Pack. Here is how your company secures that spot.",
-    coverImage: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=800",
-    relatedServiceSlug: "google-business-profile-optimization",
-    relatedServiceName: "GBP Optimization",
-    contentHtml: (
-      <article className="space-y-6">
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">1. Stabilize NAP Uniformity</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          NAP represents Name, Address, and Phone. Google comparison bots evaluate directories looking to verify your legitimacy. Every directory you list on (JustDial, IndiaMart, Facebook, Yelp) must feature identical name and map spelling.
-        </p>
-
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">2. Leverage Local Keyword Neighborhood Targets</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          Don't just say &quot;Bangalore&quot;. Specifically call out commercial centers like Electronic City, Whitefield, Indiranagar, Koramangala, Jayanagar, and HSR Layout in your primary landing metadata tags. Google tracks localized signals and boosts listings nearby.
-        </p>
-
-        <div className="bg-blue-900 text-white rounded-xl p-5 space-y-2">
-          <h4 className="font-bold text-sm text-sky-400">Map Pack Search Ranking Ingredients</h4>
-          <ul className="space-y-1.5 text-xs text-slate-300">
-            <li>• Distance (Physical proximity to seeker) - Constant</li>
-            <li>• Relevance (Proper keyword optimization & schemas) - Highly Optimizable</li>
-            <li>• Prominence (Direct local 5-star review density) - Highly Optimizable</li>
-          </ul>
-        </div>
-
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">3. Structured Schema Injecting</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          Add LocalBusiness metadata schemas explicitly nested inside index.html profiles. This helps search engine crawlers dynamically recognize your precise latitude, longitude, and operations.
-        </p>
-      </article>
-    )
+    slug: "why-page-speed-is-a-lead-quality-problem",
+    category: "Conversion",
+    date: "14 August 2026",
+    readTime: "5 min",
+    title: "Why page speed is a lead-quality problem, not a technical one",
+    excerpt: "A slow landing page does not just lose visitors, it loses the motivated ones first. What a sub-two-second mobile page changes about who reaches your enquiry form — and how to get there.",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200",
+    takeaways: [
+      "High-intent local buyers on 4G connections abandon pages taking longer than 2.8 seconds.",
+      "Fast page load directly improves Google Ads Quality Score, lowering your effective cost per lead.",
+      "Cutting heavy third-party tracking scripts and uncompressed hero images solves 80% of speed bottlenecks."
+    ],
+    content: [
+      {
+        heading: "High-intent customers have the shortest patience",
+        body: [
+          "When an air conditioner breaks down in 42°C heat, or a patient needs an emergency dental consult, they are searching on a smartphone with urgent intent. They tap the top result. If that page sits on a blank white screen with a spinning loader for four seconds, they hit the back button and tap result number two.",
+          "The casual browser who is merely browsing will happily wait. The ready-to-buy customer who has their wallet out leaves immediately. Speed is not an engineering metric — it is a customer qualification filter."
+        ]
+      },
+      {
+        heading: "The core components of sub-2-second local load times",
+        body: [
+          "Most local business websites suffer from heavy WordPress page-builder bloat, massive 4MB uncompressed PNG banners, and dozens of unnecessary plugins.",
+          "Moving to lean, static-compiled HTML, serving responsive WebP imagery with explicit width/height dimensions, and deferring non-critical analytics ensures your hero text and phone numbers render in under 1.2 seconds even on unstable mobile data."
+        ]
+      }
+    ]
   },
   {
-    slug: "google-business-profile-guide",
-    title: "GBP Optimization: Step-by-Step Guide to Exploding Maps Call Traffic",
-    metaTitle: "Google Business Profile Optimization Guide | Local SEO",
-    metaDesc: "Step-by-step Google Business Profile (GMB) blueprint. Skyrocket organic call traffic, coordinate geotagged media, and manage listing reviews.",
-    category: "Google Business Profile",
-    date: "June 03, 2026",
-    readTime: "5 Min Read",
-    author: "Nitesh Kumar",
-    intro: "Your Google Business Profile (formerly GMB) is the strongest call generator in your digital toolkit. We show you the precise updates to transform it into a lead machine.",
-    coverImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=800",
-    relatedServiceSlug: "google-business-profile-optimization",
-    relatedServiceName: "GBP Optimization",
-    contentHtml: (
-      <article className="space-y-6">
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Geocoding & Exif Data: The Secret Image Optimization</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          When uploading images to your corporate location profile, don't just dump raw mobile snapshots. Inject physical latitude and longitude details representing Bangalore Institute of Technology, KR Road coordinates (+12.9614, +77.5731) directly into EXIF properties. Google reads this to verify your actual physical presence.
-        </p>
-
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Weekly Custom Update Broadcasts</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          Create short weekly custom updates on your maps dashboard highlight specific projects, promotional deals, and local tips. Treat GMB as a specialized micro-blogging tool to establish relevance.
-        </p>
-
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Combattingcompetitor SPAM Accounts</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          Fake map pins violate guidelines and divert massive search volume. Routinely report fake, unmanned keywords on Google Maps to clear space for verified, legitimate businesses.
-        </p>
-      </article>
-    )
+    slug: "direct-billing-vs-agency-markup-audit",
+    category: "Transparency",
+    date: "31 July 2026",
+    readTime: "6 min",
+    title: "Direct billing vs agency markup: how to audit your own media spend",
+    excerpt: "If you cannot see the invoice your agency receives from Google or Meta, you cannot see your real cost per lead. A simple way to check whether your media budget is being marked up, and what to ask for.",
+    image: "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&q=80&w=1200",
+    takeaways: [
+      "Never allow an agency to run your campaigns out of their centralized master account without direct billing access.",
+      "Compare your total invoice against the internal Google/Meta billing statement rupee for rupee.",
+      "Maintain primary ownership of Google Ads, Meta Business Manager, and Google Analytics at all times."
+    ],
+    content: [
+      {
+        heading: "The hidden markup practice in local agency marketing",
+        body: [
+          "A common practice among traditional digital agencies is bundling media spend and management fees into a single composite invoice: for example, ₹50,000 per month for 'Digital Growth Package'.",
+          "When pressed, the client is told ₹35,000 went to Google Ads and ₹15,000 was the agency management fee. But without direct access to the Google billing receipt, the business owner has no way of verifying whether ₹35,000 was spent, or whether the agency spent ₹18,000 and pocketed the ₹17,000 difference as profit."
+        ]
+      },
+      {
+        heading: "The three golden rules of agency transparency",
+        body: [
+          "Rule 1: Your credit card on the ad account. Google and Meta should debit your corporate card directly. The agency sends you an invoice solely for their strategic service fee.",
+          "Rule 2: Admin ownership remains with you. You invite the agency as a Manager or Partner. You never let them create your account under their proprietary agency email.",
+          "Rule 3: Lead data exportability. All call logs, form entries, and CRM records belong to your business permanently."
+        ]
+      }
+    ]
   },
   {
-    slug: "lead-generation-strategies",
-    title: "Local Lead Gen Strategies: Turning Casual Website Visitors into Active Sales Leads",
-    metaTitle: "High-Converting Lead Generation Strategies | LocalBuild Agency",
-    metaDesc: "Actionable local lead generation metrics. Master custom calculators, interactive strategy planners, and sticky WhatsApp CTA conversion systems.",
-    category: "Business Scaling",
-    date: "May 29, 2026",
-    readTime: "6 Min Read",
-    author: "Nitesh Kumar",
-    intro: "It is easy to generate empty clicks. True digital excellence is generating high-intent leads that welcome sales discussions. We break down the exact conversion funnels.",
-    coverImage: "https://images.unsplash.com/photo-1542744094-3a31f103e35f?auto=format&fit=crop&q=80&w=800",
-    relatedServiceSlug: "ai-automation-solutions",
-    relatedServiceName: "AI Automation Solutions",
-    contentHtml: (
-      <article className="space-y-6">
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">1. Introduce Dynamic Calculators and Interactive Planners</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          Traditional contact grids are boring. Guide prospects through simple visual quizzes like our <strong>S_Roadmap Planner</strong> or <strong>ROI Simulators</strong>. Interactive experiences keep prospects engaged, lowering exit ratios while gathering high-fidelity business datasets.
-        </p>
-
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">2. Trigger SMS Auto-Replies Within Exactly 2 Minutes</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          The likelihood of qualifying a lead falls by 400% if you wait more than 10 minutes to call them. Put auto-reply web triggers in place to engage incoming requests instantly, securing the deal while they are ready.
-        </p>
-
-        <div className="bg-emerald-50 border-1 border-emerald-200 text-emerald-800 rounded-xl p-5 text-xs sm:text-sm leading-relaxed">
-          <strong>✓ Lead Conversion Fast Fact:</strong> Companies utilizing automated WhatsApp or SMS auto-responders convert average inbound traffic into active consultations up to 3 times more reliably than teams using manual outreach.
-        </div>
-      </article>
-    )
+    slug: "wiring-1-tap-call-and-whatsapp-routing",
+    category: "Automation",
+    date: "17 July 2026",
+    readTime: "6 min",
+    title: "From enquiry to booked job: wiring 1-tap call and WhatsApp routing",
+    excerpt: "Most lost enquiries are lost in the first ten minutes. How to connect your landing page, phone and WhatsApp into one path so a motivated customer reaches a human before they cool off.",
+    image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=1200",
+    takeaways: [
+      "Lead conversion drops by up to 391% if follow-up takes longer than 60 minutes.",
+      "Sticky mobile headers with one-tap phone and WhatsApp buttons capture 65%+ of local conversions.",
+      "Automate immediate WhatsApp confirmation messages with consultation details and team contact numbers."
+    ],
+    content: [
+      {
+        heading: "The ten-minute conversion window",
+        body: [
+          "When a customer submits an inquiry form online, they are actively sitting with their phone in hand, thinking about their problem. Ten minutes later, they are driving, in a meeting, or browsing another provider's website.",
+          "If your business takes 4 hours or the next morning to call them back, they have forgotten what they asked, or they have already booked with the competitor who answered their WhatsApp message in 90 seconds."
+        ]
+      },
+      {
+        heading: "Building the unified mobile lead path",
+        body: [
+          "Every high-converting local landing page should feature two persistent conversion mechanisms: a primary direct call button connected to an active business phone line, and a secondary WhatsApp link pre-filled with the customer's specific service query.",
+          "When forms are submitted, an instant webhook trigger should dispatch a WhatsApp notification to your on-duty front desk or sales coordinator, allowing them to initiate human contact within 5 minutes."
+        ]
+      }
+    ]
   },
   {
-    slug: "digital-marketing-trends",
-    title: "Digital Marketing Trends: Future-Proofing Bangalore Service Corporations",
-    metaTitle: "Digital Marketing Trends in Bangalore | Future Business-Tech",
-    metaDesc: "Analyze future digital marketing trends in India. Master real-time conversational channels, localized maps filters, and hyper-targeted advertising.",
-    category: "Marketing Future",
-    date: "May 25, 2026",
-    readTime: "6 Min Read",
-    author: "Nitesh Kumar",
-    intro: "Traditional outbound marketing is collapsing. Stay ahead of shifts in visual searching, artificial intelligence assistance, and privacy regulations.",
-    coverImage: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=800",
-    relatedServiceSlug: "business-automation-systems",
-    relatedServiceName: "Business Automation Systems",
-    contentHtml: (
-      <article className="space-y-6">
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">The Decentralization of Search Queries</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          While traditional search remains highly dominant, rising cohorts utilize Instagram grids, TikTok channels, and Google Maps to evaluate options locally. Maintain dynamic profiles across multiple networks to catch every consumer stream.
-        </p>
-
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">First-Party Data Collection Supremacy</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          With cookies deprecating, owning deep customer email and phone direct contact lists is critical. Design premium resources and interactive surveys on high-trust corporate landing structures.
-        </p>
-
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Hyperlocal Community Personalization</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          Vague national advertising is dying. Bangalore consumers look to book companies with a real physical footprint close to home. Accentuate your Bangalore landmarks and support neighboring societies.
-        </p>
-      </article>
-    )
+    slug: "negative-keywords-cheapest-optimisation-in-google-ads",
+    category: "Paid Ads",
+    date: "30 June 2026",
+    readTime: "8 min",
+    title: "Negative keywords are the cheapest optimisation in Google Ads",
+    excerpt: "The fastest way to improve a local campaign is usually not better ad copy — it is removing the searches you should never have paid for. How to build a negative keyword list from your own search terms.",
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200",
+    takeaways: [
+      "Negative match lists stop budget bleeding on irrelevant search intent before a single ad dollar is spent.",
+      "Cross-check your search term report weekly to identify non-commercial queries and competitor branch locations.",
+      "Create shared negative keyword lists across all search campaigns in your account."
+    ],
+    content: [
+      {
+        heading: "Why Google defaults to wasting your budget",
+        body: [
+          "Google's automated smart bidding and broad match models are designed to maximize impressions and clicks across broad semantic topics. If you bid on 'commercial architect', Google will happily serve your ads for 'architect salary in Bihar', 'free architectural drawings download', and 'top architecture colleges'.",
+          "Every one of those clicks costs you real money. Without a disciplined negative keyword strategy, 30% to 50% of your advertising budget is systematically incinerated on people who will never buy from you."
+        ]
+      },
+      {
+        heading: "How to structure an impenetrable negative keyword library",
+        body: [
+          "Start by building standard negative lists across four categories: Career queries ('jobs', 'vacancy', 'internship', 'recruitment'), Educational queries ('syllabus', 'course', 'pdf', 'notes', 'tutorial'), Price queries ('free', 'cheap', 'lowest price', 'subsidy'), and Competitor queries for areas outside your physical delivery range.",
+          "Review your search query report every Monday morning. Any phrase with more than 3 impressions that lacks commercial intent must be added as a phrase or exact negative match immediately."
+        ]
+      }
+    ]
   },
   {
-    slug: "ai-automation-for-businesses",
-    title: "AI & Business Automation: Eliminating Operating Blocks with Smart Systems",
-    metaTitle: "AI Automation & CRM Strategy Bangalore | Business Workflows",
-    metaDesc: "Discover how AI and CRM automation save over 20+ staff hours weekly. Implement chat systems, dynamic lead routing, and database aggregations in Bangalore.",
-    category: "AI & Automations",
-    date: "May 18, 2026",
-    readTime: "7 Min Read",
-    author: "Nitesh Kumar",
-    intro: "Stop spending expensive office hours executing repetitive, administrative chores. Build automated digital systems that work tirelessly to organize your sales pipeline.",
-    coverImage: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=800",
-    relatedServiceSlug: "business-automation-systems",
-    relatedServiceName: "Business Automation Systems",
-    contentHtml: (
-      <article className="space-y-6">
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">1. Streamline Customer Intake Fields with AI Forms</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          When a prospect answers a strategy quiz online, deploy automated parser software to analyze inputs, estimate project size, and automatically flag high-value inquiries on team pipelines.
-        </p>
-
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">2. Synchronize Instant Lead Routing</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          Round-robin assignment algorithms route leads to active call agents instantaneously. This keeps teams productive and avoids missed connections or slower manual allocations.
-        </p>
-
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">3. Automate Client Invoicing & Estimations</h2>
-        <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-          Upon marking a deal as qualified in your GoHighLevel or custom dashboard, prompt automatic triggers to draft custom proposals, send estimate PDFs, and coordinate electronic signatures.
-        </p>
-      </article>
-    )
+    slug: "the-30-minute-discovery-call-what-to-ask",
+    category: "Process",
+    date: "16 June 2026",
+    readTime: "4 min",
+    title: "The 30-minute discovery call: what we ask, and what you should ask us",
+    excerpt: "A discovery call should leave you with a clearer picture even if you never work with the agency. The questions we ask every time — and the five you should be asking in return.",
+    image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=1200",
+    takeaways: [
+      "A genuine discovery call audits commercial unit economics, not vanity metrics.",
+      "Ask your agency who specifically does the work and whether they charge markups on media spend.",
+      "You should walk away with a written roadmap of immediate fixes regardless of whether you engage."
+    ],
+    content: [
+      {
+        heading: "What a professional discovery call should feel like",
+        body: [
+          "Too many agency discovery calls are disguised sales pitches: 5 minutes of generic chit-chat, followed by a 25-minute PowerPoint deck showing award logos and case studies of multinational brands.",
+          "At LocalBuild, discovery is a technical and commercial diagnosis. Before the call, we inspect your Google Business Profile, your search competitors in your city, your mobile speed, and your current enquiry flow. The call is spent discussing your real numbers: customer lifetime value, conversion rates, and the economics of customer acquisition."
+        ]
+      },
+      {
+        heading: "The five questions you should ask any agency before signing",
+        body: [
+          "1. 'Will I own my Google Ads account and Google Analytics property directly, or will it live in your agency master account?'",
+          "2. 'Does your agency add any percentage markup or transaction fee onto my advertising spend?'",
+          "3. 'What specific person on your team will be managing my search terms and negative keyword lists each week?'",
+          "4. 'How do you measure a lead — is it an impression, a click, or a verified phone call lasting over 30 seconds?'",
+          "5. 'What happens to my landing pages and creative assets if I decide not to renew after our engagement?'"
+        ]
+      }
+    ]
+  },
+  {
+    slug: "local-schema-explained-without-the-jargon",
+    category: "Local SEO",
+    date: "02 June 2026",
+    readTime: "7 min",
+    title: "Local schema explained without the jargon",
+    excerpt: "Structured data is how you tell search engines exactly what your business is, where it is and what it does. A plain explanation of local schema, and the three things worth getting right first.",
+    image: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?auto=format&fit=crop&q=80&w=1200",
+    takeaways: [
+      "JSON-LD Schema provides unambiguous entity data directly to Google's Knowledge Graph.",
+      "Ensure NAP (Name, Address, Phone) in schema matches Google Business Profile down to punctuation.",
+      "Include GeoCoordinates, OpeningHoursSpecification, and hasOfferCatalog for local service indexing."
+    ],
+    content: [
+      {
+        heading: "Why Google needs machine-readable data",
+        body: [
+          "Search engines are remarkably capable at reading text, but English is inherently ambiguous. When a webpage says 'LocalBuild on Boring Road', Google has to guess whether that refers to a construction company, a directory, or an agency.",
+          "Schema markup (specifically JSON-LD format) is structured code embedded in your site's header that translates your business information into machine-readable facts: 'We are a LocalBusiness in Patna, Bihar, located at latitude 25.613 and longitude 85.111, operating Monday through Saturday from 09:30 to 19:30 IST.'"
+        ]
+      },
+      {
+        heading: "The three schema items that deliver immediate local benefit",
+        body: [
+          "1. LocalBusiness / ProfessionalService Entity: Specifies exact business legal name, primary telephone number, physical office address, and official logos.",
+          "2. GeoCoordinates & AreaServed: Pins your exact geographic latitude and longitude, anchoring your website to Google Maps data.",
+          "3. AggregateRating & Reviews: Linking verified customer review counts to your schema allows Google to display golden star rating snippets directly beneath your organic search results."
+        ]
+      }
+    ]
   }
 ];
 
 interface BlogPageProps {
-  currentBlogSlug: string | null;
-  onSelectBlog: (slug: string | null) => void;
-  onNavigateToService: (slug: string) => void;
-  onQuoteClick: () => void;
+  currentSlug?: string | null;
+  onNavigate: (pathOrId: string) => void;
+  onQuoteClick: (prefilledService?: string, prefilledNotes?: string) => void;
 }
 
-export default function BlogPage({ currentBlogSlug, onSelectBlog, onNavigateToService, onQuoteClick }: BlogPageProps) {
-  
-  // Expose specific blog post or show main category list
-  const activePost = currentBlogSlug ? blogPostsList.find(b => b.slug === currentBlogSlug) : null;
-  
-  // Track dynamic tab categories
+export default function BlogPage({ currentSlug, onNavigate, onQuoteClick }: BlogPageProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
-  useEffect(() => {
-    if (activePost) {
-      document.title = activePost.metaTitle;
-      const meta = document.querySelector('meta[name="description"]');
-      if (meta) {
-        meta.setAttribute("content", activePost.metaDesc);
-      } else {
-        const metaEl = document.createElement("meta");
-        metaEl.name = "description";
-        metaEl.content = activePost.metaDesc;
-        document.head.appendChild(metaEl);
-      }
+  const categories = ["All", "Local SEO", "Paid Ads", "Conversion", "Automation", "Transparency", "Process"];
 
-      // Sync Canonical tag
-      let canonicalEl = document.querySelector('link[rel="canonical"]');
-      const canonicalUrl = `https://www.localbuild.site/blog/${activePost.slug}`;
-      if (canonicalEl) {
-        canonicalEl.setAttribute("href", canonicalUrl);
-      } else {
-        const link = document.createElement("link");
-        link.rel = "canonical";
-        link.href = canonicalUrl;
-        document.head.appendChild(link);
-      }
-    } else {
-      document.title = "LocalBuild Insight Blog | Expert Marketing Guides Bangalore";
-      const meta = document.querySelector('meta[name="description"]');
-      if (meta) {
-        meta.setAttribute("content", "Access elite local SEO strategies, PPC tips, GBP ranking blueprints, and AI Business automations from LOCALBUILD, Bangalore's premier agency.");
-      }
+  // If a slug is specified, render the individual Post Page Template (Section 5.6)
+  if (currentSlug) {
+    const post = BLOG_POSTS.find((p) => p.slug === currentSlug) || BLOG_POSTS[0];
+    const relatedPosts = BLOG_POSTS.filter((p) => p.slug !== post.slug).slice(0, 3);
 
-      let canonicalEl = document.querySelector('link[rel="canonical"]');
-      const canonicalUrl = `https://www.localbuild.site/blog`;
-      if (canonicalEl) {
-        canonicalEl.setAttribute("href", canonicalUrl);
-      }
-    }
-
-    // Smooth scroll view back to top
-    window.scrollTo({ top: 0, behavior: "instant" as any });
-  }, [activePost]);
-
-  const categories = ["All", "Web Design & UI/UX", "PPC & Lead Generation", "Local SEO Packs", "Google Business Profile", "Business Scaling", "AI & Automations"];
-
-  const filteredPosts = selectedCategory === "All" 
-    ? blogPostsList 
-    : blogPostsList.filter(p => p.category === selectedCategory || p.slug === "digital-marketing-trends" && selectedCategory === "Marketing Future");
-
-  const articleSchema = activePost ? {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": activePost.title,
-    "image": [activePost.coverImage],
-    "datePublished": "2026-06-13T09:00:00Z",
-    "dateModified": "2026-06-13T09:00:00Z",
-    "author": [{
-      "@type": "Person",
-      "name": activePost.author,
-      "url": "https://www.localbuild.site"
-    }],
-    "publisher": {
-      "@type": "Organization",
-      "name": "LocalBuild",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://i.ibb.co/G3tMbK2q/image.png"
-      }
-    },
-    "description": activePost.metaDesc
-  } : null;
-
-  return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased pb-20 pt-20">
-      
-      {/* Article Schema Injection in Body */}
-      {articleSchema && (
-        <script type="application/ld+json">
-          {JSON.stringify(articleSchema)}
-        </script>
-      )}
-
-      {/* Mini Breadcrumb Controller bar */}
-      <div className="bg-white border-b border-slate-100 py-3.5 sticky top-0 z-[100] backdrop-blur-md bg-white/95">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <button 
-            onClick={() => onSelectBlog(null)}
-            className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors uppercase tracking-widest cursor-pointer"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>{activePost ? "Back to Blog Hub" : "Main Website"}</span>
-          </button>
-          
-          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 font-mono">
-            <span>LOCATION: BENGALURU CORPORATE HUB</span>
+    return (
+      <div className="min-h-screen bg-white text-[#263044]">
+        {/* Breadcrumb / Back button */}
+        <div className="bg-[#F7F5EF] border-b border-[#DDE3EC] py-4">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <button
+              type="button"
+              onClick={() => onNavigate("/blog")}
+              className="inline-flex items-center gap-2 text-xs font-bold text-[#3157D5] hover:text-[#2546B8] cursor-pointer"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to all insights</span>
+            </button>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
-        
-        {/* IF VIEWING DETAILED POST */}
-        {activePost ? (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 xl:gap-16 items-start">
-            
-            {/* POST MAIN CONTAINER */}
-            <main className="lg:col-span-8 bg-white border border-slate-200/80 p-5 sm:p-10 rounded-2xl shadow-xs space-y-8">
-              
-              <header className="space-y-4">
-                <div className="inline-flex items-center gap-2 text-xs font-bold text-blue-600 bg-blue-50/70 border border-blue-100 px-3 py-1 rounded-full uppercase tracking-wider">
-                  <BookOpen className="w-3.5 h-3.5" />
-                  <span>{activePost.category}</span>
-                </div>
-
-                <h1 className="text-2xl sm:text-3xl lg:text-[38px] font-sans font-black text-slate-900 leading-tight tracking-tight">
-                  {activePost.title}
-                </h1>
-
-                {/* Meta details bar */}
-                <div className="flex flex-wrap items-center gap-5 text-xs text-slate-400 font-semibold border-b border-slate-100 pb-5">
-                  <div className="flex items-center gap-1">
-                    <User className="w-3.5 h-3.5 text-slate-400" />
-                    <span>By {activePost.author}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5" />
-                    <span>{activePost.date}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5" />
-                    <span>{activePost.readTime}</span>
-                  </div>
-                </div>
-              </header>
-
-              {/* Cover Banner Illustration */}
-              <div className="relative aspect-video rounded-xl overflow-hidden border border-slate-100 shadow-xs">
-                <img 
-                  src={activePost.coverImage} 
-                  alt={activePost.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent" />
-              </div>
-
-              {/* Intro quote bar */}
-              <p className="text-base sm:text-lg text-slate-500 italic font-medium leading-relaxed border-l-4 border-blue-600 pl-4 py-1">
-                &quot;{activePost.intro}&quot;
-              </p>
-
-              {/* Content Body */}
-              <div className="prose prose-slate max-w-none text-slate-600 font-normal">
-                {activePost.contentHtml}
-              </div>
-
-              {/* Dynamic Action Trigger widget */}
-              <div className="bg-slate-50 border border-slate-100 rounded-xl p-5 sm:p-7 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5 mt-10">
-                <div className="space-y-1 text-left">
-                  <span className="text-[10px] font-mono tracking-widest font-black uppercase text-slate-400">Related Resource Path</span>
-                  <h4 className="text-base font-sans font-black text-slate-900">Need specific custom adjustments?</h4>
-                  <p className="text-xs text-slate-500">Explore our professional {activePost.relatedServiceName} framework built right here in Bangalore.</p>
-                </div>
-                
-                <button
-                  onClick={() => onNavigateToService(activePost.relatedServiceSlug)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider py-2.5 px-5 rounded-lg flex items-center gap-1 shadow transition cursor-pointer shrink-0"
-                >
-                  <span>Explore {activePost.relatedServiceName}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-            </main>
-
-            {/* SIDEBAR WIDGET */}
-            <aside className="lg:col-span-4 space-y-6">
-              
-              {/* Profile Card */}
-              <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-xs text-center space-y-4">
-                <div className="w-16 h-16 rounded-full bg-blue-600 text-white flex items-center justify-center font-black text-xl font-mono mx-auto shadow border-2 border-white">
-                  NK
-                </div>
-                <div className="space-y-0.5">
-                  <h4 className="text-base font-black text-slate-900">Nitesh Kumar</h4>
-                  <p className="text-xs text-indigo-500 font-bold">Founder & local Growth Architect</p>
-                </div>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  Engineering high-conversions local SEO strategies, search ad frameworks, and business software models at LOCALBUILD Bengaluru.
-                </p>
-                <button
-                  onClick={onQuoteClick}
-                  className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider py-2.5 rounded-lg transition-colors cursor-pointer"
-                >
-                  Book Free Audit Call
-                </button>
-              </div>
-
-              {/* Related Blog Posts Links */}
-              <div className="bg-white border border-slate-200 p-5 rounded-1.5xl shadow-xs space-y-4">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Alternative Marketing Guides</h4>
-                <div className="space-y-3.5">
-                  {blogPostsList
-                    .filter(b => b.slug !== activePost.slug)
-                    .slice(0, 4)
-                    .map((other, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => onSelectBlog(other.slug)}
-                        className="w-full text-left font-sans text-xs hover:text-blue-600 transition flex items-start gap-2.5 group"
-                      >
-                        <span className="text-slate-300 group-hover:text-blue-500 transition-colors font-bold mt-0.5">•</span>
-                        <div className="space-y-0.5">
-                          <p className="font-bold text-slate-800 leading-snug group-hover:text-blue-600 transition-colors">
-                            {other.title}
-                          </p>
-                          <span className="text-[10px] text-slate-400 block font-mono font-medium">{other.category}</span>
-                        </div>
-                      </button>
-                    ))}
-                </div>
-              </div>
-
-            </aside>
-          </div>
-        ) : (
-          /* OTHERWISE: CATEGORY DASHBOARD HUB VIEW */
-          <div className="space-y-12">
-            
-            {/* Header intro panel */}
-            <div className="text-center max-w-3.5xl mx-auto space-y-4">
-              <div className="inline-flex items-center gap-1 bg-blue-50 px-3 py-1 border border-blue-100 rounded-full text-xs font-bold text-blue-600 uppercase tracking-widest">
-                <Sparkles className="w-3 px-0 p-0 text-blue-500" />
-                <span>LocalBuild Insight Hub</span>
-              </div>
-              
-              <h1 className="font-sans font-black text-3xl sm:text-5xl text-slate-900 tracking-tight leading-none">
-                Organic Search SEO & Conversion Optimization Guides
-              </h1>
-              
-              <p className="text-sm sm:text-base text-slate-500 leading-relaxed max-w-2xl mx-auto">
-                Discover diagnostic playbooks, negative campaign mapping formulas, local schemas, and AI automatons crafted to help Bangalore service corporations double conversions.
-              </p>
+        {/* Post Header */}
+        <header className="py-12 sm:py-16 bg-[#071126] text-white border-b border-[#1C2A4A]">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="inline-block px-2.5 py-1 rounded bg-[#3157D5] text-white text-[11px] font-bold uppercase tracking-wider mb-4">
+              {post.category}
             </div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight mb-4">
+              {post.title}
+            </h1>
+            <div className="flex flex-wrap items-center gap-4 text-xs text-[#C6CEDE]">
+              <span className="font-semibold text-white">LocalBuild Team</span>
+              <span>•</span>
+              <div className="flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5" />
+                <span>{post.date}</span>
+              </div>
+              <span>•</span>
+              <div className="flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5" />
+                <span>{post.readTime} read</span>
+              </div>
+            </div>
+          </div>
+        </header>
 
-            {/* Category Filter Pills (Horizontal scrollable) */}
-            <div className="flex overflow-x-auto gap-2 pb-2 justify-start sm:justify-center scrollbar-none">
-              {categories.map((cat, idx) => (
+        {/* Post Body */}
+        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+          {/* Standfirst */}
+          <div className="text-lg sm:text-xl font-medium text-[#263044] leading-relaxed pb-8 mb-8 border-b border-[#DDE3EC]">
+            {post.excerpt}
+          </div>
+
+          {/* Featured Image */}
+          <div className="mb-10 rounded-xl overflow-hidden border border-[#DDE3EC]">
+            <img
+              src={post.image}
+              alt={post.title}
+              className="w-full h-auto aspect-[16/9] object-cover"
+            />
+          </div>
+
+          {/* Body content with H2 subheads every 200-300 words */}
+          <div className="space-y-10 text-base sm:text-lg text-[#263044] leading-relaxed">
+            {post.content.map((section, idx) => (
+              <div key={idx} className="space-y-4">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-[#0B1633] tracking-tight">
+                  {section.heading}
+                </h2>
+                {section.body.map((paragraph, pIdx) => (
+                  <p key={pIdx}>{paragraph}</p>
+                ))}
+              </div>
+            ))}
+          </div>
+
+          {/* Practical Takeaways */}
+          <div className="mt-12 p-6 sm:p-8 bg-[#F7F5EF] border border-[#DDE3EC] rounded-xl">
+            <h3 className="text-base sm:text-lg font-extrabold text-[#0B1633] mb-4 flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-[#168A62]" />
+              <span>Key Takeaways for Local Business Owners</span>
+            </h3>
+            <ul className="space-y-2.5 text-sm sm:text-base text-[#263044]">
+              {post.takeaways.map((item, idx) => (
+                <li key={idx} className="flex items-start gap-2.5">
+                  <span className="text-[#3157D5] font-bold mt-1">•</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contextual CTA Block */}
+          <div className="mt-12 p-8 bg-[#0B1633] text-white rounded-xl">
+            <h3 className="text-xl sm:text-2xl font-extrabold text-white mb-2">
+              Want this reviewed in your market?
+            </h3>
+            <p className="text-sm sm:text-base text-[#C6CEDE] mb-6 leading-relaxed">
+              We&apos;ll look at your profile, your ads and your landing page and tell you what we would change first.
+            </p>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <button
+                type="button"
+                onClick={() => onQuoteClick("Discovery Call", `Inquiry from blog post: ${post.title}`)}
+                className="btn btn--primary"
+              >
+                Start a Conversation
+              </button>
+              <a
+                href={getWhatsAppUrl(`Hi LocalBuild, I read your article "${post.title}" and would like to review this in my market.`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn--ghost inline-flex items-center justify-center gap-2"
+              >
+                <MessageSquare className="w-4 h-4 text-emerald-400" />
+                <span>WhatsApp Us</span>
+              </a>
+            </div>
+          </div>
+
+          {/* Related Reading (3 real posts from grid) */}
+          <div className="mt-16 pt-12 border-t border-[#DDE3EC]">
+            <h3 className="text-xl font-extrabold text-[#263044] mb-6">
+              Related Reading
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {relatedPosts.map((rPost) => (
+                <div
+                  key={rPost.slug}
+                  onClick={() => onNavigate(`/blog/${rPost.slug}`)}
+                  className="p-5 rounded-lg border border-[#DDE3EC] bg-white hover:border-[#3157D5] transition-all cursor-pointer flex flex-col justify-between"
+                >
+                  <div>
+                    <span className="text-[10px] font-bold text-[#3157D5] uppercase tracking-wider block mb-1">
+                      {rPost.category}
+                    </span>
+                    <h4 className="text-sm font-bold text-[#263044] line-clamp-2 mb-2">
+                      {rPost.title}
+                    </h4>
+                    <p className="text-xs text-[#667085] line-clamp-3 mb-4">
+                      {rPost.excerpt}
+                    </p>
+                  </div>
+                  <span className="text-xs font-bold text-[#3157D5] inline-flex items-center gap-1">
+                    Read article <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Otherwise, render Blog Index Page (Sections 5.2 - 5.5)
+  const featuredPost = BLOG_POSTS[0];
+  const remainingPosts = BLOG_POSTS.slice(1);
+
+  const filteredPosts = remainingPosts.filter(
+    (post) => selectedCategory === "All" || post.category === selectedCategory
+  );
+
+  return (
+    <div className="min-h-screen bg-white text-[#263044]">
+      {/* 5.2 Hero Section (Ivory, typography only, no photograph) */}
+      <section className="bg-[#F7F5EF] border-b border-[#DDE3EC] py-14 sm:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#3157D5] mb-2">
+              INSIGHTS
+            </p>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#263044] tracking-tight leading-[1.14] mb-4">
+              Plain-English notes on local growth.
+            </h1>
+            <p className="text-base sm:text-lg text-[#667085] leading-relaxed mb-6">
+              Short, practical writing on local search, advertising, landing pages and lead automation. No jargon, no hype, no recycled listicles.
+            </p>
+            <div>
+              <button
+                type="button"
+                onClick={() => onNavigate("/contact")}
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#3157D5] hover:text-[#2546B8] cursor-pointer"
+              >
+                <span>Talk to a strategist</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5.3 Category Filter (6 filter chips + All, single-select, aria-pressed) */}
+      <section className="py-6 bg-white border-b border-[#DDE3EC] sticky top-16 z-20 shadow-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-none" role="group" aria-label="Filter blog posts by category">
+            {categories.map((cat) => {
+              const isSelected = selectedCategory === cat;
+              return (
                 <button
-                  key={idx}
+                  key={cat}
+                  type="button"
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-155 cursor-pointer ${
-                    selectedCategory === cat 
-                      ? "bg-blue-600 text-white shadow shadow-blue-500/15" 
-                      : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
+                  aria-pressed={isSelected}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors whitespace-nowrap cursor-pointer ${
+                    isSelected
+                      ? "bg-[#0B1633] text-white"
+                      : "bg-[#F2F5FA] text-[#667085] hover:bg-[#E5ECF6] hover:text-[#263044]"
                   }`}
                 >
                   {cat}
                 </button>
-              ))}
-            </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
-            {/* Posts Cards Grid - Stacks on mobile, beautifully aligned layout */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPosts.map((post, idx) => (
-                <article 
-                  key={idx}
-                  className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
-                >
-                  <div className="relative aspect-video bg-slate-100 border-b border-slate-100 overflow-hidden">
-                    <img 
-                      src={post.coverImage} 
-                      alt={post.title}
-                      className="w-full h-full object-cover hover:scale-103 transition-transform duration-500"
-                    />
-                    <span className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs border border-slate-100 px-2.5 py-1 rounded text-[10px] font-black uppercase text-blue-600 tracking-wider">
-                      {post.category}
+      {/* 5.4 Featured Post (One large editorial block, no card) */}
+      {selectedCategory === "All" && (
+        <section className="py-12 sm:py-16 bg-white border-b border-[#DDE3EC]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-7">
+                <div className="aspect-[16/9] rounded-xl overflow-hidden border border-[#DDE3EC]">
+                  <img
+                    src={featuredPost.image}
+                    alt={featuredPost.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+              <div className="lg:col-span-5 space-y-4">
+                <div className="flex items-center gap-3 text-xs text-[#667085]">
+                  <span className="font-bold text-[#3157D5] uppercase tracking-wider">{featuredPost.category}</span>
+                  <span>•</span>
+                  <span>{featuredPost.date}</span>
+                  <span>•</span>
+                  <span>{featuredPost.readTime}</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0B1633] tracking-tight leading-snug">
+                  {featuredPost.title}
+                </h2>
+                <p className="text-sm sm:text-base text-[#667085] leading-relaxed">
+                  {featuredPost.excerpt}
+                </p>
+                <div className="pt-2 flex items-center justify-between">
+                  <span className="text-xs text-[#667085]">By LocalBuild Team</span>
+                  <button
+                    type="button"
+                    onClick={() => onNavigate(`/blog/${featuredPost.slug}`)}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#3157D5] hover:text-[#2546B8] cursor-pointer"
+                  >
+                    <span>Read the article</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 5.5 Post Grid (Seven more posts) */}
+      <section className="py-16 sm:py-24 bg-[#F2F5FA]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-10">
+            <h3 className="text-xl font-extrabold text-[#263044]">
+              {selectedCategory === "All" ? "Latest Articles" : `${selectedCategory} Articles`}
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredPosts.map((post) => (
+              <article
+                key={post.slug}
+                onClick={() => onNavigate(`/blog/${post.slug}`)}
+                className="bg-white rounded-xl border border-[#DDE3EC] overflow-hidden flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer"
+              >
+                <div className="aspect-[16/9] w-full overflow-hidden bg-zinc-100">
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+
+                <div className="p-6 flex-1 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 text-xs text-[#667085] mb-2">
+                      <span className="font-bold text-[#3157D5] uppercase tracking-wider">{post.category}</span>
+                      <span>•</span>
+                      <span>{post.date}</span>
+                      <span>•</span>
+                      <span>{post.readTime}</span>
+                    </div>
+                    <h4 className="text-base sm:text-lg font-bold text-[#0B1633] mb-2 line-clamp-2 leading-snug">
+                      {post.title}
+                    </h4>
+                    <p className="text-xs sm:text-sm text-[#667085] line-clamp-3 leading-relaxed mb-4">
+                      {post.excerpt}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 border-t border-[#DDE3EC] flex items-center justify-between text-xs">
+                    <span className="text-[#667085]">By LocalBuild Team</span>
+                    <span className="font-bold text-[#3157D5] inline-flex items-center gap-1">
+                      Read article <ArrowRight className="w-3.5 h-3.5" />
                     </span>
                   </div>
-
-                  {/* Body description panel */}
-                  <div className="p-6 flex-1 flex flex-col justify-between space-y-4 text-left">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-3 text-[10px] text-slate-400 font-semibold font-mono">
-                        <span>{post.date}</span>
-                        <span>•</span>
-                        <span>{post.readTime}</span>
-                      </div>
-                      
-                      <h3 className="text-base sm:text-lg font-black text-slate-900 leading-snug group-hover:text-blue-600">
-                        {post.title}
-                      </h3>
-                      
-                      <p className="text-xs sm:text-sm text-slate-500 leading-relaxed font-normal line-clamp-3">
-                        {post.intro}
-                      </p>
-                    </div>
-
-                    <div className="pt-2 border-t border-slate-50 flex items-center justify-between">
-                      <button 
-                        onClick={() => onSelectBlog(post.slug)}
-                        className="text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1 cursor-pointer"
-                      >
-                        <span>Read Complete Playbook</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-
+                </div>
+              </article>
+            ))}
           </div>
-        )}
-
-      </div>
+        </div>
+      </section>
     </div>
   );
 }

@@ -101,7 +101,7 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }: Adm
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          transition={{ duration: 0.25, cubicBezier: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
           className="relative bg-white rounded-2xl shadow-2xl border border-zinc-100 max-w-md w-full overflow-hidden z-10"
         >
           {/* Accent decoration line */}

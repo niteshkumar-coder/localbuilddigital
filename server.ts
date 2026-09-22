@@ -21,6 +21,7 @@ const PORT = 3000;
 const DB_FILE = path.join(process.cwd(), "leads_db.json");
 
 app.use(express.json());
+app.use(express.static(path.join(process.cwd(), "public")));
 
 // In-memory session store for password authentication
 // Maps token -> { expiresAt: number, lastActive: number }
