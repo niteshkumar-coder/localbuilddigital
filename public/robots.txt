@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Allow: /images/
+Allow: /brand/
+Allow: /favicon/
+
+Sitemap: https://www.localbuild.site/sitemap.xml

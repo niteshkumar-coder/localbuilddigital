@@ -649,7 +649,7 @@ Sitemap: https://www.localbuild.site/sitemap.xml`;
               <p className="text-zinc-500 text-xs mb-4">Place these inline tags directly inside your HTML site header to populate beautiful, clickable previews in WhatsApp, Facebook, LinkedIn, and Twitter.</p>
               <div className="relative">
                 <button 
-                  onClick={() => triggerCopy(`<meta property="og:title" content="LocalBuild | Premium Media Buying & AI Systems" />\n<meta property="og:description" content="LocalBuild is a premium digital marketing agency Patna & Bangalore." />\n<meta property="og:image" content="https://i.ibb.co/G3tMbK2q/image.png" />`, "social-snippet")}
+                  onClick={() => triggerCopy(`<meta property="og:title" content="LocalBuild | Digital Marketing Agency & SEO Services" />\n<meta property="og:description" content="LocalBuild helps businesses grow with high-converting websites, SEO, Google Ads, Meta Ads, Google Business Profile, AI solutions and lead generation." />\n<meta property="og:image" content="https://www.localbuild.site/images/logo.png" />`, "social-snippet")}
                   className="absolute top-3 right-3 flex items-center gap-1 text-xs text-zinc-400 hover:text-white bg-zinc-800 border border-zinc-700 p-1.5 px-3 rounded cursor-pointer"
                 >
                   {copiedId === "social-snippet" ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
@@ -657,18 +657,18 @@ Sitemap: https://www.localbuild.site/sitemap.xml`;
                 </button>
                 <pre className="bg-zinc-950 text-slate-300 p-5 rounded-xl font-mono text-[10px] md:text-xs overflow-x-auto border border-zinc-800 max-h-56">
 {`<!-- Meta Open Graph Metadata -->
-<meta property="og:title" content="LocalBuild | Premium Media Buying, Website dev & AI Systems" />
+<meta property="og:title" content="LocalBuild | Digital Marketing Agency & SEO Services" />
 <meta property="og:site_name" content="LocalBuild" />
-<meta property="og:description" content="Patna & Bihar's top digital marketing agency coordinating custom React platforms, SEO optimization, Google Local Service Ads, and direct WhatsApp integrations." />
-<meta property="og:image" content="https://i.ibb.co/G3tMbK2q/image.png" />
+<meta property="og:description" content="LocalBuild helps businesses grow with high-converting websites, SEO, Google Ads, Meta Ads, Google Business Profile, AI solutions and lead generation." />
+<meta property="og:image" content="https://www.localbuild.site/images/logo.png" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://www.localbuild.site" />
+<meta property="og:url" content="https://www.localbuild.site/" />
 
 <!-- Twitter Card Metadata -->
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="LocalBuild | Premium Media Buying, Website dev & AI Systems" />
-<meta name="twitter:description" content="Patna & Bihar's top digital marketing agency coordinating custom React layouts." />
-<meta name="twitter:image" content="https://i.ibb.co/G3tMbK2q/image.png" />`}
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="LocalBuild | Digital Marketing Agency & SEO Services" />
+<meta name="twitter:description" content="LocalBuild helps businesses grow with high-converting websites, SEO, Google Ads, Meta Ads, Google Business Profile, AI solutions and lead generation." />
+<meta name="twitter:image" content="https://www.localbuild.site/images/logo.png" />`}
                 </pre>
               </div>
             </div>

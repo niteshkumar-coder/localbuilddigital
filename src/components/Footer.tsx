@@ -1,4 +1,4 @@
-import { ArrowUp, MapPin, Mail, Phone, ExternalLink } from "lucide-react";
+import { ArrowUp, MapPin, Mail, Phone, ArrowUpRight } from "lucide-react";
 
 interface FooterProps {
   onQuoteClick: (prefilledService?: string) => void;
@@ -20,7 +20,7 @@ const SOCIAL_LINKS = [
     hoverBgClass: "hover:bg-[#1877F2]/10",
   },
   {
-    name: "Twitter / X",
+    name: "X / Twitter",
     url: "https://x.com/localbuild",
     icon: (
       <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
@@ -57,6 +57,25 @@ const SOCIAL_LINKS = [
   },
 ];
 
+// Exact 12 official LocalBuild services split into 2 compact sub-columns
+const SERVICES_COL_1 = [
+  { num: "01", name: "Website Design", target: "/services" },
+  { num: "02", name: "Google Ads Management", target: "/services" },
+  { num: "03", name: "Meta Ads Management", target: "/services" },
+  { num: "04", name: "Google Business Profile Optimization", target: "/services" },
+  { num: "05", name: "Local Service Ads", target: "/services" },
+  { num: "06", name: "YouTube Growth", target: "/services" },
+];
+
+const SERVICES_COL_2 = [
+  { num: "07", name: "AI Automation Solutions", target: "/services" },
+  { num: "08", name: "Application Design", target: "/services" },
+  { num: "09", name: "Ecommerce Management", target: "/services" },
+  { num: "10", name: "Dropshipping Systems", target: "/services" },
+  { num: "11", name: "Affiliate Marketing", target: "/services" },
+  { num: "12", name: "Business Automation Systems", target: "/services" },
+];
+
 export default function Footer({ onQuoteClick, onNavigate }: FooterProps) {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -74,16 +93,18 @@ export default function Footer({ onQuoteClick, onNavigate }: FooterProps) {
   };
 
   return (
-    <footer className="bg-[#07080A] text-white border-t border-white/[0.08] pt-14 pb-12 sm:pt-16 sm:pb-16 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="bg-[#050609] text-white border-t border-white/[0.08] pt-14 pb-12 sm:pt-16 sm:pb-14 transition-colors">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
         
-        {/* Top Agency Grid: Logo + Quick Navigation Links */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 pb-12 border-b border-white/[0.08]">
+        {/* ========================================================= */}
+        {/* 1. TOP FOOTER GRID (4-COLUMN DESKTOP LAYOUT)              */}
+        {/* ========================================================= */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-8 pb-12">
           
-          {/* Brand Identity & Mission */}
-          <div className="lg:col-span-4 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full overflow-hidden bg-[#07080A] border border-white/20 p-0.5 flex items-center justify-center shrink-0 shadow-xs">
+          {/* COLUMN 1 — LOCALBUILD (3 cols) */}
+          <div className="lg:col-span-3 space-y-3.5">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-full overflow-hidden bg-[#07080A] border border-white/20 p-0.5 flex items-center justify-center shrink-0 shadow-xs">
                 <img
                   src="/images/logo.png"
                   alt="LocalBuild Logo"
@@ -93,95 +114,76 @@ export default function Footer({ onQuoteClick, onNavigate }: FooterProps) {
                   }}
                 />
               </div>
-              <span className="font-display font-extrabold text-xl tracking-tight text-white">
+              <span className="font-display font-extrabold text-lg sm:text-xl tracking-tight text-white">
                 LocalBuild
               </span>
             </div>
 
-            <p className="text-xs sm:text-sm text-[#94A3B8] leading-relaxed max-w-sm">
-              LocalBuild engineers high-performance websites, high-intent Google & Meta advertising systems, local map dominance, and automated lead workflows.
+            <p className="text-[13px] sm:text-[13.5px] text-[#94A3B8] leading-relaxed pr-2">
+              LocalBuild engineers high-performance websites, high-intent Google &amp; Meta advertising systems, local map dominance, and automated lead workflows.
             </p>
 
-            <div className="text-[11px] text-[#64748B] flex items-center gap-1.5 pt-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] inline-block animate-pulse" />
-              <span>Full-Stack Digital Growth Engineering</span>
+            <div className="pt-0.5">
+              <span className="text-[11.5px] text-[#38BDF8] font-medium tracking-wide flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#38BDF8] inline-block shrink-0" />
+                <span>Full-Stack Digital Growth Engineering</span>
+              </span>
             </div>
           </div>
 
-          {/* Quick Links: Services */}
-          <div className="lg:col-span-3 space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-white">
-              Core Capabilities
+          {/* COLUMN 2 — CORE CAPABILITIES (5 cols desktop with 2 sub-columns) */}
+          <div className="lg:col-span-5 space-y-3">
+            <h4 className="text-[12px] font-bold uppercase tracking-wider text-white">
+              CORE CAPABILITIES
             </h4>
-            <ul className="space-y-2 text-xs sm:text-sm text-[#94A3B8]">
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav("/services#build")}
-                  className="hover:text-white transition-colors cursor-pointer text-left"
-                >
-                  01 — Website Design
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav("/services#grow")}
-                  className="hover:text-white transition-colors cursor-pointer text-left"
-                >
-                  02 — Google Ads Management
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav("/services#grow")}
-                  className="hover:text-white transition-colors cursor-pointer text-left"
-                >
-                  03 — Meta Ads Management
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav("/services#grow")}
-                  className="hover:text-white transition-colors cursor-pointer text-left"
-                >
-                  04 — Google Business Profile
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav("/services#automate")}
-                  className="hover:text-white transition-colors cursor-pointer text-left"
-                >
-                  07 — AI Automation Solutions
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav("/services#build")}
-                  className="hover:text-white transition-colors cursor-pointer text-left"
-                >
-                  08 — Application Design
-                </button>
-              </li>
-            </ul>
+
+            {/* Split 12 services into two compact sub-columns */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-[13px] sm:text-[13px] text-[#94A3B8]">
+              {/* Sub-column 1 (01 - 06) */}
+              <ul className="space-y-2">
+                {SERVICES_COL_1.map((item) => (
+                  <li key={item.num}>
+                    <button
+                      type="button"
+                      onClick={() => handleNav(item.target)}
+                      className="hover:text-[#38BDF8] hover:translate-x-[2px] transition-all duration-200 cursor-pointer text-left block leading-snug"
+                    >
+                      <span className="font-mono text-[#64748B] text-[11px] mr-1.5">{item.num} —</span>
+                      <span>{item.name}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Sub-column 2 (07 - 12) */}
+              <ul className="space-y-2">
+                {SERVICES_COL_2.map((item) => (
+                  <li key={item.num}>
+                    <button
+                      type="button"
+                      onClick={() => handleNav(item.target)}
+                      className="hover:text-[#38BDF8] hover:translate-x-[2px] transition-all duration-200 cursor-pointer text-left block leading-snug"
+                    >
+                      <span className="font-mono text-[#64748B] text-[11px] mr-1.5">{item.num} —</span>
+                      <span>{item.name}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
-          {/* Quick Links: Agency */}
+          {/* COLUMN 3 — AGENCY (2 cols) */}
           <div className="lg:col-span-2 space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-white">
-              Agency
+            <h4 className="text-[12px] font-bold uppercase tracking-wider text-white">
+              AGENCY
             </h4>
-            <ul className="space-y-2 text-xs sm:text-sm text-[#94A3B8]">
+            <ul className="space-y-2 text-[13px] sm:text-[13.5px] text-[#94A3B8]">
               <li>
                 <button
                   type="button"
                   onClick={() => handleNav("/about")}
-                  className="hover:text-white transition-colors cursor-pointer text-left"
+                  className="hover:text-[#38BDF8] hover:translate-x-[2px] transition-all duration-200 cursor-pointer text-left block"
                 >
                   About LocalBuild
                 </button>
@@ -190,16 +192,16 @@ export default function Footer({ onQuoteClick, onNavigate }: FooterProps) {
                 <button
                   type="button"
                   onClick={() => handleNav("case-studies")}
-                  className="hover:text-white transition-colors cursor-pointer text-left"
+                  className="hover:text-[#38BDF8] hover:translate-x-[2px] transition-all duration-200 cursor-pointer text-left block"
                 >
-                  Case Studies & Work
+                  Case Studies &amp; Work
                 </button>
               </li>
               <li>
                 <button
                   type="button"
                   onClick={() => handleNav("why-us")}
-                  className="hover:text-white transition-colors cursor-pointer text-left"
+                  className="hover:text-[#38BDF8] hover:translate-x-[2px] transition-all duration-200 cursor-pointer text-left block"
                 >
                   Why LocalBuild
                 </button>
@@ -208,7 +210,7 @@ export default function Footer({ onQuoteClick, onNavigate }: FooterProps) {
                 <button
                   type="button"
                   onClick={() => handleNav("pricing")}
-                  className="hover:text-white transition-colors cursor-pointer text-left"
+                  className="hover:text-[#38BDF8] hover:translate-x-[2px] transition-all duration-200 cursor-pointer text-left block"
                 >
                   Growth Packages
                 </button>
@@ -217,7 +219,7 @@ export default function Footer({ onQuoteClick, onNavigate }: FooterProps) {
                 <button
                   type="button"
                   onClick={() => handleNav("/contact")}
-                  className="hover:text-white transition-colors cursor-pointer text-left"
+                  className="hover:text-[#38BDF8] hover:translate-x-[2px] transition-all duration-200 cursor-pointer text-left block"
                 >
                   Direct Inquiry
                 </button>
@@ -225,122 +227,129 @@ export default function Footer({ onQuoteClick, onNavigate }: FooterProps) {
             </ul>
           </div>
 
-          {/* Quick Consultation CTA Block */}
-          <div className="lg:col-span-3 space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-white">
-              Ready To Grow?
+          {/* COLUMN 4 — READY TO GROW? (2 cols) */}
+          <div className="lg:col-span-2 space-y-3">
+            <h4 className="text-[12px] font-bold uppercase tracking-wider text-white">
+              READY TO GROW?
             </h4>
-            <p className="text-xs sm:text-sm text-[#94A3B8] leading-relaxed">
+            <p className="text-[13px] sm:text-[13px] text-[#94A3B8] leading-relaxed">
               Schedule a technical discovery audit to examine your funnel, traffic, and conversion pipeline.
             </p>
-            <div className="pt-1">
+            <div className="pt-1.5">
               <button
                 type="button"
-                onClick={() => onQuoteClick("Schedule Growth Audit")}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#3157D5] hover:bg-[#2546B8] text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
+                onClick={() => onQuoteClick("Discovery Audit Inquiry")}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-[#3157D5] hover:bg-[#2546B8] text-white text-[12px] font-bold transition-all duration-200 shadow-sm hover:shadow-[0_0_16px_rgba(49,87,213,0.45)] cursor-pointer"
               >
-                <span>Request Growth Audit</span>
-                <ExternalLink className="w-3.5 h-3.5" />
+                <span>REQUEST GROWTH AUDIT</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
 
         </div>
 
-        {/* ───────────────────────────────────────────────────────────── */}
-        {/* PREMIUM CORPORATE HUB & SOCIAL MEDIA SECTION */}
-        {/* ───────────────────────────────────────────────────────────── */}
-        <div className="pt-10 sm:pt-14 pb-8 sm:pb-12">
-          
-          {/* 1. SOCIAL MEDIA ICON ROW — TOP OF FOOTER SECTION */}
-          <div className="mb-8 sm:mb-10">
-            <div className="flex items-center gap-3">
-              {SOCIAL_LINKS.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Visit LocalBuild on ${social.name}`}
-                  className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border bg-transparent flex items-center justify-center transition-all duration-200 cursor-pointer transform hover:-translate-y-0.5 hover:scale-105 shadow-xs ${social.borderClass} ${social.textClass} ${social.hoverBgClass}`}
-                >
-                  {social.icon}
-                </a>
-              ))}
-            </div>
+        {/* ========================================================= */}
+        {/* 2. DIVIDER                                                */}
+        {/* ========================================================= */}
+        <div className="border-t border-white/[0.08] my-8 sm:my-10" />
+
+        {/* ========================================================= */}
+        {/* 3. SOCIAL MEDIA ROW                                       */}
+        {/* ========================================================= */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3">
+            {SOCIAL_LINKS.map((social) => (
+              <a
+                key={social.name}
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Visit LocalBuild on ${social.name}`}
+                className={`w-[36px] h-[36px] rounded-full border bg-transparent flex items-center justify-center transition-all duration-200 cursor-pointer transform hover:scale-105 shadow-xs ${social.borderClass} ${social.textClass} ${social.hoverBgClass}`}
+              >
+                {social.icon}
+              </a>
+            ))}
           </div>
-
-          {/* 2. CORPORATE HUB BLOCK */}
-          <div className="space-y-4 max-w-2xl">
-            <h3 className="text-[13px] sm:text-[14px] font-bold tracking-[0.06em] text-white uppercase font-sans">
-              CORPORATE HUB
-            </h3>
-
-            <div className="space-y-3 text-xs sm:text-sm sm:text-[15px] text-[#94A3B8] leading-relaxed">
-              
-              {/* Location Pin */}
-              <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-[#38BDF8] shrink-0 mt-1" />
-                <span className="leading-relaxed">
-                  Krishna Rajendra Rd, Parvathipuram, Vishweshwarapura, Basavanagudi, Bengaluru, Karnataka 560004
-                </span>
-              </div>
-
-              {/* Email */}
-              <div className="flex items-center gap-3">
-                <Mail className="w-4 h-4 text-[#38BDF8] shrink-0" />
-                <a
-                  href="mailto:localbuildhelp@gmail.com"
-                  className="hover:text-white transition-colors cursor-pointer"
-                >
-                  localbuildhelp@gmail.com
-                </a>
-              </div>
-
-              {/* Phone */}
-              <div className="flex items-center gap-3">
-                <Phone className="w-4 h-4 text-[#10B981] shrink-0" />
-                <a
-                  href="tel:+919472028969"
-                  className="hover:text-emerald-400 transition-colors font-mono font-medium cursor-pointer"
-                >
-                  +91 9472028969
-                </a>
-              </div>
-
-            </div>
-          </div>
-
         </div>
 
-        {/* ───────────────────────────────────────────────────────────── */}
-        {/* BOTTOM BAR: COPYRIGHT & POLICIES */}
-        {/* ───────────────────────────────────────────────────────────── */}
-        <div className="pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#64748B]">
+        {/* ========================================================= */}
+        {/* 4. CORPORATE HUB                                          */}
+        {/* ========================================================= */}
+        <div className="space-y-3 max-w-3xl">
+          <h3 className="text-[13px] font-bold tracking-[0.06em] text-white uppercase font-sans">
+            CORPORATE HUB
+          </h3>
+
+          <div className="space-y-2.5 text-[13px] sm:text-[14px] text-[#94A3B8] leading-relaxed">
+            {/* Location Pin with blue/cyan icon */}
+            <div className="flex items-start gap-2.5">
+              <MapPin className="w-4 h-4 text-[#38BDF8] shrink-0 mt-0.5" />
+              <span className="leading-relaxed">
+                Krishna Rajendra Rd, Parvathipuram, Vishweshwarapura, Basavanagudi, Bengaluru, Karnataka 560004
+              </span>
+            </div>
+
+            {/* Email with blue/cyan icon */}
+            <div className="flex items-center gap-2.5">
+              <Mail className="w-4 h-4 text-[#38BDF8] shrink-0" />
+              <a
+                href="mailto:localbuildhelp@gmail.com"
+                className="hover:text-white transition-colors cursor-pointer"
+              >
+                localbuildhelp@gmail.com
+              </a>
+            </div>
+
+            {/* Phone with green icon */}
+            <div className="flex items-center gap-2.5">
+              <Phone className="w-4 h-4 text-[#10B981] shrink-0" />
+              <a
+                href="tel:+919472028969"
+                className="hover:text-emerald-400 transition-colors font-mono font-medium cursor-pointer"
+              >
+                +91 9472028969
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* ========================================================= */}
+        {/* 5. DIVIDER                                                */}
+        {/* ========================================================= */}
+        <div className="border-t border-white/[0.08] my-8 sm:my-10" />
+
+        {/* ========================================================= */}
+        {/* 6. BOTTOM COPYRIGHT BAR                                   */}
+        {/* ========================================================= */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-[#64748B]">
           <div>
-            <span>© 2026 LocalBuild. All rights reserved. · Crafted with care by humans.</span>
+            <span>© 2026 LocalBuild. All rights reserved. • Crafted with care by humans.</span>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-5 sm:gap-6 flex-wrap">
             <button
               type="button"
               onClick={() => onQuoteClick("Privacy Policy Inquiry")}
-              className="hover:text-white transition-colors cursor-pointer"
+              className="hover:text-[#94A3B8] transition-colors cursor-pointer"
             >
               Privacy Policy
             </button>
+            <span className="text-white/20 hidden sm:inline">|</span>
             <button
               type="button"
               onClick={() => onQuoteClick("Terms of Service Inquiry")}
-              className="hover:text-white transition-colors cursor-pointer"
+              className="hover:text-[#94A3B8] transition-colors cursor-pointer"
             >
               Terms of Service
             </button>
+            <span className="text-white/20 hidden sm:inline">|</span>
             <button
               type="button"
               onClick={scrollToTop}
-              className="inline-flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer text-[#94A3B8]"
-              aria-label="Scroll back to top"
+              className="inline-flex items-center gap-1 hover:text-white transition-colors cursor-pointer text-[#94A3B8]"
+              aria-label="Back to Top"
             >
               <span>Back to Top</span>
               <ArrowUp className="w-3.5 h-3.5 text-[#38BDF8]" />

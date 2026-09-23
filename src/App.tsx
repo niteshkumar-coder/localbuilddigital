@@ -79,18 +79,18 @@ export default function App() {
 
   // Update Page Title and Meta Description on route change
   useEffect(() => {
-    let title = "LocalBuild — Digital Marketing Agency in Patna | 3-Year Support";
-    let desc = "High-converting websites, Google Ads, Meta Ads, local SEO, and AI automation for local businesses. 3-year support, direct ad billing, and transparent reporting.";
+    let title = "LocalBuild | Digital Marketing Agency & SEO Services";
+    let desc = "LocalBuild helps businesses grow with high-converting websites, SEO, Google Ads, Meta Ads, Google Business Profile, AI solutions and lead generation.";
 
     if (currentPath === "/about") {
-      title = "About LocalBuild | Digital Marketing Agency in Patna";
-      desc = "LocalBuild builds the websites, campaigns and systems that turn local search interest into booked customers. 3-year support, direct platform billing, transparent reporting.";
+      title = "About LocalBuild | Digital Marketing Agency & Growth Engineering";
+      desc = "LocalBuild builds the websites, campaigns and systems that turn local search interest into booked customers. Full-stack digital growth engineering.";
     } else if (currentPath === "/services") {
-      title = "Services | Websites, Google Ads, Local SEO & Automation | LocalBuild";
-      desc = "Websites, Google Ads, Meta Ads, Google Business Profile, local SEO, content and AI automation for local businesses. Three-year support, direct platform billing, clear reporting.";
+      title = "Services | Websites, Google Ads, SEO & Automation | LocalBuild";
+      desc = "Websites, Google Ads, Meta Ads, Google Business Profile, local SEO, content and AI automation for businesses. Full-stack digital growth engineering.";
     } else if (currentPath === "/contact") {
-      title = "Contact LocalBuild | Book a Free 30-Minute Discovery Call";
-      desc = "Talk to LocalBuild about your local market. Book a free 30-minute discovery call, message us on WhatsApp, or call +91 91289 83788. Patna, Bihar. Response within 24 hours.";
+      title = "Contact LocalBuild | Book a Free 30-Minute Growth Audit";
+      desc = "Talk to LocalBuild about your market growth. Book a discovery audit, email localbuildhelp@gmail.com, or call +91 9472028969. Bengaluru, India.";
     } else if (currentPath === "/blog" || currentPath.startsWith("/blog/")) {
       if (currentPath.startsWith("/blog/")) {
         const slug = currentPath.substring("/blog/".length);

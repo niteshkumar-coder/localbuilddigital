@@ -41,21 +41,37 @@ export default function CaseStudies({ onQuoteClick }: CaseStudiesProps) {
 
   return (
     <section id="case-studies" className="py-12 sm:py-20 bg-[#FFFFFF] border-b border-[#DDE3EC]">
-      {/* Required CSS rules: aspect-ratio: 6/5, max 600px desktop, responsive metrics */}
+      {/* Premium Professional Case Study Image Frame Styling */}
       <style>{`
         .case__media {
-          aspect-ratio: 6/5;
-          border: 1px solid #DDE3EC;
-          border-radius: 8px;
+          aspect-ratio: 16 / 9;
+          border: 1px solid rgba(76, 125, 255, 0.45);
+          box-shadow: 0 0 0 1px rgba(76, 125, 255, 0.08), 0 12px 40px rgba(0, 0, 0, 0.30);
+          background: rgba(8, 14, 30, 0.85);
+          border-radius: 16px;
+          padding: 12px;
           overflow: hidden;
-          background: #FFFFFF;
+          transition: all 280ms ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+        }
+        .case__media:hover {
+          border-color: rgba(76, 125, 255, 0.8);
+          box-shadow: 0 0 0 1px rgba(76, 125, 255, 0.20), 0 16px 44px rgba(0, 0, 0, 0.40), 0 0 24px rgba(76, 125, 255, 0.22);
         }
         .case__media img {
           width: 100%;
           height: 100%;
-          object-fit: cover;
+          object-fit: contain;
           object-position: center;
+          border-radius: 10px;
           display: block;
+          transition: transform 280ms ease;
+        }
+        .case__media:hover img {
+          transform: scale(1.01);
         }
         @media (min-width: 1024px) {
           .case__media {
@@ -68,6 +84,9 @@ export default function CaseStudies({ onQuoteClick }: CaseStudiesProps) {
             flex-direction: column;
           }
           .case__media {
+            aspect-ratio: 4 / 3;
+            padding: 10px;
+            border-radius: 14px;
             max-width: 100%;
           }
           .metrics {
@@ -95,17 +114,17 @@ export default function CaseStudies({ onQuoteClick }: CaseStudiesProps) {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section 7 Header */}
+        {/* Section 7 Header: Real Work. Measurable Impact. */}
         <div className="max-w-3xl mb-8 sm:mb-12">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#3157D5]/10 border border-[#3157D5]/20 text-[#3157D5] text-[11px] font-bold uppercase tracking-wider mb-2.5">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#3157D5]/10 border border-[#3157D5]/20 text-[#3157D5] text-[11px] font-bold uppercase tracking-wider mb-3">
             <Sparkles className="w-3.5 h-3.5 text-[#3157D5]" />
             <span>SELECTED WORK</span>
           </div>
-          <h2 className="font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl text-[#071126] tracking-tight leading-tight mb-2.5">
-            Commercial outcomes, documented in plain English.
+          <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-[#071126] tracking-tight leading-tight mb-3">
+            Real Work. Measurable Impact.
           </h2>
-          <p className="text-xs sm:text-sm text-[#667085] leading-relaxed max-w-2xl">
-            Real challenges solved with straightforward conversion architecture and disciplined campaign execution.
+          <p className="text-sm sm:text-base text-[#667085] leading-relaxed max-w-2xl">
+            Explore how LocalBuild combines strategy, technology, and digital marketing to create meaningful business growth.
           </p>
         </div>
 
