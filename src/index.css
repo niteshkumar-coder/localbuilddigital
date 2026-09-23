@@ -102,6 +102,7 @@
   align-items: center;
   min-height: clamp(560px, calc(100vh - 64px), 780px);
   overflow: hidden;
+  background-color: #071126;
 }
 .hero__media-wrapper,
 .hero__media {

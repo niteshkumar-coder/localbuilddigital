@@ -16,22 +16,28 @@ export default function Hero({ onQuoteClick, onNavigate }: HeroProps) {
         <picture className="hero__media">
           <source 
             media="(max-width:768px)"  
-            srcSet="https://i.ibb.co/G421Mn7h/image.png 941w"  
-            sizes="(max-width: 768px) 100vw, 941px" 
+            srcSet="/images/hero-mobile.png 768w, https://i.ibb.co/G421Mn7h/image.png 941w"  
+            sizes="(max-width: 768px) 100vw, 768px" 
           />
           <source 
             media="(max-width:1024px)" 
-            srcSet="https://i.ibb.co/qLL1nG4c/image.png 1448w" 
+            srcSet="/images/hero-tablet.png 1024w, https://i.ibb.co/qLL1nG4c/image.png 1448w" 
             sizes="100vw" 
           />
           <img 
-            src="https://i.ibb.co/DHMWGPxn/image.png"
+            src="/images/hero.png"
             alt="LocalBuild — business owner reviewing local marketing performance on laptop"
             width={1672} 
             height={941} 
             fetchPriority="high" 
             decoding="async" 
             className="hero-image"
+            onError={(e) => {
+              const target = e.currentTarget as HTMLImageElement;
+              if (target.src.indexOf("i.ibb.co") === -1) {
+                target.src = "https://i.ibb.co/DHMWGPxn/image.png";
+              }
+            }}
           />
         </picture>
       </div>
