@@ -1,5 +1,12 @@
 [
   {
+    "id": "LOG-MUGVHVJ8",
+    "timestamp": "2026-09-25T11:24:01.124Z",
+    "action": "ADMIN_LOGIN",
+    "adminUser": "admin",
+    "details": {}
+  },
+  {
     "id": "LOG-MUGULMK2",
     "timestamp": "2026-09-25T10:58:56.498Z",
     "action": "ADMIN_LOGIN",
