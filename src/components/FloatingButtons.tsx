@@ -1,7 +1,11 @@
 import { Phone, MessageSquare } from "lucide-react";
 import { getWhatsAppUrl, LOCALBUILD_PHONE } from "../utils/whatsapp";
 
-export default function FloatingButtons() {
+interface FloatingButtonsProps {
+  onAdminClick?: () => void;
+}
+
+export default function FloatingButtons({ onAdminClick: _onAdminClick }: FloatingButtonsProps) {
   return (
     <>
       {/* Floating Call Button (Bottom Left) */}
@@ -13,7 +17,7 @@ export default function FloatingButtons() {
         <Phone className="w-5 h-5 text-white" />
       </a>
 
-      {/* Floating WhatsApp Button (Bottom Right) */}
+      {/* Floating WhatsApp / Message Button (Bottom Right) */}
       <a
         href={getWhatsAppUrl("Hi LocalBuild, I'm interested in growing my local business with your services.")}
         target="_blank"

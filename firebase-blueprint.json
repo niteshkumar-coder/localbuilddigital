@@ -2,29 +2,33 @@
   "entities": {
     "lead": {
       "title": "Lead",
-      "description": "Represents a user contact submission or marketing planner lead.",
+      "description": "Represents a growth consultation request or client intake lead.",
       "type": "object",
       "properties": {
         "id": { "type": "string", "description": "Unique identifier of the lead" },
-        "name": { "type": "string", "description": "Full name of the lead" },
-        "phone": { "type": "string", "description": "Phone number of the lead" },
-        "email": { "type": "string", "format": "email", "description": "Email address of the lead" },
-        "businessName": { "type": "string", "description": "Business Name" },
-        "businessUrl": { "type": "string", "description": "Business Website URL" },
-        "service": { "type": "string", "description": "Service of interest" },
-        "budget": { "type": "string", "description": "Budget tier of interest" },
-        "message": { "type": "string", "description": "Custom submission message" },
-        "date": { "type": "string", "format": "date-time", "description": "Date of lead submission" },
-        "leadSource": { "type": "string", "description": "Source form (e.g. Contact, Planner)" },
-        "status": { "type": "string", "enum": ["New", "Contacted", "Interested", "Closed"], "description": "Current tracking status of the lead" }
+        "name": { "type": "string", "description": "Full name of the lead", "maxLength": 100 },
+        "phone": { "type": "string", "description": "Phone or WhatsApp number", "maxLength": 30 },
+        "business_name": { "type": "string", "description": "Business Name", "maxLength": 150 },
+        "website": { "type": "string", "description": "Website or Google Business Profile URL", "maxLength": 255 },
+        "service_required": { "type": "string", "description": "Service of interest", "maxLength": 100 },
+        "message": { "type": "string", "description": "Requirements or additional notes", "maxLength": 2000 },
+        "created_at": { "type": "string", "format": "date-time", "description": "Date of lead submission" },
+        "updated_at": { "type": "string", "format": "date-time", "description": "Date of last update" },
+        "status": { 
+          "type": "string", 
+          "enum": ["NEW", "CONTACTED", "FOLLOW-UP", "QUALIFIED", "CONVERTED", "NOT INTERESTED", "CLOSED"], 
+          "description": "Current tracking status of the lead" 
+        },
+        "source": { "type": "string", "description": "Lead source form name", "maxLength": 100 },
+        "notes": { "type": "string", "description": "Internal admin notes", "maxLength": 4000 }
       },
-      "required": ["name", "email", "status", "date"]
+      "required": ["name", "phone", "business_name", "status", "created_at"]
     }
   },
   "firestore": {
     "leads/{leadId}": {
       "schema": "lead",
-      "description": "Lead storage for CRM dashboard and contact queries"
+      "description": "Lead storage for growth consultation requests and secure CRM dashboard"
     }
   }
 }

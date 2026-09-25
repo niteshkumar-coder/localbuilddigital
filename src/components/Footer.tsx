@@ -1,8 +1,9 @@
-import { ArrowUp, MapPin, Mail, Phone, ArrowUpRight } from "lucide-react";
+import { ArrowUp, MapPin, Mail, Phone, ArrowUpRight, Shield } from "lucide-react";
 
 interface FooterProps {
   onQuoteClick: (prefilledService?: string) => void;
   onNavigate?: (pathOrId: string) => void;
+  onAdminClick?: () => void;
 }
 
 // Editable social media URLs
@@ -76,7 +77,7 @@ const SERVICES_COL_2 = [
   { num: "12", name: "Business Automation Systems", target: "/services" },
 ];
 
-export default function Footer({ onQuoteClick, onNavigate }: FooterProps) {
+export default function Footer({ onQuoteClick, onNavigate, onAdminClick }: FooterProps) {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -353,6 +354,25 @@ export default function Footer({ onQuoteClick, onNavigate }: FooterProps) {
             >
               <span>Back to Top</span>
               <ArrowUp className="w-3.5 h-3.5 text-[#38BDF8]" />
+            </button>
+            <span className="text-white/20 hidden sm:inline">|</span>
+            <button
+              type="button"
+              onClick={() => {
+                if (onAdminClick) {
+                  onAdminClick();
+                } else if (onNavigate) {
+                  onNavigate("/admin");
+                } else {
+                  window.location.href = "/admin";
+                }
+              }}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#3157D5]/20 hover:bg-[#3157D5] text-[#38BDF8] hover:text-white border border-[#3157D5]/40 hover:border-[#3157D5] font-semibold text-[11px] tracking-wider uppercase transition-all duration-200 cursor-pointer shadow-xs hover:shadow-[0_0_12px_rgba(49,87,213,0.5)] group"
+              aria-label="Open Secure Admin Leads Login"
+              title="LocalBuild Secure Leads Dashboard"
+            >
+              <Shield className="w-3.5 h-3.5 text-[#38BDF8] group-hover:text-white transition-colors" />
+              <span>LEADS</span>
             </button>
           </div>
         </div>

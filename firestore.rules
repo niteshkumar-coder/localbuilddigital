@@ -1,8 +1,26 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Leads collection:
+    // Public visitors can only CREATE consultation requests with required fields.
+    // Public unauthenticated clients are FORBIDDEN from reading, updating, or deleting leads.
     match /leads/{leadId} {
-      allow read, write: if true;
+      allow create: if request.resource.data.name is string
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.name.size() <= 100
+                    && request.resource.data.phone is string
+                    && request.resource.data.phone.size() >= 7
+                    && request.resource.data.phone.size() <= 30
+                    && (request.resource.data.business_name is string || request.resource.data.businessName is string)
+                    && request.resource.data.status in ['NEW', 'CONTACTED', 'FOLLOW-UP', 'QUALIFIED', 'CONVERTED', 'NOT INTERESTED', 'CLOSED', 'New', 'Contacted', 'Interested', 'Closed'];
+
+      // Only authenticated users (admins) can read, update, or delete
+      allow read, update, delete: if request.auth != null;
     }
   }
 }

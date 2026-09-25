@@ -1,0 +1,100 @@
+[
+  {
+    "id": "LOG-MUGULMK2",
+    "timestamp": "2026-09-25T10:58:56.498Z",
+    "action": "ADMIN_LOGIN",
+    "adminUser": "admin@localbuild.site",
+    "details": {}
+  },
+  {
+    "id": "LOG-MUGULFO4",
+    "timestamp": "2026-09-25T10:58:47.572Z",
+    "action": "LEAD_UPDATED",
+    "adminUser": "admin@localbuild.site",
+    "details": {
+      "leadId": "LD-MUGULD14-7Y6Y",
+      "updates": {
+        "updated_at": "2026-09-25T10:58:47.321Z",
+        "status": "QUALIFIED",
+        "notes": "Called client, highly interested."
+      }
+    }
+  },
+  {
+    "id": "LOG-MUGULFH1",
+    "timestamp": "2026-09-25T10:58:47.317Z",
+    "action": "CSV_EXPORT",
+    "adminUser": "admin@localbuild.site",
+    "details": {
+      "rowCount": 5
+    }
+  },
+  {
+    "id": "LOG-MUGULEEO",
+    "timestamp": "2026-09-25T10:58:45.936Z",
+    "action": "ADMIN_LOGIN",
+    "adminUser": "admin@localbuild.site",
+    "details": {}
+  },
+  {
+    "id": "LOG-MUGULECZ",
+    "timestamp": "2026-09-25T10:58:45.875Z",
+    "action": "LEAD_CREATED",
+    "adminUser": "system",
+    "details": {
+      "leadId": "LD-MUGULD14-7Y6Y",
+      "name": "Arun Patel"
+    }
+  },
+  {
+    "id": "LOG-MUGUKJ78",
+    "timestamp": "2026-09-25T10:58:05.492Z",
+    "action": "LEAD_CREATED",
+    "adminUser": "system",
+    "details": {
+      "leadId": "LD-MUGUKH74-906Y",
+      "name": "Arun Patel"
+    }
+  },
+  {
+    "id": "LOG-MUGUJ62M",
+    "timestamp": "2026-09-25T10:57:01.822Z",
+    "action": "LEAD_UPDATED",
+    "adminUser": "admin",
+    "details": {
+      "leadId": "LD-MUGUJ3MY-6TDP",
+      "updates": {
+        "updated_at": "2026-09-25T10:57:01.577Z",
+        "status": "QUALIFIED",
+        "notes": "Verified clinic location and doctor contact."
+      }
+    }
+  },
+  {
+    "id": "LOG-MUGUJ4YF",
+    "timestamp": "2026-09-25T10:57:00.375Z",
+    "action": "ADMIN_LOGIN",
+    "adminUser": "admin",
+    "details": {}
+  },
+  {
+    "id": "LOG-MUGUJ4UX",
+    "timestamp": "2026-09-25T10:57:00.249Z",
+    "action": "LEAD_CREATED",
+    "adminUser": "system",
+    "details": {
+      "leadId": "LD-MUGUJ3MY-6TDP",
+      "name": "Dr. Ananya Sharma"
+    }
+  },
+  {
+    "id": "LOG-MUGUI797",
+    "timestamp": "2026-09-25T10:56:16.699Z",
+    "action": "LEAD_CREATED",
+    "adminUser": "system",
+    "details": {
+      "leadId": "LD-MUGUI5ZM-BPZ7",
+      "name": "Dr. Ananya Sharma"
+    }
+  }
+]

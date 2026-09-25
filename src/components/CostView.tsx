@@ -91,10 +91,12 @@ export default function CostView({ onBack, onQuoteClick }: CostViewProps) {
           <div onClick={onBack} className="flex items-center space-x-2 cursor-pointer">
             <div className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center border border-zinc-200/90 shrink-0 bg-[#07080A] p-0.5 shadow-xs">
               <img 
-                src="https://i.ibb.co/G3tMbK2q/image.png" 
+                src="/images/logo.png" 
                 alt="LocalBuild Logo" 
                 className="w-full h-full object-cover rounded-full"
-                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = "https://i.ibb.co/G3tMbK2q/image.png";
+                }}
               />
             </div>
             <div>

@@ -66,15 +66,16 @@ export default function ContactPage({ onQuoteClick, preselectedService = "", pre
 
     setIsSubmitting(true);
     try {
-      const res = await fetch("/api/consultations", {
+      const res = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          fullName: formData.name,
-          phone: formData.phone,
-          businessName: formData.businessName,
-          website: formData.websiteOrGbp,
-          notes: formData.helpDetails,
+          name: formData.name.trim(),
+          phone: formData.phone.trim(),
+          business_name: formData.businessName.trim(),
+          website: formData.websiteOrGbp.trim(),
+          service_required: preselectedService || "General Growth Consultation",
+          message: formData.helpDetails.trim(),
           source: "Contact Page Form"
         })
       });

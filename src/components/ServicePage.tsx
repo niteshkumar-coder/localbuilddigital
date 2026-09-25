@@ -438,8 +438,8 @@ Web/Maps Link: ${businessProfile || "Not supplied."}
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "LocalBuild",
-    "url": "https://www.localbuild.site",
-    "logo": "https://i.ibb.co/G3tMbK2q/image.png",
+    "url": "https://www.localbuild.site/",
+    "logo": "https://www.localbuild.site/brand/localbuild-logo.png",
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": "+91-9472028969",
@@ -456,7 +456,7 @@ Web/Maps Link: ${businessProfile || "Not supplied."}
     "provider": {
       "@type": "LocalBusiness",
       "name": "LocalBuild",
-      "image": "https://i.ibb.co/G3tMbK2q/image.png",
+      "image": "https://www.localbuild.site/brand/localbuild-logo.png",
       "telephone": "+919472028969",
       "address": {
         "@type": "PostalAddress",

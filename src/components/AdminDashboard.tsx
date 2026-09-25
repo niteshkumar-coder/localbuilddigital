@@ -1,26 +1,30 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { 
   Users, Calendar, Database, Search, Download, Phone, MessageSquare, 
-  LogOut, RefreshCw, Layers, CheckCircle2, AlertCircle, Sparkles, Building, 
-  MapPin, IndianRupee, Clock, Filter, Printer, FileText, ChevronRight, Trash2
+  LogOut, RefreshCw, CheckCircle2, AlertCircle, Sparkles, Building, 
+  MapPin, Clock, Filter, FileText, ChevronRight, Trash2, X, ExternalLink,
+  Edit3, ShieldCheck, ArrowUpDown, Bell, History, Info, ChevronDown
 } from "lucide-react";
-import { motion } from "motion/react";
-import { db } from "../lib/firebase";
-import { collection, getDocs, doc, updateDoc, deleteDoc, query, orderBy } from "firebase/firestore";
+import { getWhatsAppUrl } from "../utils/whatsapp";
 
-interface Lead {
+export interface Lead {
   id: string;
   name: string;
   phone: string;
-  email: string;
-  businessName: string;
-  businessUrl: string;
-  service: string;
-  budget: string;
-  message: string;
-  date: string;
-  leadSource: string;
-  status: "New" | "Contacted" | "Interested" | "Closed";
+  business_name?: string;
+  businessName?: string;
+  website?: string;
+  businessUrl?: string;
+  service_required?: string;
+  service?: string;
+  message?: string;
+  created_at?: string;
+  updated_at?: string;
+  date?: string;
+  status: "NEW" | "CONTACTED" | "FOLLOW-UP" | "QUALIFIED" | "CONVERTED" | "NOT INTERESTED" | "CLOSED" | string;
+  source?: string;
+  leadSource?: string;
+  notes?: string;
 }
 
 interface AdminDashboardProps {
@@ -28,759 +32,1236 @@ interface AdminDashboardProps {
   onLogout: () => void;
 }
 
+const STATUS_CONFIG: Record<string, { label: string; bg: string; text: string; border: string }> = {
+  NEW: { label: "NEW", bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
+  CONTACTED: { label: "CONTACTED", bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200" },
+  "FOLLOW-UP": { label: "FOLLOW-UP", bg: "bg-purple-50", text: "text-purple-700", border: "border-purple-200" },
+  QUALIFIED: { label: "QUALIFIED", bg: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-200" },
+  CONVERTED: { label: "CONVERTED", bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200" },
+  "NOT INTERESTED": { label: "NOT INTERESTED", bg: "bg-zinc-100", text: "text-zinc-600", border: "border-zinc-200" },
+  CLOSED: { label: "CLOSED", bg: "bg-slate-100", text: "text-slate-600", border: "border-slate-300" }
+};
+
 export default function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All");
-  const [sourceFilter, setSourceFilter] = useState("All");
   const [syncing, setSyncing] = useState(false);
+  const [error, setError] = useState("");
   
+  // Search, Filter & Sort states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [dateFilter, setDateFilter] = useState<"ALL" | "TODAY" | "YESTERDAY" | "LAST_7" | "LAST_30">("ALL");
+  const [sortOption, setSortOption] = useState<"NEWEST" | "OLDEST" | "NAME" | "BUSINESS" | "STATUS">("NEWEST");
+
+  // Selected lead for detail modal
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [editNotes, setEditNotes] = useState("");
+  const [isSavingNotes, setIsSavingNotes] = useState(false);
+
+  // Delete confirmation modal state
+  const [leadToDelete, setLeadToDelete] = useState<Lead | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Real-time Notification toast
+  const [realtimeToast, setRealtimeToast] = useState<{ name: string; business: string; service: string } | null>(null);
+
+  // Audit Log Modal state
+  const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
+  const [auditLogs, setAuditLogs] = useState<any[]>([]);
+  const [loadingLogs, setLoadingLogs] = useState(false);
+
   // Inactivity tracking
   const [timeLeft, setTimeLeft] = useState(1800); // 30 minutes in seconds
   const lastActivityRef = useRef<number>(Date.now());
 
-  // Fetch leads on load
+  // Inactivity countdown timer
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = Date.now();
+      const elapsed = Math.floor((now - lastActivityRef.current) / 1000);
+      const remaining = Math.max(0, 1800 - elapsed);
+      setTimeLeft(remaining);
+
+      if (remaining === 0) {
+        clearInterval(timer);
+        onLogout();
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [onLogout]);
+
+  // Reset activity on mouse/keyboard interaction
+  useEffect(() => {
+    const handleActivity = () => {
+      lastActivityRef.current = Date.now();
+      setTimeLeft(1800);
+    };
+
+    window.addEventListener("mousemove", handleActivity);
+    window.addEventListener("keydown", handleActivity);
+    window.addEventListener("click", handleActivity);
+
+    return () => {
+      window.removeEventListener("mousemove", handleActivity);
+      window.removeEventListener("keydown", handleActivity);
+      window.removeEventListener("click", handleActivity);
+    };
+  }, []);
+
+  // Format time remaining
+  const formatTimeRemaining = () => {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
+
+  // Fetch leads from backend
   const fetchLeads = async () => {
     setSyncing(true);
     setError("");
 
-    // 1. Prioritize direct Client-side Firestore querying for full cross-laptop real-time capabilities (Vercel compliance)
     try {
-      const q = query(collection(db, "leads"), orderBy("date", "desc"));
-      const snapshot = await getDocs(q);
-      const fsLeads = snapshot.docs.map(d => {
-        const dData = d.data();
-        return {
-          ...dData,
-          // Guarantee format consistency on dates
-          date: dData.date || new Date().toISOString()
-        } as Lead;
+      const res = await fetch("/api/admin/leads", {
+        headers: { "Authorization": `Bearer ${token}` }
       });
-      if (fsLeads && fsLeads.length > 0) {
-        setLeads(fsLeads);
-        localStorage.setItem("localbuild_backup_leads", JSON.stringify(fsLeads));
-        setLoading(false);
-        setSyncing(false);
-        return;
-      }
-    } catch (fsErr) {
-      console.warn("Direct client-side Firestore fetch had exceptions or is empty, trying proxy...", fsErr);
-    }
 
-    try {
-      const res = await fetch("/api/portal-leads-v2", {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
-      });
       if (!res.ok) {
         if (res.status === 401) {
-          if (token && !token.startsWith("LOCAL_SESSION_TOKEN_")) {
-            onLogout();
-            return;
-          }
+          onLogout();
+          return;
         }
-        throw new Error("Could not retrieve leads from secure records.");
-      }
-
-      const contentType = res.headers.get("content-type");
-      if (contentType && contentType.includes("text/html")) {
-        throw new Error("Route fallback to HTML detected.");
+        throw new Error("Failed to load leads from database.");
       }
 
       const data = await res.json();
-      setLeads(data);
-      // Sync with localStorage backup
-      localStorage.setItem("localbuild_backup_leads", JSON.stringify(data));
+      setLeads(data || []);
     } catch (err: any) {
-      const localSavedLeadsStr = localStorage.getItem("localbuild_backup_leads");
-      if (localSavedLeadsStr) {
-        try {
-          setLeads(JSON.parse(localSavedLeadsStr));
-        } catch (jsonErr) {
-          setLeads([]);
-        }
-      } else {
-        const defaultMockLeads = [
-          {
-            id: "lead_1",
-            name: "Nitesh Kumar",
-            phone: "+91 91280 45090",
-            email: "niteshkumar9128ku@gmail.com",
-            businessName: "Eklavya Royal Library",
-            businessUrl: "https://eklvyaroyallibrary.site",
-            service: "Local Authority Setup",
-            budget: "₹19,999/yr",
-            message: "Need maps dominance for my premium students workspace.",
-            date: new Date().toLocaleDateString(),
-            leadSource: "Contact Form",
-            status: "Interested"
-          },
-          {
-            id: "lead_2",
-            name: "Tejas Mobile",
-            phone: "+91 98765 43210",
-            email: "contact@tejasmobile.in",
-            businessName: "Tejas Mobile Store",
-            businessUrl: "https://tejasmobile.vercel.app",
-            service: "Market Dominance Package",
-            budget: "₹34,999/yr",
-            message: "Interested in getting more walk-in clients through Google maps packs optimization.",
-            date: new Date().toLocaleDateString(),
-            leadSource: "Strategic Planner Tool",
-            status: "Contacted"
-          }
-        ] as Lead[];
-        setLeads(defaultMockLeads);
-        localStorage.setItem("localbuild_backup_leads", JSON.stringify(defaultMockLeads));
-      }
+      console.error("Error fetching leads:", err);
+      setError("Unable to load latest leads from server.");
     } finally {
       setLoading(false);
       setSyncing(false);
     }
   };
 
+  // Initial load
   useEffect(() => {
     fetchLeads();
-    // Refresh leads list every 40 seconds automatically to emulate instant entries
-    const syncInterval = setInterval(fetchLeads, 40000);
-    return () => clearInterval(syncInterval);
   }, [token]);
 
-  // Handle user activity to reset security logout timer
+  // Real-time updates via Server-Sent Events (SSE)
   useEffect(() => {
-    const handleActivity = () => {
-      lastActivityRef.current = Date.now();
-      setTimeLeft(1800); // Reset timer to 30 mins
-    };
-
-    // Listen to user interactions
-    window.addEventListener("mousemove", handleActivity);
-    window.addEventListener("keydown", handleActivity);
-    window.addEventListener("click", handleActivity);
-    window.addEventListener("touchstart", handleActivity);
-
-    // Inactivity countdown loop
-    const timer = setInterval(() => {
-      const elapsedSeconds = Math.floor((Date.now() - lastActivityRef.current) / 1000);
-      const remaining = Math.max(0, 1800 - elapsedSeconds);
-      setTimeLeft(remaining);
-
-      if (remaining <= 0) {
-        clearInterval(timer);
-        console.warn("User logged out automatically due to 30 minutes of inactivity.");
-        alert("Session Expired: You've been logged out due to 30 minutes of inactivity.");
-        onLogout();
-      }
-    }, 1000);
-
-    return () => {
-      window.removeEventListener("mousemove", handleActivity);
-      window.removeEventListener("keydown", handleActivity);
-      window.removeEventListener("click", handleActivity);
-      window.removeEventListener("touchstart", handleActivity);
-      clearInterval(timer);
-    };
-  }, [onLogout]);
-
-  // Format time remaining
-  const formatTimeRemaining = () => {
-    const mins = Math.floor(timeLeft / 60);
-    const secs = timeLeft % 60;
-    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
-  };
-
-  // Update lead status
-  const handleUpdateStatus = async (leadId: string, newStatus: string) => {
-    const updatedLeads = leads.map(lead => 
-      lead.id === leadId ? { ...lead, status: newStatus as any } : lead
-    );
-    setLeads(updatedLeads);
-    localStorage.setItem("localbuild_backup_leads", JSON.stringify(updatedLeads));
-
-    // Direct Firestore update client-side for cross-laptop persistence compatibility
+    let eventSource: EventSource | null = null;
     try {
-      await updateDoc(doc(db, "leads", leadId), { status: newStatus });
-      console.log("Client successfully updated status directly in Firestore:", leadId);
-    } catch (fsErr) {
-      console.warn("Client fallback direct Firestore status update failed:", fsErr);
+      const sseUrl = `/api/admin/leads/stream?token=${encodeURIComponent(token)}`;
+      eventSource = new EventSource(sseUrl);
+
+      eventSource.addEventListener("new_lead", (e: MessageEvent) => {
+        try {
+          const newLead = JSON.parse(e.data);
+          setLeads(prev => {
+            // Avoid duplicate if already exists
+            if (prev.some(l => l.id === newLead.id)) return prev;
+            return [newLead, ...prev];
+          });
+
+          // Show real-time notification banner
+          setRealtimeToast({
+            name: newLead.name,
+            business: newLead.business_name || newLead.businessName || "New Business",
+            service: newLead.service_required || newLead.service || "Growth Strategy"
+          });
+
+          // Auto-hide toast after 7 seconds
+          setTimeout(() => {
+            setRealtimeToast(null);
+          }, 7000);
+        } catch (err) {
+          console.error("Error processing SSE new_lead event:", err);
+        }
+      });
+
+      eventSource.addEventListener("update_lead", (e: MessageEvent) => {
+        try {
+          const updated = JSON.parse(e.data);
+          setLeads(prev => prev.map(l => l.id === updated.id ? updated : l));
+          if (selectedLead?.id === updated.id) {
+            setSelectedLead(updated);
+          }
+        } catch (err) {
+          console.error("Error processing SSE update_lead:", err);
+        }
+      });
+
+      eventSource.addEventListener("delete_lead", (e: MessageEvent) => {
+        try {
+          const { id } = JSON.parse(e.data);
+          setLeads(prev => prev.filter(l => l.id !== id));
+          if (selectedLead?.id === id) {
+            setSelectedLead(null);
+          }
+        } catch (err) {
+          console.error("Error processing SSE delete_lead:", err);
+        }
+      });
+
+      eventSource.onerror = (err) => {
+        console.warn("SSE connection interrupted, retrying in background...", err);
+      };
+    } catch (err) {
+      console.warn("Could not establish SSE connection:", err);
     }
 
+    return () => {
+      if (eventSource) {
+        eventSource.close();
+      }
+    };
+  }, [token, selectedLead]);
+
+  // Open lead details
+  const handleOpenLead = (lead: Lead) => {
+    setSelectedLead(lead);
+    setEditNotes(lead.notes || "");
+  };
+
+  // Change lead status immediately
+  const handleStatusChange = async (leadId: string, newStatus: string) => {
     try {
-      const res = await fetch(`/api/portal-leads-v2/${leadId}/status`, {
-        method: "POST",
+      const res = await fetch(`/api/admin/leads/${leadId}`, {
+        method: "PATCH",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({ status: newStatus })
       });
 
-      if (!res.ok) {
-        const data = await res.json();
-        console.warn(`Status sync with server failed: ${data.error || "Server rejected modification."}`);
+      if (!res.ok) throw new Error("Status update failed");
+
+      const data = await res.json();
+      setLeads(prev => prev.map(l => l.id === leadId ? { ...l, status: newStatus } : l));
+      if (selectedLead?.id === leadId) {
+        setSelectedLead(prev => prev ? { ...prev, status: newStatus } : null);
       }
     } catch (err) {
-      console.warn("Could not synchronize status with server, saved locally.");
+      console.error("Failed to update status:", err);
+      alert("Could not update lead status. Please try again.");
     }
   };
 
-  // Delete lead permanently
-  const handleDeleteLead = async (leadId: string) => {
-    if (!window.confirm("Are you sure you want to permanently delete this lead? This action cannot be undone.")) {
-      return;
-    }
-
-    const updatedLeads = leads.filter(lead => lead.id !== leadId);
-    setLeads(updatedLeads);
-    localStorage.setItem("localbuild_backup_leads", JSON.stringify(updatedLeads));
-
-    // Direct Firestore delete client-side for cross-laptop persistence compatibility
+  // Save notes
+  const handleSaveNotes = async () => {
+    if (!selectedLead) return;
+    setIsSavingNotes(true);
     try {
-      await deleteDoc(doc(db, "leads", leadId));
-      console.log("Client successfully deleted document directly from Firestore:", leadId);
-    } catch (fsErr) {
-      console.warn("Client fallback direct Firestore delete failed:", fsErr);
-    }
-
-    try {
-      const res = await fetch(`/api/portal-leads-v2/${leadId}`, {
-        method: "DELETE",
+      const res = await fetch(`/api/admin/leads/${selectedLead.id}`, {
+        method: "PATCH",
         headers: {
-          "Authorization": `Bearer ${token}`
-        }
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ notes: editNotes.trim() })
       });
 
-      if (!res.ok) {
+      if (!res.ok) throw new Error("Notes update failed");
+
+      setLeads(prev => prev.map(l => l.id === selectedLead.id ? { ...l, notes: editNotes.trim() } : l));
+      setSelectedLead(prev => prev ? { ...prev, notes: editNotes.trim() } : null);
+    } catch (err) {
+      console.error("Failed to save notes:", err);
+      alert("Could not save notes. Please try again.");
+    } finally {
+      setIsSavingNotes(false);
+    }
+  };
+
+  // Delete lead
+  const confirmDeleteLead = async () => {
+    if (!leadToDelete) return;
+    setIsDeleting(true);
+
+    try {
+      const res = await fetch(`/api/admin/leads/${leadToDelete.id}`, {
+        method: "DELETE",
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+
+      if (!res.ok) throw new Error("Delete failed");
+
+      setLeads(prev => prev.filter(l => l.id !== leadToDelete.id));
+      if (selectedLead?.id === leadToDelete.id) {
+        setSelectedLead(null);
+      }
+      setLeadToDelete(null);
+    } catch (err) {
+      console.error("Failed to delete lead:", err);
+      alert("Could not delete lead. Please try again.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // Export CSV
+  const handleExportCSV = async () => {
+    try {
+      const res = await fetch("/api/admin/leads/export", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error("Export failed");
+      
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `localbuild-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("CSV download error:", err);
+      alert("Failed to export CSV. Please try again.");
+    }
+  };
+
+  // Fetch Audit Logs
+  const handleOpenAuditLogs = async () => {
+    setIsAuditModalOpen(true);
+    setLoadingLogs(true);
+    try {
+      const res = await fetch("/api/admin/audit-logs", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (res.ok) {
         const data = await res.json();
-        console.warn(`Deletion sync with server failed: ${data.error || "Server rejected deletion."}`);
+        setAuditLogs(data || []);
       }
     } catch (err) {
-      console.warn("Could not synchronize deletion with server, saved locally.");
+      console.error("Audit logs error:", err);
+    } finally {
+      setLoadingLogs(false);
     }
   };
 
-  // Clean phone number for WhatsApp direct URLs
-  const getWhatsAppLink = (phoneString: string, clientName: string) => {
-    // Keep only numbers
-    const digitsOnly = phoneString.replace(/\D/g, "");
-    // Standard WhatsApp welcome message
-    const message = encodeURIComponent(`Hi ${clientName}, this is LocalBuild Digital Agency. We received your business marketing request!`);
-    
-    // Check if phone has area code, standard prefix format
-    if (digitsOnly.length === 10) {
-      return `https://wa.me/91${digitsOnly}?text=${message}`; // Default to Indian prefix
+  // Format date helper
+  const formatDate = (isoString?: string) => {
+    if (!isoString) return "N/A";
+    try {
+      const d = new Date(isoString);
+      return d.toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      });
+    } catch {
+      return isoString;
     }
-    return `https://wa.me/${digitsOnly}?text=${message}`;
   };
 
-  // Filter calculations
-  const filteredLeads = leads.filter(lead => {
-    const query = searchQuery.toLowerCase();
-    const matchesSearch = 
-      lead.name.toLowerCase().includes(query) ||
-      lead.phone.toLowerCase().includes(query) ||
-      lead.email.toLowerCase().includes(query) ||
-      lead.service.toLowerCase().includes(query) ||
-      lead.businessName.toLowerCase().includes(query);
+  // TOP SUMMARY CARDS (Calculated from actual database records)
+  const summary = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    const matchesStatus = statusFilter === "All" || lead.status === statusFilter;
-    const matchesSource = sourceFilter === "All" || lead.leadSource === sourceFilter;
+    const totalLeads = leads.length;
+    let newLeads = 0;
+    let contacted = 0;
+    let converted = 0;
+    let todayLeads = 0;
 
-    return matchesSearch && matchesStatus && matchesSource;
-  });
+    for (const lead of leads) {
+      const statusUpper = (lead.status || "").toUpperCase();
+      if (statusUpper === "NEW") newLeads++;
+      if (statusUpper === "CONTACTED") contacted++;
+      if (statusUpper === "CONVERTED") converted++;
 
-  // Unique sources for filter dropdown
-  const uniqueSources = Array.from(new Set(leads.map(l => l.leadSource))).filter(Boolean);
-
-  // CRM Analytics compilation
-  const computeMetrics = () => {
-    const now = new Date();
-    const todayStr = now.toISOString().split("T")[0]; // YYYY-MM-DD
-    const curYearMonth = now.toISOString().substring(0, 7); // YYYY-MM
-
-    let total = leads.length;
-    let today = 0;
-    let monthly = 0;
-    let active = 0;
-
-    leads.forEach(lead => {
-      // Parse date safely
-      if (!lead.date) return;
-      const leadDateStr = lead.date.split("T")[0];
-      const leadYearMonth = lead.date.substring(0, 7);
-
-      if (leadDateStr === todayStr) {
-        today++;
+      const leadDate = new Date(lead.created_at || lead.date || 0);
+      if (leadDate >= today) {
+        todayLeads++;
       }
-      if (leadYearMonth === curYearMonth) {
-        monthly++;
+    }
+
+    return { totalLeads, newLeads, contacted, converted, todayLeads };
+  }, [leads]);
+
+  // FILTERED & SORTED LEADS
+  const filteredLeads = useMemo(() => {
+    return leads.filter(lead => {
+      // 1. Search Query
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        const name = (lead.name || "").toLowerCase();
+        const phone = (lead.phone || "").toLowerCase();
+        const business = (lead.business_name || lead.businessName || "").toLowerCase();
+        const website = (lead.website || lead.businessUrl || "").toLowerCase();
+        const service = (lead.service_required || lead.service || "").toLowerCase();
+
+        const matches = name.includes(q) || phone.includes(q) || business.includes(q) || website.includes(q) || service.includes(q);
+        if (!matches) return false;
       }
-      if (lead.status !== "Closed") {
-        active++;
+
+      // 2. Status Filter
+      if (statusFilter !== "ALL") {
+        const leadStatus = (lead.status || "").toUpperCase();
+        if (leadStatus !== statusFilter) return false;
       }
+
+      // 3. Date Filter
+      if (dateFilter !== "ALL") {
+        const leadDate = new Date(lead.created_at || lead.date || 0);
+        const now = new Date();
+
+        if (dateFilter === "TODAY") {
+          const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+          if (leadDate < startOfToday) return false;
+        } else if (dateFilter === "YESTERDAY") {
+          const startOfYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+          const endOfYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+          if (leadDate < startOfYesterday || leadDate >= endOfYesterday) return false;
+        } else if (dateFilter === "LAST_7") {
+          const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          if (leadDate < sevenDaysAgo) return false;
+        } else if (dateFilter === "LAST_30") {
+          const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          if (leadDate < thirtyDaysAgo) return false;
+        }
+      }
+
+      return true;
+    }).sort((a, b) => {
+      if (sortOption === "NEWEST") {
+        return new Date(b.created_at || b.date || 0).getTime() - new Date(a.created_at || a.date || 0).getTime();
+      }
+      if (sortOption === "OLDEST") {
+        return new Date(a.created_at || a.date || 0).getTime() - new Date(b.created_at || b.date || 0).getTime();
+      }
+      if (sortOption === "NAME") {
+        return (a.name || "").localeCompare(b.name || "");
+      }
+      if (sortOption === "BUSINESS") {
+        const bA = a.business_name || a.businessName || "";
+        const bB = b.business_name || b.businessName || "";
+        return bA.localeCompare(bB);
+      }
+      if (sortOption === "STATUS") {
+        return (a.status || "").localeCompare(b.status || "");
+      }
+      return 0;
     });
-
-    return { total, today, monthly, active };
-  };
-
-  const metrics = computeMetrics();
-
-  // CSV Exporter
-  const exportToCSV = () => {
-    if (filteredLeads.length === 0) return alert("No records available to export!");
-    
-    const headers = ["Lead ID", "Name", "Phone", "Email", "Business Name", "Website", "Service", "Budget", "Message", "Date", "Lead Source", "Status"];
-    
-    const rows = filteredLeads.map(lead => [
-      lead.id,
-      lead.name.replace(/"/g, '""'),
-      lead.phone,
-      lead.email,
-      lead.businessName.replace(/"/g, '""'),
-      lead.businessUrl || "",
-      lead.service,
-      lead.budget,
-      lead.message.replace(/"/g, '""').replace(/\n/g, " "),
-      lead.date ? new Date(lead.date).toLocaleString() : "",
-      lead.leadSource,
-      lead.status
-    ]);
-
-    const csvContent = "data:text/csv;charset=utf-8," 
-      + [headers.join(","), ...rows.map(r => r.map(val => `"${val}"`).join(","))].join("\n");
-    
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `localbuild_leads_report_${new Date().toISOString().slice(0, 10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  // Excel content exporter (Generates raw tab-separated file XLS compatible format)
-  const exportToExcel = () => {
-    if (filteredLeads.length === 0) return alert("No records available to export!");
-    
-    let content = "Lead ID\tName\tPhone\tEmail\tBusiness Name\tWebsite\tService\tBudget\tMessage\tDate\tLead Source\tStatus\n";
-    
-    filteredLeads.forEach(lead => {
-      content += `${lead.id}\t${lead.name}\t${lead.phone}\t${lead.email}\t${lead.businessName}\t${lead.businessUrl || ""}\t${lead.service}\t${lead.budget}\t${lead.message.replace(/\n\t/g, " ")}\t${lead.date ? new Date(lead.date).toLocaleString() : ""}\t${lead.leadSource}\t${lead.status}\n`;
-    });
-
-    const blob = new Blob([content], { type: "application/vnd.ms-excel;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", `localbuild_leads_crm_${new Date().toISOString().slice(0, 10)}.xls`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  // PDF Printing Manager
-  const exportToPDF = () => {
-    window.print();
-  };
+  }, [leads, searchQuery, statusFilter, dateFilter, sortOption]);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-zinc-900 pb-12 print:bg-white print:pb-0">
+    <div className="min-h-screen bg-zinc-50 flex flex-col font-sans text-zinc-900 pb-16">
       
-      {/* HEADER BAR */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50 px-4 sm:px-6 md:px-8 py-4 flex items-center justify-between shadow-xs print:hidden">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-600 rounded-full overflow-hidden flex items-center justify-center border border-gray-100 shadow-sm shrink-0">
-            <img 
-              src="https://i.ibb.co/G3tMbK2q/image.png" 
-              alt="LocalBuild CRM Admin" 
-              className="w-full h-full object-cover"
-              referrerPolicy="no-referrer"
-            />
-          </div>
-          <div>
-            <h1 className="font-display font-black text-sm tracking-widest text-zinc-900 flex items-center gap-1.5 uppercase leading-none">
-              LOCALBUILD CRM <span className="text-[10px] bg-blue-50 text-blue-600 font-extrabold px-1.5 py-0.5 rounded border border-blue-100">DATABASE</span>
-            </h1>
-            <p className="text-xs text-zinc-400 font-medium mt-0.5">Leads Diagnostic and Pipeline Registry</p>
+      {/* Real-time Toast Alert */}
+      {realtimeToast && (
+        <div className="fixed top-20 right-4 sm:right-6 z-50 max-w-sm w-full bg-blue-900 text-white rounded-2xl p-4 shadow-2xl border border-blue-700/80 animate-slideIn">
+          <div className="flex items-start gap-3">
+            <div className="w-9 h-9 rounded-full bg-blue-700 flex items-center justify-center shrink-0">
+              <Bell className="w-5 h-5 text-blue-200 animate-pulse" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h4 className="font-bold text-xs uppercase tracking-wider text-blue-300">
+                New Lead Received
+              </h4>
+              <p className="text-sm font-bold text-white truncate mt-0.5">
+                {realtimeToast.name}
+              </p>
+              <p className="text-xs text-blue-200 truncate">
+                {realtimeToast.business} • {realtimeToast.service}
+              </p>
+            </div>
+            <button
+              onClick={() => setRealtimeToast(null)}
+              className="text-blue-300 hover:text-white p-1"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
         </div>
+      )}
 
-        <div className="flex items-center gap-2.5 sm:gap-4">
-          {/* Active timer badge */}
-          <div className="flex items-center gap-1.5 bg-zinc-100 border border-zinc-200 rounded-lg px-2.5 py-1.5 text-xs text-zinc-600 font-semibold">
-            <Clock className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
-            <span>Secure Out: {formatTimeRemaining()}</span>
+      {/* TOP HEADER BAR */}
+      <header className="bg-white border-b border-zinc-200 sticky top-0 z-40 px-4 sm:px-6 lg:px-8 py-3.5 shadow-xs">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+          
+          {/* Logo & CRM title */}
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-[#07080A] border border-zinc-200 shadow-xs flex items-center justify-center p-0.5 shrink-0">
+              <img 
+                src="/images/logo.png" 
+                alt="LocalBuild Official Logo" 
+                className="w-full h-full object-cover rounded-full"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = "https://i.ibb.co/G3tMbK2q/image.png";
+                }}
+              />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-display font-extrabold text-base sm:text-lg text-zinc-900 tracking-tight leading-none">
+                  LocalBuild
+                </span>
+                <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200">
+                  LEAD DASHBOARD
+                </span>
+              </div>
+              <p className="text-[11px] text-zinc-500 font-medium hidden sm:block mt-0.5">
+                Real-Time Commercial CRM &amp; Pipeline Registry
+              </p>
+            </div>
           </div>
 
-          {/* Sync Button */}
-          <button 
-            onClick={fetchLeads}
-            disabled={syncing}
-            className="p-2 text-zinc-500 hover:text-blue-600 hover:bg-blue-50/50 rounded-lg border border-gray-200 bg-white transition cursor-pointer"
-            title="Refresh lead queue"
-          >
-            <RefreshCw className={`w-4 h-4 ${syncing ? "animate-spin text-blue-600" : ""}`} />
-          </button>
+          {/* Action buttons & session timer */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Auto-logout countdown */}
+            <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 border border-zinc-200 text-xs font-semibold text-zinc-600">
+              <Clock className="w-3.5 h-3.5 text-zinc-500" />
+              <span>Timeout: {formatTimeRemaining()}</span>
+            </div>
 
-          {/* Logout */}
-          <button
-            onClick={onLogout}
-            className="bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-xs py-2 px-3.5 rounded-lg flex items-center gap-1.5 transition duration-150 cursor-pointer"
-          >
-            <LogOut className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Logout</span>
-          </button>
+            {/* Audit log button */}
+            <button
+              onClick={handleOpenAuditLogs}
+              className="p-2 sm:px-3 sm:py-1.5 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
+              title="View Security Audit Logs"
+            >
+              <History className="w-4 h-4 text-zinc-500" />
+              <span className="hidden sm:inline">Audit Log</span>
+            </button>
+
+            {/* Refresh button */}
+            <button
+              onClick={fetchLeads}
+              disabled={syncing}
+              className="p-2 sm:px-3 sm:py-1.5 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              title="Refresh database records"
+            >
+              <RefreshCw className={`w-4 h-4 text-zinc-500 ${syncing ? "animate-spin text-blue-600" : ""}`} />
+              <span className="hidden sm:inline">Refresh</span>
+            </button>
+
+            {/* Export CSV button */}
+            <button
+              onClick={handleExportCSV}
+              className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer"
+            >
+              <Download className="w-4 h-4" />
+              <span className="hidden sm:inline">Export CSV</span>
+            </button>
+
+            {/* Logout button */}
+            <button
+              onClick={onLogout}
+              className="px-3 py-1.5 rounded-lg border border-red-200 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
+              title="Sign out of Admin Dashboard"
+            >
+              <LogOut className="w-4 h-4 text-red-600" />
+              <span className="hidden sm:inline">Logout</span>
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* DETAILED PRINT ONLY BANNER STRUCTURE */}
-      <div className="hidden print:block p-8 border-b-2 border-zinc-900 mb-8 bg-zinc-50 rounded-xl">
-        <h2 className="text-2xl font-black uppercase text-zinc-900 leading-none">LocalBuild Agency Pipeline report</h2>
-        <p className="text-sm text-zinc-600 mt-1 font-mono">Date: {new Date().toLocaleString()} -- LocalBuild CRM Export Core</p>
-        <div className="grid grid-cols-4 gap-4 mt-6">
-          <div className="p-3 border border-zinc-200 rounded">
-            <span className="text-[10px] text-zinc-400 font-bold uppercase block">Total Leads Logged</span>
-            <span className="text-xl font-bold font-mono">{metrics.total}</span>
-          </div>
-          <div className="p-3 border border-zinc-200 rounded">
-            <span className="text-[10px] text-zinc-400 font-bold uppercase block">Today's Audits</span>
-            <span className="text-xl font-bold font-mono">{metrics.today}</span>
-          </div>
-          <div className="p-3 border border-zinc-200 rounded">
-            <span className="text-[10px] text-zinc-400 font-bold uppercase block">Monthly Volume</span>
-            <span className="text-xl font-bold font-mono">{metrics.monthly}</span>
-          </div>
-          <div className="p-3 border border-zinc-200 rounded">
-            <span className="text-[10px] text-zinc-400 font-bold uppercase block">Active In-Pipeline</span>
-            <span className="text-xl font-bold font-mono">{metrics.active}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* VIEWPORT BODY CONTAINER */}
-      <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 md:px-8 pt-8 space-y-6">
+      {/* MAIN CONTAINER */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 w-full space-y-6">
         
-        {/* CRM CARDS ROW */}
-        <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 print:hidden">
-          {/* Card 1: Total */}
-          <div className="bg-white rounded-2xl p-5 border border-gray-200/80 shadow-xs relative overflow-hidden flex items-center gap-4 group">
-            <div className="w-12 h-12 bg-blue-50/80 rounded-xl flex items-center justify-center text-blue-600 shrink-0 border border-blue-100 group-hover:scale-105 transition-transform">
-              <Users className="w-6 h-6" />
-            </div>
-            <div>
-              <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest block">Total Leads</span>
-              <p className="text-2xl sm:text-3xl font-black text-sans font-extrabold text-zinc-900 leading-tight mt-0.5">{metrics.total}</p>
-            </div>
-            <div className="absolute top-2 right-2 flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-            </div>
+        {/* ========================================== */}
+        {/* 1. TOP SUMMARY METRIC CARDS                */}
+        {/* ========================================== */}
+        <section aria-label="Summary Statistics" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+          {/* Card 1: Total Leads */}
+          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-zinc-200 shadow-xs">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 block">
+              TOTAL LEADS
+            </span>
+            <span className="text-2xl sm:text-3xl font-display font-extrabold text-zinc-900 mt-1 block">
+              {summary.totalLeads}
+            </span>
+            <span className="text-[11px] text-zinc-400 font-medium mt-1 block">
+              All records in database
+            </span>
           </div>
 
-          {/* Card 2: Today */}
-          <div className="bg-white rounded-2xl p-5 border border-gray-200/80 shadow-xs relative overflow-hidden flex items-center gap-4 group">
-            <div className="w-12 h-12 bg-indigo-50/80 rounded-xl flex items-center justify-center text-indigo-600 shrink-0 border border-indigo-100 group-hover:scale-105 transition-transform">
-              <Calendar className="w-6 h-6" />
-            </div>
-            <div>
-              <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest block">Today's Leads</span>
-              <p className="text-2xl sm:text-3xl font-black text-zinc-900 leading-tight mt-0.5">{metrics.today}</p>
-            </div>
+          {/* Card 2: New Leads */}
+          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-blue-200 bg-blue-50/20 shadow-xs">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 block">
+              NEW LEADS
+            </span>
+            <span className="text-2xl sm:text-3xl font-display font-extrabold text-blue-700 mt-1 block">
+              {summary.newLeads}
+            </span>
+            <span className="text-[11px] text-blue-600/80 font-medium mt-1 block">
+              Requires initial response
+            </span>
           </div>
 
-          {/* Card 3: Monthly */}
-          <div className="bg-white rounded-2xl p-5 border border-gray-200/80 shadow-xs relative overflow-hidden flex items-center gap-4 group">
-            <div className="w-12 h-12 bg-emerald-50/80 rounded-xl flex items-center justify-center text-emerald-600 shrink-0 border border-emerald-100 group-hover:scale-105 transition-transform">
-              <Database className="w-6 h-6" />
-            </div>
-            <div>
-              <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest block">Monthly Leads</span>
-              <p className="text-2xl sm:text-3xl font-black text-zinc-900 leading-tight mt-0.5">{metrics.monthly}</p>
-            </div>
+          {/* Card 3: Contacted */}
+          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-amber-200 bg-amber-50/20 shadow-xs">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-700 block">
+              CONTACTED
+            </span>
+            <span className="text-2xl sm:text-3xl font-display font-extrabold text-amber-700 mt-1 block">
+              {summary.contacted}
+            </span>
+            <span className="text-[11px] text-amber-600/80 font-medium mt-1 block">
+              In active discovery
+            </span>
           </div>
 
-          {/* Card 4: Active */}
-          <div className="bg-white rounded-2xl p-5 border border-gray-200/80 shadow-xs relative overflow-hidden flex items-center gap-4 group">
-            <div className="w-12 h-12 bg-sky-50/80 rounded-xl flex items-center justify-center text-sky-600 shrink-0 border border-sky-100 group-hover:scale-105 transition-transform">
-              <Layers className="w-6 h-6" />
-            </div>
-            <div>
-              <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest block">Active Leads</span>
-              <p className="text-2xl sm:text-3xl font-black text-zinc-900 leading-tight mt-0.5">{metrics.active}</p>
-            </div>
+          {/* Card 4: Converted */}
+          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-emerald-200 bg-emerald-50/20 shadow-xs">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 block">
+              CONVERTED
+            </span>
+            <span className="text-2xl sm:text-3xl font-display font-extrabold text-emerald-700 mt-1 block">
+              {summary.converted}
+            </span>
+            <span className="text-[11px] text-emerald-600/80 font-medium mt-1 block">
+              Booked / Paid clients
+            </span>
+          </div>
+
+          {/* Card 5: Today's Leads */}
+          <div className="col-span-2 sm:col-span-1 bg-white rounded-2xl p-4 sm:p-5 border border-indigo-200 bg-indigo-50/20 shadow-xs">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-700 block">
+              TODAY'S LEADS
+            </span>
+            <span className="text-2xl sm:text-3xl font-display font-extrabold text-indigo-700 mt-1 block">
+              {summary.todayLeads}
+            </span>
+            <span className="text-[11px] text-indigo-600/80 font-medium mt-1 block">
+              Submitted in last 24h
+            </span>
           </div>
         </section>
 
-        {/* CONTROLS BAR: FILTERS, SEARCH, AND EXPORT BUTTONS */}
-        <section className="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4 print:hidden">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        {/* ========================================== */}
+        {/* 2. SEARCH, FILTERS & SORT CONTROLS         */}
+        {/* ========================================== */}
+        <section aria-label="Controls" className="bg-white rounded-2xl border border-zinc-200 p-4 sm:p-5 shadow-xs space-y-4">
+          <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
             
-            {/* Search filter */}
-            <div className="relative flex-1 max-w-md">
-              <Search className="w-4.5 h-4.5 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            {/* Search Input */}
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by Name, Phone, Email, Service..."
-                className="w-full text-sm h-[42px] pl-10 pr-4 rounded-xl border border-gray-200 bg-zinc-50/30 focus:border-blue-500 focus:bg-white outline-hidden outline-hidden focus:ring-1 focus:ring-blue-500 transition-all font-medium"
+                placeholder="Search leads by name, phone, business, website, service..."
+                className="w-full pl-10 pr-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-blue-600 focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all"
               />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 p-1"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
             </div>
 
-            {/* Quick Actions / Export Buttons */}
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-              <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider hidden sm:inline">Export Leads:</span>
-              
-              {/* CSV */}
-              <button
-                onClick={exportToCSV}
-                className="bg-white hover:bg-gray-50 text-zinc-700 hover:text-zinc-900 border border-gray-200 text-xs font-bold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer"
-              >
-                <Download className="w-3.5 h-3.5" />
-                <span>CSV</span>
-              </button>
+            {/* Date Filter Dropdown */}
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <select
+                  value={dateFilter}
+                  onChange={(e) => setDateFilter(e.target.value as any)}
+                  className="px-3.5 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-xs font-bold text-zinc-700 appearance-none pr-8 cursor-pointer focus:outline-none focus:border-blue-600"
+                >
+                  <option value="ALL">All Time</option>
+                  <option value="TODAY">Today</option>
+                  <option value="YESTERDAY">Yesterday</option>
+                  <option value="LAST_7">Last 7 Days</option>
+                  <option value="LAST_30">Last 30 Days</option>
+                </select>
+                <ChevronDown className="w-3.5 h-3.5 text-zinc-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              </div>
 
-              {/* Excel */}
-              <button
-                onClick={exportToExcel}
-                className="bg-white hover:bg-gray-50 text-zinc-700 hover:text-zinc-900 border border-gray-200 text-xs font-bold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer"
-              >
-                <FileText className="w-3.5 h-3.5" />
-                <span>Excel</span>
-              </button>
-
-              {/* PDF Print */}
-              <button
-                onClick={exportToPDF}
-                className="bg-blue-50 hover:bg-blue-150 text-blue-600 hover:text-blue-700 border border-blue-100 text-xs font-extrabold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer"
-              >
-                <Printer className="w-3.5 h-3.5" />
-                <span>Print PDF</span>
-              </button>
+              {/* Sort Dropdown */}
+              <div className="relative">
+                <select
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value as any)}
+                  className="px-3.5 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-xs font-bold text-zinc-700 appearance-none pr-8 cursor-pointer focus:outline-none focus:border-blue-600"
+                >
+                  <option value="NEWEST">Sort: Newest First</option>
+                  <option value="OLDEST">Sort: Oldest First</option>
+                  <option value="NAME">Sort: Name (A-Z)</option>
+                  <option value="BUSINESS">Sort: Business (A-Z)</option>
+                  <option value="STATUS">Sort: Status</option>
+                </select>
+                <ArrowUpDown className="w-3.5 h-3.5 text-zinc-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              </div>
             </div>
           </div>
 
-          {/* Secondary select drop-filters */}
-          <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-gray-100 text-xs font-semibold text-zinc-650">
-            <div className="flex items-center gap-2">
-              <Filter className="w-3.5 h-3.5 text-zinc-400" />
-              <span>Status Filter:</span>
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="bg-white border border-gray-200 rounded-lg px-2 py-1 text-zinc-700 outline-hidden font-bold"
-              >
-                <option value="All">All statuses ({leads.length})</option>
-                <option value="New">New</option>
-                <option value="Contacted">Contacted</option>
-                <option value="Interested">Interested</option>
-                <option value="Closed">Closed</option>
-              </select>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span>Source:</span>
-              <select
-                value={sourceFilter}
-                onChange={(e) => setSourceFilter(e.target.value)}
-                className="bg-white border border-gray-200 rounded-lg px-2 py-1 text-zinc-700 outline-hidden font-bold max-w-[200px]"
-              >
-                <option value="All">All sources</option>
-                {uniqueSources.map((source, idx) => (
-                  <option key={idx} value={source}>{source}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="ml-auto text-zinc-400 font-medium text-[11px]">
-              Showing <span className="font-bold text-zinc-600">{filteredLeads.length}</span> of {leads.length} entries
-            </div>
+          {/* Status Pills */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-1 no-scrollbar text-xs">
+            <span className="text-zinc-400 font-bold uppercase text-[10px] tracking-wider shrink-0 mr-1">
+              STATUS:
+            </span>
+            {["ALL", "NEW", "CONTACTED", "FOLLOW-UP", "QUALIFIED", "CONVERTED", "NOT INTERESTED", "CLOSED"].map(st => {
+              const active = statusFilter === st;
+              return (
+                <button
+                  key={st}
+                  onClick={() => setStatusFilter(st)}
+                  className={`px-3 py-1.5 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer ${
+                    active
+                      ? "bg-zinc-900 text-white shadow-xs"
+                      : "bg-zinc-100 hover:bg-zinc-200/80 text-zinc-600"
+                  }`}
+                >
+                  {st}
+                </button>
+              );
+            })}
           </div>
         </section>
 
-        {/* CRM DATABASE LEADS LIST TABLE */}
-        <section className="bg-white rounded-2xl border border-gray-200 shadow-xs overflow-hidden print:border-none print:shadow-none">
-          {loading ? (
-            <div className="py-24 text-center space-y-3">
-              <div className="w-10 h-10 border-4 border-zinc-100 border-t-blue-600 rounded-full animate-spin mx-auto" />
-              <p className="text-xs font-bold text-zinc-400 animate-pulse">Scanning Secure LocalBuild Led Database...</p>
-            </div>
-          ) : error ? (
-            <div className="p-10 text-center space-y-3">
-              <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
-              <h4 className="font-display font-bold text-md text-zinc-800">Metrics Synchronization Denied</h4>
-              <p className="text-xs text-zinc-500 max-w-sm mx-auto">{error}</p>
-              <button 
-                onClick={fetchLeads} 
-                className="text-xs bg-zinc-900 text-white font-bold px-4 py-2 rounded-lg cursor-pointer hover:bg-zinc-800 transition"
-              >
-                Retry Stream Connect
-              </button>
-            </div>
-          ) : filteredLeads.length === 0 ? (
-            <div className="py-20 text-center space-y-2">
-              <div className="w-12 h-12 rounded-full bg-zinc-50 flex items-center justify-center text-zinc-400 mx-auto">
-                <Database className="w-5 h-5" />
-              </div>
-              <h4 className="font-semibold text-zinc-700 text-sm">No Active Leads Located</h4>
-              <p className="text-xs text-zinc-400 max-w-xs mx-auto">Please try clearing your search queries or filter dropdowns to find logs.</p>
-            </div>
-          ) : (
-            <div className="w-full overflow-x-auto min-h-[400px]">
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="bg-zinc-50/70 border-b border-gray-200 text-zinc-500 font-extrabold uppercase tracking-wider text-[10px]">
-                    <th className="p-4 pl-6">Lead ID</th>
-                    <th className="p-4">Contact Info</th>
-                    <th className="p-4">Business / Website</th>
-                    <th className="p-4">Strategic Request</th>
-                    <th className="p-4">Message / Notes</th>
-                    <th className="p-4">Date / Source</th>
-                    <th className="p-4">Status Update</th>
-                    <th className="p-4 pr-6 text-right print:hidden">Direct Hotlines</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-150 font-medium text-zinc-800 leading-normal">
-                  {filteredLeads.map((lead) => (
-                    <tr key={lead.id} className="hover:bg-zinc-50/40 group transition-all duration-150">
-                      
-                      {/* Lead ID */}
-                      <td className="p-4 pl-6 align-top">
-                        <span className="font-mono bg-zinc-150/60 font-bold px-2 py-1 text-[10px] text-zinc-600 rounded">
-                          {lead.id}
-                        </span>
-                      </td>
-
-                      {/* Contact Info */}
-                      <td className="p-4 align-top space-y-1">
-                        <div className="font-bold text-zinc-900 text-sm leading-tight">{lead.name}</div>
-                        <div className="text-zinc-400 flex items-center gap-1">
-                          <span>📧</span>
-                          <a href={`mailto:${lead.email}`} className="hover:text-blue-500 hover:underline">{lead.email}</a>
-                        </div>
-                        <div className="text-zinc-500 flex items-center gap-1 font-mono text-[11px]">
-                          <span>📞</span>
-                          <span>{lead.phone}</span>
-                        </div>
-                      </td>
-
-                      {/* Business / Website */}
-                      <td className="p-4 align-top space-y-1 max-w-[170px]">
-                        <div className="font-bold text-zinc-900 flex items-center gap-1 truncate" title={lead.businessName}>
-                          <Building className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-                          <span>{lead.businessName}</span>
-                        </div>
-                        {lead.businessUrl ? (
-                          <div className="text-blue-500 underline text-[11px] truncate" title={lead.businessUrl}>
-                            <a href={`https://${lead.businessUrl.replace(/^https?:\/\//, "")}`} target="_blank" rel="noopener noreferrer">
-                              {lead.businessUrl}
-                            </a>
-                          </div>
-                        ) : (
-                          <span className="text-[10px] text-zinc-300 italic">No URL Provided</span>
-                        )}
-                      </td>
-
-                      {/* Strategic Request / Service & Budget */}
-                      <td className="p-4 align-top space-y-1.5 max-w-[180px]">
-                        <div className="font-semibold text-zinc-900 bg-blue-50/50 border border-blue-100 rounded px-2 py-0.5 inline-block text-[11px]">
-                          {lead.service}
-                        </div>
-                        <div className="flex items-center gap-1 font-semibold text-emerald-600 text-[11px]">
-                          <IndianRupee className="w-3.5 h-3.5 shrink-0" />
-                          <span>Budget: {lead.budget}</span>
-                        </div>
-                      </td>
-
-                      {/* Message / Notes */}
-                      <td className="p-4 align-top max-w-[200px]">
-                        {lead.message ? (
-                          <p className="text-zinc-500 text-[11.5px] line-clamp-3 select-text font-serif italic pr-2 hover:line-clamp-none transition-all duration-300 cursor-pointer" title="Click to unfold text">
-                            "{lead.message}"
-                          </p>
-                        ) : (
-                          <span className="text-zinc-300 italic text-[10px]">No extra details</span>
-                        )}
-                      </td>
-
-                      {/* Date / Source */}
-                      <td className="p-4 align-top space-y-1 font-mono text-[11px]">
-                        <div className="text-zinc-500 flex items-center gap-1">
-                          <Calendar className="w-3 h-3 text-zinc-400 shrink-0" />
-                          <span>{lead.date ? new Date(lead.date).toLocaleDateString() : "Pending"}</span>
-                        </div>
-                        <div className="text-zinc-400 flex items-center gap-1 text-[10px]">
-                          <span className="bg-zinc-100 border border-zinc-200 px-1.5 py-0.5 rounded text-zinc-500 font-sans font-bold uppercase tracking-wider text-[9px]">
-                            {lead.leadSource}
-                          </span>
-                        </div>
-                      </td>
-
-                      {/* Status Update */}
-                      <td className="p-4 align-top">
-                        <select
-                          value={lead.status}
-                          onChange={(e) => handleUpdateStatus(lead.id, e.target.value)}
-                          className={`font-semibold border text-[11px] rounded px-2.5 py-1.5 outline-hidden transition cursor-pointer font-bold ${
-                            lead.status === "New" ? "bg-blue-50 border-blue-200 text-blue-700 font-bold" :
-                            lead.status === "Contacted" ? "bg-amber-50 border-amber-200 text-amber-700" :
-                            lead.status === "Interested" ? "bg-purple-50 border-purple-200 text-purple-700" :
-                            "bg-emerald-50 border-emerald-200 text-emerald-700"
-                          }`}
-                        >
-                          <option value="New">🔵 New</option>
-                          <option value="Contacted">🟡 Contacted</option>
-                          <option value="Interested">🟣 Interested</option>
-                          <option value="Closed">🟢 Closed</option>
-                        </select>
-                      </td>
-
-                      {/* Phone & Whatsapp Call Direct triggers */}
-                      <td className="p-4 pr-6 align-top text-right print:hidden">
-                        <div className="flex justify-end gap-1.5 mt-0.5">
-                          {/* Dial Now */}
-                          <a
-                            href={`tel:${lead.phone}`}
-                            className="w-8 h-8 rounded-lg bg-zinc-50 hover:bg-zinc-100 border border-gray-200 text-zinc-600 flex items-center justify-center transition-all cursor-pointer hover:shadow-xs active:scale-95"
-                            title="Call customer VoIP now"
-                          >
-                            <Phone className="w-3.5 h-3.5" />
-                          </a>
-
-                          {/* WhatsApp Chat */}
-                          <a
-                            href={getWhatsAppLink(lead.phone, lead.name)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-8 h-8 rounded-lg bg-emerald-50 hover:bg-emerald-500 text-emerald-600 hover:text-white border border-emerald-100 hover:border-emerald-500 flex items-center justify-center transition-all cursor-pointer hover:shadow-xs active:scale-95"
-                            title="Open direct WhatsApp conversation"
-                          >
-                            <MessageSquare className="w-3.5 h-3.5" />
-                          </a>
-
-                          {/* Delete Lead Permanently */}
-                          <button
-                            onClick={() => handleDeleteLead(lead.id)}
-                            className="w-8 h-8 rounded-lg bg-red-50 hover:bg-red-600 text-red-650 hover:text-white border border-red-100 hover:border-red-600 flex items-center justify-center transition-all cursor-pointer hover:shadow-sm active:scale-95"
-                            title="Delete Lead Permanently"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </td>
-
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+        {/* ========================================== */}
+        {/* 3. LEADS TABLE (DESKTOP) & CARDS (MOBILE)  */}
+        {/* ========================================== */}
+        <section aria-label="Lead Records" className="space-y-4">
+          {error && (
+            <div className="p-4 bg-red-50 border border-red-200 rounded-2xl flex items-center gap-3 text-sm text-red-700">
+              <AlertCircle className="w-5 h-5 text-red-500 shrink-0" />
+              <span>{error}</span>
             </div>
           )}
-        </section>
 
+          {loading ? (
+            <div className="bg-white rounded-2xl border border-zinc-200 p-12 text-center space-y-3">
+              <RefreshCw className="w-8 h-8 text-blue-600 animate-spin mx-auto" />
+              <p className="text-sm font-bold text-zinc-600">Loading secure leads from database...</p>
+            </div>
+          ) : filteredLeads.length === 0 ? (
+            <div className="bg-white rounded-2xl border border-zinc-200 p-12 text-center space-y-3">
+              <div className="w-12 h-12 bg-zinc-100 rounded-full flex items-center justify-center mx-auto text-zinc-400">
+                <Database className="w-6 h-6" />
+              </div>
+              <h3 className="text-base font-bold text-zinc-800">No leads found</h3>
+              <p className="text-xs text-zinc-500 max-w-sm mx-auto">
+                {searchQuery || statusFilter !== "ALL" || dateFilter !== "ALL"
+                  ? "Try adjusting your search criteria or clearing active filters."
+                  : "When visitors submit the Growth Consultation form on your website, their contact details will appear here automatically."}
+              </p>
+              {(searchQuery || statusFilter !== "ALL" || dateFilter !== "ALL") && (
+                <button
+                  onClick={() => {
+                    setSearchQuery("");
+                    setStatusFilter("ALL");
+                    setDateFilter("ALL");
+                  }}
+                  className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs font-bold rounded-xl transition cursor-pointer"
+                >
+                  Reset All Filters
+                </button>
+              )}
+            </div>
+          ) : (
+            <>
+              {/* DESKTOP TABLE (>= 768px) */}
+              <div className="hidden md:block bg-white rounded-2xl border border-zinc-200 shadow-xs overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-zinc-50 border-b border-zinc-200 text-[11px] font-bold text-zinc-500 uppercase tracking-wider">
+                      <tr>
+                        <th className="py-3 px-4">ID</th>
+                        <th className="py-3 px-4">Date &amp; Time</th>
+                        <th className="py-3 px-4">Name</th>
+                        <th className="py-3 px-4">Phone / WhatsApp</th>
+                        <th className="py-3 px-4">Business</th>
+                        <th className="py-3 px-4">Website</th>
+                        <th className="py-3 px-4">Service</th>
+                        <th className="py-3 px-4">Status</th>
+                        <th className="py-3 px-4 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-zinc-100">
+                      {filteredLeads.map((lead) => {
+                        const statusUpper = (lead.status || "NEW").toUpperCase();
+                        const badge = STATUS_CONFIG[statusUpper] || STATUS_CONFIG.NEW;
+                        const businessName = lead.business_name || lead.businessName || "N/A";
+                        const website = lead.website || lead.businessUrl || "";
+                        const service = lead.service_required || lead.service || "Website Design";
+
+                        return (
+                          <tr key={lead.id} className="hover:bg-zinc-50/80 transition-colors group">
+                            {/* ID */}
+                            <td className="py-3.5 px-4 font-mono text-xs font-bold text-zinc-500">
+                              #{lead.id.slice(-6)}
+                            </td>
+
+                            {/* Date */}
+                            <td className="py-3.5 px-4 text-xs text-zinc-600 whitespace-nowrap">
+                              {formatDate(lead.created_at || lead.date)}
+                            </td>
+
+                            {/* Name */}
+                            <td className="py-3.5 px-4 font-bold text-zinc-900">
+                              <button
+                                onClick={() => handleOpenLead(lead)}
+                                className="hover:text-blue-600 text-left transition-colors cursor-pointer"
+                              >
+                                {lead.name}
+                              </button>
+                            </td>
+
+                            {/* Phone */}
+                            <td className="py-3.5 px-4 text-xs font-mono text-zinc-700 whitespace-nowrap">
+                              <a href={`tel:${lead.phone}`} className="hover:underline hover:text-blue-600">
+                                {lead.phone}
+                              </a>
+                            </td>
+
+                            {/* Business */}
+                            <td className="py-3.5 px-4 text-xs text-zinc-800 font-medium">
+                              {businessName}
+                            </td>
+
+                            {/* Website */}
+                            <td className="py-3.5 px-4 text-xs text-zinc-500 max-w-[140px] truncate">
+                              {website ? (
+                                <a
+                                  href={website.startsWith("http") ? website : `https://${website}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-blue-600 hover:underline inline-flex items-center gap-1"
+                                >
+                                  <span className="truncate">{website.replace(/^https?:\/\//, "")}</span>
+                                  <ExternalLink className="w-3 h-3 shrink-0" />
+                                </a>
+                              ) : (
+                                <span className="text-zinc-300">—</span>
+                              )}
+                            </td>
+
+                            {/* Service */}
+                            <td className="py-3.5 px-4 text-xs text-zinc-700">
+                              <span className="truncate max-w-[150px] block">
+                                {service}
+                              </span>
+                            </td>
+
+                            {/* Status */}
+                            <td className="py-3.5 px-4 whitespace-nowrap">
+                              <select
+                                value={statusUpper}
+                                onChange={(e) => handleStatusChange(lead.id, e.target.value)}
+                                className={`text-[11px] font-bold px-2.5 py-1 rounded-md border ${badge.bg} ${badge.text} ${badge.border} appearance-none cursor-pointer focus:outline-none`}
+                              >
+                                {Object.keys(STATUS_CONFIG).map(s => (
+                                  <option key={s} value={s}>{s}</option>
+                                ))}
+                              </select>
+                            </td>
+
+                            {/* Actions */}
+                            <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                              <div className="flex items-center justify-end gap-1.5">
+                                <a
+                                  href={`tel:${lead.phone}`}
+                                  className="p-1.5 text-zinc-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                                  title="Call Phone Number"
+                                >
+                                  <Phone className="w-4 h-4" />
+                                </a>
+                                <a
+                                  href={getWhatsAppUrl(`Hi ${lead.name}, this is LocalBuild following up on your consultation request for ${businessName}.`, lead.phone)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="p-1.5 text-zinc-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition"
+                                  title="Chat on WhatsApp"
+                                >
+                                  <MessageSquare className="w-4 h-4" />
+                                </a>
+                                <button
+                                  onClick={() => handleOpenLead(lead)}
+                                  className="px-2.5 py-1 text-xs font-bold text-zinc-700 hover:bg-zinc-100 rounded-lg transition cursor-pointer"
+                                >
+                                  View
+                                </button>
+                                <button
+                                  onClick={() => setLeadToDelete(lead)}
+                                  className="p-1.5 text-zinc-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition cursor-pointer"
+                                  title="Delete Lead"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* MOBILE CARDS (< 768px) */}
+              <div className="md:hidden space-y-3">
+                {filteredLeads.map((lead) => {
+                  const statusUpper = (lead.status || "NEW").toUpperCase();
+                  const badge = STATUS_CONFIG[statusUpper] || STATUS_CONFIG.NEW;
+                  const businessName = lead.business_name || lead.businessName || "N/A";
+                  const service = lead.service_required || lead.service || "Website Design";
+
+                  return (
+                    <div
+                      key={lead.id}
+                      className="bg-white rounded-2xl border border-zinc-200 p-4 shadow-xs space-y-3"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <span className="font-mono text-[10px] text-zinc-400 block">
+                            #{lead.id.slice(-6)} • {formatDate(lead.created_at || lead.date)}
+                          </span>
+                          <h4 className="font-display font-extrabold text-base text-zinc-900 mt-0.5">
+                            {lead.name}
+                          </h4>
+                          <p className="text-xs font-bold text-zinc-600 mt-0.5">
+                            {businessName}
+                          </p>
+                        </div>
+                        <select
+                          value={statusUpper}
+                          onChange={(e) => handleStatusChange(lead.id, e.target.value)}
+                          className={`text-[10px] font-bold px-2 py-1 rounded-md border ${badge.bg} ${badge.text} ${badge.border} appearance-none cursor-pointer focus:outline-none`}
+                        >
+                          {Object.keys(STATUS_CONFIG).map(s => (
+                            <option key={s} value={s}>{s}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="text-xs text-zinc-600 space-y-1 pt-1 border-t border-zinc-100">
+                        <div className="flex items-center justify-between">
+                          <span className="text-zinc-400">Phone:</span>
+                          <a href={`tel:${lead.phone}`} className="font-mono font-medium text-blue-600">
+                            {lead.phone}
+                          </a>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-zinc-400">Service:</span>
+                          <span className="font-medium text-zinc-800 text-right truncate max-w-[180px]">
+                            {service}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Action buttons on mobile */}
+                      <div className="flex items-center justify-between pt-2 border-t border-zinc-100 gap-2">
+                        <div className="flex items-center gap-1.5">
+                          <a
+                            href={`tel:${lead.phone}`}
+                            className="px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-bold flex items-center gap-1"
+                          >
+                            <Phone className="w-3.5 h-3.5" />
+                            <span>Call</span>
+                          </a>
+                          <a
+                            href={getWhatsAppUrl(`Hi ${lead.name}, this is LocalBuild following up on your consultation request for ${businessName}.`, lead.phone)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3 py-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg text-xs font-bold flex items-center gap-1"
+                          >
+                            <MessageSquare className="w-3.5 h-3.5" />
+                            <span>WhatsApp</span>
+                          </a>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => handleOpenLead(lead)}
+                            className="px-3 py-1.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 rounded-lg text-xs font-bold cursor-pointer"
+                          >
+                            View
+                          </button>
+                          <button
+                            onClick={() => setLeadToDelete(lead)}
+                            className="p-1.5 text-zinc-400 hover:text-red-600 rounded-lg cursor-pointer"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+        </section>
       </main>
+
+      {/* ========================================== */}
+      {/* 4. LEAD DETAILS MODAL                      */}
+      {/* ========================================== */}
+      {selectedLead && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="fixed inset-0" onClick={() => setSelectedLead(null)} />
+
+          <div className="relative bg-white rounded-2xl border border-zinc-200 shadow-2xl max-w-2xl w-full p-6 sm:p-8 z-10 my-8 space-y-6">
+            
+            {/* Modal Header */}
+            <div className="flex items-start justify-between gap-4 border-b border-zinc-100 pb-4">
+              <div>
+                <span className="text-xs font-mono font-bold text-zinc-400 uppercase">
+                  LEAD DETAILS #{selectedLead.id}
+                </span>
+                <h3 className="font-display font-extrabold text-2xl text-zinc-900 mt-0.5">
+                  {selectedLead.name}
+                </h3>
+                <p className="text-xs text-zinc-500 mt-0.5">
+                  Submitted on {formatDate(selectedLead.created_at || selectedLead.date)}
+                </p>
+              </div>
+
+              <button
+                onClick={() => setSelectedLead(null)}
+                className="p-2 text-zinc-400 hover:text-zinc-700 rounded-full hover:bg-zinc-100 transition cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Quick Action Buttons */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <a
+                href={`tel:${selectedLead.phone}`}
+                className="px-3.5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition"
+              >
+                <Phone className="w-4 h-4" />
+                <span>Call Now</span>
+              </a>
+
+              <a
+                href={getWhatsAppUrl(`Hi ${selectedLead.name}, this is LocalBuild following up on your consultation request for ${selectedLead.business_name || selectedLead.businessName}.`, selectedLead.phone)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3.5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition"
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span>WhatsApp</span>
+              </a>
+
+              {selectedLead.website || selectedLead.businessUrl ? (
+                <a
+                  href={(selectedLead.website || selectedLead.businessUrl)!.startsWith("http") ? (selectedLead.website || selectedLead.businessUrl)! : `https://${selectedLead.website || selectedLead.businessUrl}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3.5 py-2.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  <span>Open URL</span>
+                </a>
+              ) : (
+                <button disabled className="px-3.5 py-2.5 bg-zinc-50 text-zinc-300 rounded-xl text-xs font-bold flex items-center justify-center gap-2">
+                  <ExternalLink className="w-4 h-4" />
+                  <span>No Website</span>
+                </button>
+              )}
+
+              <button
+                onClick={() => setLeadToDelete(selectedLead)}
+                className="px-3.5 py-2.5 bg-red-50 hover:bg-red-100 text-red-700 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer"
+              >
+                <Trash2 className="w-4 h-4 text-red-600" />
+                <span>Delete</span>
+              </button>
+            </div>
+
+            {/* Core Fields Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-zinc-50/70 p-4 rounded-xl border border-zinc-200/80 text-sm">
+              <div>
+                <span className="text-[11px] font-bold text-zinc-400 uppercase block">Phone / WhatsApp</span>
+                <span className="font-mono font-bold text-zinc-900 mt-0.5 block">{selectedLead.phone}</span>
+              </div>
+
+              <div>
+                <span className="text-[11px] font-bold text-zinc-400 uppercase block">Business Name</span>
+                <span className="font-bold text-zinc-900 mt-0.5 block">{selectedLead.business_name || selectedLead.businessName || "Not Provided"}</span>
+              </div>
+
+              <div>
+                <span className="text-[11px] font-bold text-zinc-400 uppercase block">Service Required</span>
+                <span className="font-medium text-zinc-800 mt-0.5 block">{selectedLead.service_required || selectedLead.service || "General"}</span>
+              </div>
+
+              <div>
+                <span className="text-[11px] font-bold text-zinc-400 uppercase block">Status</span>
+                <div className="mt-1">
+                  <select
+                    value={(selectedLead.status || "NEW").toUpperCase()}
+                    onChange={(e) => handleStatusChange(selectedLead.id, e.target.value)}
+                    className="w-full text-xs font-bold px-3 py-1.5 rounded-lg border border-zinc-300 bg-white cursor-pointer"
+                  >
+                    {Object.keys(STATUS_CONFIG).map(s => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="sm:col-span-2">
+                <span className="text-[11px] font-bold text-zinc-400 uppercase block">Website or Profile URL</span>
+                <span className="text-zinc-800 mt-0.5 block break-all">
+                  {selectedLead.website || selectedLead.businessUrl || "Not Provided"}
+                </span>
+              </div>
+
+              {selectedLead.message && (
+                <div className="sm:col-span-2">
+                  <span className="text-[11px] font-bold text-zinc-400 uppercase block">Requirements / Message</span>
+                  <p className="text-zinc-800 mt-1 whitespace-pre-wrap leading-relaxed text-xs bg-white p-3 rounded-lg border border-zinc-200">
+                    {selectedLead.message}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Notes Section */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider block">
+                  Admin Internal Notes
+                </label>
+                <span className="text-[11px] text-zinc-400">Only visible to administrators</span>
+              </div>
+              <textarea
+                rows={3}
+                value={editNotes}
+                onChange={(e) => setEditNotes(e.target.value)}
+                placeholder="Add meeting notes, deal size, client follow-up schedule..."
+                className="w-full p-3 text-sm rounded-xl border border-zinc-300 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition resize-none"
+              />
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={handleSaveNotes}
+                  disabled={isSavingNotes}
+                  className="px-4 py-2 bg-zinc-900 hover:bg-black text-white text-xs font-bold rounded-xl shadow-xs transition cursor-pointer disabled:opacity-50"
+                >
+                  {isSavingNotes ? "Saving Notes..." : "Save Notes"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================== */}
+      {/* 5. DELETE CONFIRMATION DIALOG             */}
+      {/* ========================================== */}
+      {leadToDelete && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="fixed inset-0" onClick={() => !isDeleting && setLeadToDelete(null)} />
+
+          <div className="relative bg-white rounded-2xl border border-zinc-200 shadow-2xl max-w-md w-full p-6 sm:p-7 z-10 space-y-4">
+            <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto">
+              <Trash2 className="w-6 h-6" />
+            </div>
+
+            <div className="text-center space-y-2">
+              <h3 className="text-lg font-display font-extrabold text-zinc-900">
+                Are you sure you want to permanently delete this lead?
+              </h3>
+              <p className="text-xs text-zinc-500">
+                This will delete <strong className="text-zinc-800">{leadToDelete.name}</strong> ({leadToDelete.business_name || leadToDelete.businessName}) from both Firestore and local database archives. This action cannot be undone.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setLeadToDelete(null)}
+                disabled={isDeleting}
+                className="w-full py-2.5 px-4 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-bold rounded-xl transition cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmDeleteLead}
+                disabled={isDeleting}
+                className="w-full py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl shadow-xs transition cursor-pointer disabled:opacity-50"
+              >
+                {isDeleting ? "Deleting..." : "Delete Lead"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================== */}
+      {/* 6. AUDIT LOG MODAL                         */}
+      {/* ========================================== */}
+      {isAuditModalOpen && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="fixed inset-0" onClick={() => setIsAuditModalOpen(false)} />
+
+          <div className="relative bg-white rounded-2xl border border-zinc-200 shadow-2xl max-w-2xl w-full p-6 z-10 my-8 space-y-4">
+            <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
+              <div className="flex items-center gap-2">
+                <History className="w-5 h-5 text-blue-600" />
+                <h3 className="font-display font-extrabold text-lg text-zinc-900">
+                  Security &amp; Action Audit Log
+                </h3>
+              </div>
+              <button onClick={() => setIsAuditModalOpen(false)} className="p-1.5 text-zinc-400 hover:text-zinc-700">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {loadingLogs ? (
+              <div className="py-8 text-center text-xs text-zinc-500 font-bold">
+                Loading audit trail...
+              </div>
+            ) : auditLogs.length === 0 ? (
+              <div className="py-8 text-center text-xs text-zinc-500">
+                No audit entries recorded yet.
+              </div>
+            ) : (
+              <div className="max-h-96 overflow-y-auto divide-y divide-zinc-100 text-xs">
+                {auditLogs.map((log) => (
+                  <div key={log.id} className="py-2.5 flex items-center justify-between gap-3">
+                    <div>
+                      <span className="font-bold text-zinc-800 uppercase tracking-wider block">
+                        {log.action}
+                      </span>
+                      <span className="text-zinc-500 text-[11px]">
+                        User: {log.adminUser}
+                      </span>
+                    </div>
+                    <span className="font-mono text-zinc-400 text-[10px]">
+                      {formatDate(log.timestamp)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -247,7 +247,7 @@ export default function SEOStrategyHub({ onBack, onQuoteClick }: SEOStrategyHubP
   "name": "LocalBuild",
   "alternateName": ["Local Build", "LocalBuild.site"],
   "url": "https://www.localbuild.site",
-  "logo": "https://i.ibb.co/G3tMbK2q/image.png",
+  "logo": "https://www.localbuild.site/brand/localbuild-logo.png",
   "potentialAction": {
     "@type": "SearchAction",
     "target": "https://www.localbuild.site/?s={search_term_string}",
@@ -259,7 +259,7 @@ export default function SEOStrategyHub({ onBack, onQuoteClick }: SEOStrategyHubP
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
   "name": "LocalBuild",
-  "image": "https://i.ibb.co/G3tMbK2q/image.png",
+  "image": "https://www.localbuild.site/brand/localbuild-logo.png",
   "@id": "https://www.localbuild.site/#localbusiness",
   "url": "https://www.localbuild.site",
   "telephone": "+919472028969",
@@ -303,7 +303,7 @@ export default function SEOStrategyHub({ onBack, onQuoteClick }: SEOStrategyHubP
   "@type": "Organization",
   "name": "LocalBuild",
   "url": "https://www.localbuild.site",
-  "logo": "https://i.ibb.co/G3tMbK2q/image.png",
+  "logo": "https://www.localbuild.site/brand/localbuild-logo.png",
   "sameAs": [
     "https://www.facebook.com/localbuild1",
     "https://x.com/NiteshK7765796",
@@ -649,7 +649,7 @@ Sitemap: https://www.localbuild.site/sitemap.xml`;
               <p className="text-zinc-500 text-xs mb-4">Place these inline tags directly inside your HTML site header to populate beautiful, clickable previews in WhatsApp, Facebook, LinkedIn, and Twitter.</p>
               <div className="relative">
                 <button 
-                  onClick={() => triggerCopy(`<meta property="og:title" content="LocalBuild | Digital Marketing Agency & SEO Services" />\n<meta property="og:description" content="LocalBuild helps businesses grow with high-converting websites, SEO, Google Ads, Meta Ads, Google Business Profile, AI solutions and lead generation." />\n<meta property="og:image" content="https://www.localbuild.site/images/logo.png" />`, "social-snippet")}
+                  onClick={() => triggerCopy(`<meta property="og:title" content="LocalBuild | Digital Marketing Agency & SEO Services" />\n<meta property="og:description" content="LocalBuild helps businesses grow with high-converting websites, SEO, Google Ads, Meta Ads, Google Business Profile, AI solutions and lead generation." />\n<meta property="og:image" content="https://www.localbuild.site/images/og-preview.png" />`, "social-snippet")}
                   className="absolute top-3 right-3 flex items-center gap-1 text-xs text-zinc-400 hover:text-white bg-zinc-800 border border-zinc-700 p-1.5 px-3 rounded cursor-pointer"
                 >
                   {copiedId === "social-snippet" ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
@@ -660,15 +660,15 @@ Sitemap: https://www.localbuild.site/sitemap.xml`;
 <meta property="og:title" content="LocalBuild | Digital Marketing Agency & SEO Services" />
 <meta property="og:site_name" content="LocalBuild" />
 <meta property="og:description" content="LocalBuild helps businesses grow with high-converting websites, SEO, Google Ads, Meta Ads, Google Business Profile, AI solutions and lead generation." />
-<meta property="og:image" content="https://www.localbuild.site/images/logo.png" />
+<meta property="og:image" content="https://www.localbuild.site/images/og-preview.png" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://www.localbuild.site/" />
 
 <!-- Twitter Card Metadata -->
-<meta name="twitter:card" content="summary" />
+<meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="LocalBuild | Digital Marketing Agency & SEO Services" />
 <meta name="twitter:description" content="LocalBuild helps businesses grow with high-converting websites, SEO, Google Ads, Meta Ads, Google Business Profile, AI solutions and lead generation." />
-<meta name="twitter:image" content="https://www.localbuild.site/images/logo.png" />`}
+<meta name="twitter:image" content="https://www.localbuild.site/images/og-preview.png" />`}
                 </pre>
               </div>
             </div>

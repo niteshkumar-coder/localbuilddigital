@@ -153,35 +153,47 @@ export default function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [currentPath]);
 
+  const isAdminRoute = currentPath === "/admin" || currentPath === "/admin/leads" || currentPath === "/admin-dashboard";
+
   // Securely verify admin session validity with backend
   useEffect(() => {
-    const verifySession = async () => {
-      if (!adminToken) {
-        if (currentPath === "/admin-dashboard") {
-          window.history.pushState({}, "", "/");
-          setCurrentPath("/");
-          setIsAdminLoginOpen(true);
-        }
-        return;
+    // If accessing an admin route without a token, redirect to /admin/login
+    if (isAdminRoute && !adminToken) {
+      window.history.replaceState({}, "", "/admin/login");
+      setCurrentPath("/admin/login");
+      setIsAdminLoginOpen(true);
+      return;
+    }
+
+    // If on /admin/login and already authenticated, redirect to /admin
+    if (currentPath === "/admin/login") {
+      if (adminToken) {
+        window.history.replaceState({}, "", "/admin");
+        setCurrentPath("/admin");
+      } else {
+        setIsAdminLoginOpen(true);
       }
+      return;
+    }
+
+    const verifySession = async () => {
+      if (!adminToken) return;
 
       if (adminToken.startsWith("LOCAL_SESSION_TOKEN_")) {
         return;
       }
 
       try {
-        const res = await fetch("/api/portal-session-v2", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token: adminToken })
+        const res = await fetch("/api/admin/session", {
+          headers: { "Authorization": `Bearer ${adminToken}` }
         });
-        const data = await res.json();
-        if (!res.ok || !data.valid) {
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data?.valid) {
           safeSessionStorage.removeItem("localbuild_admin_token");
           setAdminToken(null);
-          if (currentPath === "/admin-dashboard") {
-            window.history.pushState({}, "", "/");
-            setCurrentPath("/");
+          if (isAdminRoute) {
+            window.history.replaceState({}, "", "/admin/login");
+            setCurrentPath("/admin/login");
             setIsAdminLoginOpen(true);
           }
         }
@@ -191,20 +203,21 @@ export default function App() {
     };
 
     verifySession();
-  }, [adminToken, currentPath]);
+  }, [adminToken, currentPath, isAdminRoute]);
 
   // Admin login callbacks
   const handleAdminSuccess = (token: string) => {
     safeSessionStorage.setItem("localbuild_admin_token", token);
     setAdminToken(token);
-    window.history.pushState({}, "", "/admin-dashboard");
-    setCurrentPath("/admin-dashboard");
+    setIsAdminLoginOpen(false);
+    window.history.pushState({}, "", "/admin");
+    setCurrentPath("/admin");
   };
 
   const handleAdminLogout = async () => {
     if (adminToken) {
       try {
-        await fetch("/api/portal-verify-logout-v2", {
+        await fetch("/api/admin/logout", {
           method: "POST",
           headers: { "Authorization": `Bearer ${adminToken}` }
         });
@@ -214,8 +227,9 @@ export default function App() {
     }
     safeSessionStorage.removeItem("localbuild_admin_token");
     setAdminToken(null);
-    window.history.pushState({}, "", "/");
-    setCurrentPath("/");
+    window.history.replaceState({}, "", "/admin/login");
+    setCurrentPath("/admin/login");
+    setIsAdminLoginOpen(true);
   };
 
   const handleOpenContact = (service?: string, notes?: string) => {
@@ -256,8 +270,8 @@ export default function App() {
     }
   };
 
-  // ROUTE: ADMIN DASHBOARD
-  if (currentPath === "/admin-dashboard" && adminToken) {
+  // ROUTE: PROTECTED ADMIN DASHBOARD (/admin, /admin/leads, /admin-dashboard)
+  if (isAdminRoute && adminToken) {
     return (
       <AdminDashboard 
         token={adminToken} 
@@ -284,8 +298,9 @@ export default function App() {
         <Footer
           onQuoteClick={(srv) => handleOpenContact(srv)}
           onNavigate={handleNavigate}
+          onAdminClick={() => setIsAdminLoginOpen(true)}
         />
-        <FloatingButtons />
+        <FloatingButtons onAdminClick={() => setIsAdminLoginOpen(true)} />
         <ContactForm
           isOpen={isContactOpen}
           onClose={() => setIsContactOpen(false)}
@@ -314,8 +329,9 @@ export default function App() {
         <Footer
           onQuoteClick={(srv) => handleOpenContact(srv)}
           onNavigate={handleNavigate}
+          onAdminClick={() => setIsAdminLoginOpen(true)}
         />
-        <FloatingButtons />
+        <FloatingButtons onAdminClick={() => setIsAdminLoginOpen(true)} />
         <ContactForm
           isOpen={isContactOpen}
           onClose={() => setIsContactOpen(false)}
@@ -345,8 +361,9 @@ export default function App() {
         <Footer
           onQuoteClick={(srv) => handleOpenContact(srv)}
           onNavigate={handleNavigate}
+          onAdminClick={() => setIsAdminLoginOpen(true)}
         />
-        <FloatingButtons />
+        <FloatingButtons onAdminClick={() => setIsAdminLoginOpen(true)} />
         <ContactForm
           isOpen={isContactOpen}
           onClose={() => setIsContactOpen(false)}
@@ -378,8 +395,9 @@ export default function App() {
         <Footer
           onQuoteClick={(srv) => handleOpenContact(srv)}
           onNavigate={handleNavigate}
+          onAdminClick={() => setIsAdminLoginOpen(true)}
         />
-        <FloatingButtons />
+        <FloatingButtons onAdminClick={() => setIsAdminLoginOpen(true)} />
         <ContactForm
           isOpen={isContactOpen}
           onClose={() => setIsContactOpen(false)}
@@ -411,8 +429,9 @@ export default function App() {
         <Footer
           onQuoteClick={(srv) => handleOpenContact(srv)}
           onNavigate={handleNavigate}
+          onAdminClick={() => setIsAdminLoginOpen(true)}
         />
-        <FloatingButtons />
+        <FloatingButtons onAdminClick={() => setIsAdminLoginOpen(true)} />
         <ContactForm
           isOpen={isContactOpen}
           onClose={() => setIsContactOpen(false)}
@@ -439,8 +458,9 @@ export default function App() {
         <Footer
           onQuoteClick={(srv) => handleOpenContact(srv)}
           onNavigate={handleNavigate}
+          onAdminClick={() => setIsAdminLoginOpen(true)}
         />
-        <FloatingButtons />
+        <FloatingButtons onAdminClick={() => setIsAdminLoginOpen(true)} />
         <ContactForm
           isOpen={isContactOpen}
           onClose={() => setIsContactOpen(false)}
@@ -532,6 +552,7 @@ export default function App() {
       <Footer
         onQuoteClick={(srv) => handleOpenContact(srv)}
         onNavigate={handleNavigate}
+        onAdminClick={() => setIsAdminLoginOpen(true)}
       />
 
       {/* Pop-up Consultation Modal (Triggered by CTAs across the page) */}
@@ -554,7 +575,13 @@ export default function App() {
       {/* Admin CRM Login Modal */}
       <AdminLoginModal
         isOpen={isAdminLoginOpen}
-        onClose={() => setIsAdminLoginOpen(false)}
+        onClose={() => {
+          setIsAdminLoginOpen(false);
+          if (currentPath === "/admin/login") {
+            window.history.pushState({}, "", "/");
+            setCurrentPath("/");
+          }
+        }}
         onLoginSuccess={handleAdminSuccess}
       />
 
