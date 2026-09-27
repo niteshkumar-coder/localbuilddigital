@@ -226,15 +226,14 @@ export default function ContactForm({
     <div className="w-full">
       {/* Title & Context Header */}
       <div className="mb-6">
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-[11px] font-bold text-blue-700 tracking-wide uppercase mb-2">
-          <Sparkles className="w-3 h-3 text-blue-600" />
-          <span>LocalBuild commercial strategy consultation</span>
-        </div>
-        <h2 className="text-xl sm:text-2xl font-display font-extrabold text-zinc-900 tracking-tight leading-tight">
-          BOOK YOUR GROWTH CONSULTATION
+        <span className="text-xs font-semibold uppercase tracking-wider text-[#3157D5] block mb-1">
+          Discovery Consultation
+        </span>
+        <h2 className="text-xl sm:text-2xl font-display font-bold text-[#1E293B] tracking-tight leading-tight">
+          Book Your Growth Consultation
         </h2>
-        <p className="text-sm text-zinc-600 mt-1.5 leading-relaxed">
-          Fill in your details. We'll analyze your local competition before our call.
+        <p className="text-sm text-[#64748B] mt-1.5 leading-relaxed">
+          Share your business details below. We will review your local competitor landscape before our call.
         </p>
       </div>
 
@@ -427,16 +426,16 @@ export default function ContactForm({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3.5 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-bold text-sm tracking-wide shadow-md shadow-blue-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
+              className="w-full h-12 px-6 rounded-lg bg-[#3157D5] hover:bg-[#2546B8] active:scale-[0.99] text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed shadow-xs"
             >
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>SUBMITTING...</span>
+                  <span>Submitting request...</span>
                 </>
               ) : (
                 <>
-                  <span>REQUEST STRATEGY CALL</span>
+                  <span>Request Strategy Call</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
@@ -473,9 +472,98 @@ export default function ContactForm({
   // If embedded directly inside a page
   if (embedded) {
     return (
-      <div className="bg-white rounded-2xl border border-zinc-200/90 shadow-sm p-6 sm:p-8">
-        {formContent}
-      </div>
+      <section id="contact" className="py-20 sm:py-28 bg-[#071126] text-white border-t border-[#1C2A4A]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+            
+            {/* Left Column: Editorial Value Proposition & Direct Contact */}
+            <div className="lg:col-span-5 space-y-6">
+              <div>
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#7C8CFF] block mb-2">
+                  Start a Conversation
+                </span>
+                <h2 className="font-display font-semibold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-[1.12]">
+                  Turn search interest into real customer demand.
+                </h2>
+              </div>
+
+              <p className="text-base text-zinc-300 leading-relaxed max-w-[500px]">
+                Book a 30-minute growth consultation. We audit your immediate local market, search competition, and lead conversion flow with zero sales pressure.
+              </p>
+
+              {/* Direct Channels */}
+              <div className="pt-2 space-y-3.5 border-t border-white/10 text-sm text-zinc-300">
+                <div className="flex items-center gap-3">
+                  <Phone className="w-4 h-4 text-[#7C8CFF] shrink-0" />
+                  <div>
+                    <span className="text-xs text-zinc-400 block">Direct Telephone</span>
+                    <a href={`tel:${LOCALBUILD_PHONE}`} className="font-mono font-semibold text-white hover:text-[#7C8CFF] transition-colors">
+                      {LOCALBUILD_PHONE_DISPLAY}
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <MessageSquare className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <div>
+                    <span className="text-xs text-zinc-400 block">WhatsApp Us</span>
+                    <a
+                      href={getWhatsAppUrl("Hi LocalBuild, I'd like to book a 30-minute growth consultation.")}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-emerald-400 hover:text-emerald-300 underline underline-offset-4"
+                    >
+                      Open WhatsApp Chat →
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Mail className="w-4 h-4 text-[#7C8CFF] shrink-0" />
+                  <div>
+                    <span className="text-xs text-zinc-400 block">Official Inquiries</span>
+                    <a href={`mailto:${LOCALBUILD_EMAIL}`} className="font-medium text-white hover:text-[#7C8CFF] transition-colors">
+                      {LOCALBUILD_EMAIL}
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <MapPin className="w-4 h-4 text-[#7C8CFF] shrink-0" />
+                  <div>
+                    <span className="text-xs text-zinc-400 block">Headquarters</span>
+                    <span className="text-xs text-zinc-300 leading-relaxed">
+                      {LOCALBUILD_ADDRESS}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Commercial Commitments */}
+              <div className="pt-4 border-t border-white/10 space-y-2 text-xs text-zinc-300 font-medium">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#168A62] shrink-0" />
+                  <span>100% Direct Account Ownership</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#168A62] shrink-0" />
+                  <span>Direct Platform Billing by Google &amp; Meta</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#168A62] shrink-0" />
+                  <span>Verified Conversion Reporting</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: High-Converting Form Card */}
+            <div className="lg:col-span-7 bg-white text-zinc-900 rounded-xl border border-zinc-200 p-6 sm:p-8 shadow-xl">
+              {formContent}
+            </div>
+
+          </div>
+        </div>
+      </section>
     );
   }
 

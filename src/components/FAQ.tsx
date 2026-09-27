@@ -45,20 +45,20 @@ export default function FAQ({ onQuoteClick }: FAQProps) {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-12 sm:mb-16">
-          <span className="inline-block text-xs font-bold uppercase tracking-wider text-[#3157D5] mb-2">
+        <div className="max-w-3xl mb-10 sm:mb-14">
+          <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[#3157D5] mb-2">
             Common Questions
           </span>
-          <h2 className="font-display font-extrabold text-2xl sm:text-4xl lg:text-5xl text-[#263044] tracking-tight leading-[1.15] mb-3">
+          <h2 className="font-display font-semibold text-2xl sm:text-4xl lg:text-5xl text-[#1E293B] tracking-tight leading-[1.12] mb-3">
             Frequently asked questions.
           </h2>
-          <p className="text-base sm:text-lg text-[#667085] leading-relaxed max-w-2xl">
+          <p className="text-base sm:text-lg text-[#64748B] leading-relaxed max-w-[620px]">
             Practical answers about timelines, advertising budgets, and working with LocalBuild.
           </p>
         </div>
 
-        {/* 5 FAQ Items Accordion */}
-        <div className="space-y-3" role="region" aria-label="Frequently Asked Questions">
+        {/* Clean Editorial Accordion with Hairline Dividers (Zero Card Clutter) */}
+        <div className="divide-y divide-[#E2E8F0] border-y border-[#E2E8F0]" role="region" aria-label="Frequently Asked Questions">
           {FAQ_DATA.map((item, index) => {
             const isOpen = openIndex === index;
             const buttonId = `faq-btn-${index}`;
@@ -67,7 +67,7 @@ export default function FAQ({ onQuoteClick }: FAQProps) {
             return (
               <div
                 key={index}
-                className="rounded-xl border border-[#DDE3EC] overflow-hidden bg-white shadow-2xs transition-colors"
+                className="py-5 sm:py-6 transition-colors"
               >
                 <button
                   id={buttonId}
@@ -75,13 +75,13 @@ export default function FAQ({ onQuoteClick }: FAQProps) {
                   aria-expanded={isOpen}
                   aria-controls={panelId}
                   onClick={() => toggle(index)}
-                  className="w-full text-left px-6 py-4.5 flex items-center justify-between gap-4 hover:bg-[#F2F5FA] transition-colors cursor-pointer"
+                  className="w-full text-left flex items-start justify-between gap-4 group cursor-pointer"
                 >
-                  <span className="font-display font-bold text-base sm:text-lg text-[#263044]">
+                  <span className="font-display font-semibold text-base sm:text-lg text-[#1E293B] group-hover:text-[#3157D5] transition-colors leading-snug">
                     {item.question}
                   </span>
-                  <div className={`w-7 h-7 rounded-md flex items-center justify-center shrink-0 transition-transform duration-150 ${
-                    isOpen ? "rotate-180 bg-[#071126] text-white" : "bg-[#F2F5FA] text-[#263044]"
+                  <div className={`w-7 h-7 rounded-md flex items-center justify-center shrink-0 transition-transform duration-200 mt-0.5 ${
+                    isOpen ? "rotate-180 text-[#3157D5]" : "text-[#64748B] group-hover:text-[#1E293B]"
                   }`}>
                     <ChevronDown className="w-4 h-4" />
                   </div>
@@ -92,7 +92,7 @@ export default function FAQ({ onQuoteClick }: FAQProps) {
                     id={panelId}
                     role="region"
                     aria-labelledby={buttonId}
-                    className="px-6 pb-5 pt-1 text-sm sm:text-base text-[#667085] leading-relaxed border-t border-[#DDE3EC]"
+                    className="pt-3 pb-1 text-sm sm:text-base text-[#64748B] leading-relaxed max-w-[680px]"
                   >
                     {item.answer}
                   </div>
@@ -109,7 +109,7 @@ export default function FAQ({ onQuoteClick }: FAQProps) {
             <button
               type="button"
               onClick={onQuoteClick}
-              className="text-[#3157D5] font-bold hover:underline cursor-pointer inline-flex items-center gap-1"
+              className="text-[#3157D5] font-semibold hover:underline cursor-pointer inline-flex items-center gap-1"
             >
               <span>Ask our team in a quick consultation →</span>
             </button>

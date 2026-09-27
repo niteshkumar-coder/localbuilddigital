@@ -57,7 +57,7 @@ export default function Hero({ onQuoteClick, onNavigate }: HeroProps) {
             onClick={() => onQuoteClick()}
             className="btn btn--primary cursor-pointer"
           >
-            START A CONVERSATION
+            <span>Start a Conversation</span>
           </button>
           
           <button
@@ -65,7 +65,8 @@ export default function Hero({ onQuoteClick, onNavigate }: HeroProps) {
             onClick={() => onNavigate("case-studies")}
             className="btn btn--ghost cursor-pointer"
           >
-            EXPLORE OUR WORK <span aria-hidden="true">→</span>
+            <span>Explore Our Work</span>
+            <span aria-hidden="true">→</span>
           </button>
         </div>
 

@@ -2,62 +2,67 @@ export default function WhyChooseUs() {
   const threeOutcomes = [
     {
       num: "01",
-      title: "MORE QUALIFIED ENQUIRIES",
-      desc: "We focus on phone calls, consultation requests and real leads — not vanity impressions."
+      title: "More qualified enquiries",
+      desc: "We focus on verified phone calls, consultation bookings, and genuine buyer intent — rather than inflating vanity impressions."
     },
     {
       num: "02",
-      title: "BETTER CONVERSION",
-      desc: "Websites and ad campaigns built around turning local search interest into customers."
+      title: "Higher conversion rate",
+      desc: "Websites and ad campaigns engineered around turning local search interest into paying clients through clean information architecture and clear value."
     },
     {
       num: "03",
-      title: "CLEAR REPORTING & LONG-TERM GROWTH",
-      desc: "You always know what is working, what needs improvement and what comes next."
+      title: "Clear reporting & long-term growth",
+      desc: "Direct platform billing, verified conversion tracking, and monthly strategic clarity so you always know what is working and what comes next."
     }
   ];
 
   return (
-    <section id="why-us" className="py-16 sm:py-24 bg-white border-b border-[#DDE3EC]">
+    <section id="why-us" className="py-16 sm:py-24 bg-white border-b border-[#E2E8F0]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Title */}
-        <div className="mb-3">
-          <span className="inline-block text-xs font-bold uppercase tracking-wider text-[#3157D5]">
-            Why LocalBuild
-          </span>
-        </div>
+        {/* Editorial Two-Column Spread */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          
+          {/* Left Column: Thesis & Vision */}
+          <div className="lg:col-span-5 lg:sticky lg:top-24">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#3157D5] block mb-2">
+              Why LocalBuild
+            </span>
+            <h2 className="font-display font-semibold text-2xl sm:text-4xl text-[#1E293B] tracking-tight leading-[1.12] mb-4">
+              Marketing should create business, not just traffic.
+            </h2>
+            <p className="text-base text-[#64748B] leading-relaxed mb-6 max-w-lg">
+              Most digital agencies report on clicks because they are easy to buy. We design every system around one commercial outcome: qualified local customers who call, book, and pay.
+            </p>
+            <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs text-[#64748B] leading-relaxed">
+              <strong className="text-[#1E293B] font-semibold block mb-0.5">Commercial Principle</strong>
+              You retain 100% legal ownership of your accounts, creative assets, and lead database. No agency hostage contracts.
+            </div>
+          </div>
 
-        {/* H2 & Body */}
-        <div className="max-w-3xl mb-12 sm:mb-16">
-          <h2 className="font-display font-extrabold text-2xl sm:text-4xl lg:text-5xl text-[#263044] tracking-tight leading-[1.15] mb-4">
-            Marketing should create business, not just traffic.
-          </h2>
-          <p className="text-base sm:text-lg text-[#667085] leading-relaxed max-w-2xl">
-            Most agencies report on clicks because they are easy to buy. We design every campaign around one commercial outcome: qualified local customers who book, call, and pay.
-          </p>
-        </div>
-
-        {/* 3 Outcome Points */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {threeOutcomes.map((item) => (
-            <div 
-              key={item.num} 
-              className="p-6 sm:p-8 rounded-2xl bg-[#F2F5FA] border border-[#DDE3EC] flex flex-col justify-between"
-            >
-              <div>
-                <span className="font-mono text-xs font-extrabold text-[#3157D5] block mb-3">
-                  POINT {item.num}
-                </span>
-                <h3 className="font-display font-bold text-base sm:text-lg text-[#263044] uppercase tracking-wide mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-sm text-[#667085] leading-relaxed">
+          {/* Right Column: 3 Structured Outcome Points with Editorial Dividers */}
+          <div className="lg:col-span-7 divide-y divide-[#E2E8F0] border-y border-[#E2E8F0]">
+            {threeOutcomes.map((item) => (
+              <div 
+                key={item.num} 
+                className="py-8 sm:py-10 first:pt-4 sm:first:pt-6 last:pb-4 sm:last:pb-6 group"
+              >
+                <div className="flex items-baseline gap-4 mb-2">
+                  <span className="font-mono text-sm font-semibold text-[#3157D5] shrink-0">
+                    {item.num}.
+                  </span>
+                  <h3 className="font-display font-semibold text-lg sm:text-xl text-[#1E293B] tracking-tight">
+                    {item.title}
+                  </h3>
+                </div>
+                <p className="text-sm sm:text-base text-[#64748B] leading-relaxed pl-8 max-w-xl">
                   {item.desc}
                 </p>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+
         </div>
 
       </div>

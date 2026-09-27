@@ -113,20 +113,20 @@ Est. ROI: ${estimatedROI}%`;
         
         {/* Section Header */}
         <div className="max-w-3xl mb-12 sm:mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-white border border-[#DDE3EC] text-[#263044] text-xs font-semibold uppercase tracking-wider mb-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white border border-[#DDE3EC] text-[#263044] text-xs font-semibold uppercase tracking-wider mb-3">
             <Calculator className="w-3.5 h-3.5 text-[#3157D5]" />
             <span>Interactive Tool</span>
           </div>
 
-          <h2 className="font-display font-extrabold text-2xl sm:text-4xl lg:text-5xl text-[#263044] tracking-tight leading-[1.15] mb-3">
+          <h2 className="font-display font-semibold text-2xl sm:text-4xl lg:text-5xl text-[#1E293B] tracking-tight leading-[1.12] mb-3">
             Commercial Marketing ROI Calculator
           </h2>
 
-          <p className="text-base sm:text-lg text-[#667085] leading-relaxed max-w-2xl">
+          <p className="text-base sm:text-lg text-[#667085] leading-relaxed max-w-[620px]">
             Test your budget assumptions to estimate the revenue and customer volume needed to make your local marketing profitable.
           </p>
 
-          <p className="text-xs text-[#667085] font-medium mt-3">
+          <p className="text-xs text-[#667085] font-normal mt-3">
             * Illustrative estimate — actual results vary based on competition and sales conversion.
           </p>
         </div>
@@ -135,9 +135,9 @@ Est. ROI: ${estimatedROI}%`;
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           
           {/* Inputs Column (7 cols) */}
-          <div className="lg:col-span-7 bg-white rounded-2xl border border-[#DDE3EC] p-6 sm:p-8 space-y-6 shadow-2xs">
+          <div className="lg:col-span-7 bg-white rounded-xl border border-[#DDE3EC] p-6 sm:p-8 space-y-6 shadow-2xs">
             <div className="flex items-center justify-between pb-3 border-b border-[#DDE3EC]">
-              <span className="font-display font-bold text-base text-[#263044]">
+              <span className="font-display font-semibold text-base text-[#263044]">
                 Campaign Inputs
               </span>
               <button
@@ -325,7 +325,7 @@ Est. ROI: ${estimatedROI}%`;
           </div>
 
           {/* Output Panel (5 cols) */}
-          <div className="lg:col-span-5 flex flex-col justify-between p-6 sm:p-8 rounded-2xl bg-[#0B1633] text-white border border-[#071126] shadow-xl">
+          <div className="lg:col-span-5 flex flex-col justify-between p-6 sm:p-8 rounded-xl bg-[#0B1633] text-white border border-[#071126] shadow-xl">
             <div>
               <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#7C8CFF] block mb-6">
                 Calculated Projection
@@ -340,7 +340,7 @@ Est. ROI: ${estimatedROI}%`;
                   {/* Estimated Leads */}
                   <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
                     <span className="text-xs text-zinc-300">Estimated Leads</span>
-                    <span className="font-display font-extrabold text-2xl text-white">
+                    <span className="font-display font-semibold text-2xl text-white tabular-nums">
                       {Math.round(estimatedLeads)}
                     </span>
                   </div>
@@ -348,7 +348,7 @@ Est. ROI: ${estimatedROI}%`;
                   {/* Estimated Customers */}
                   <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
                     <span className="text-xs text-zinc-300">Estimated Customers</span>
-                    <span className="font-display font-extrabold text-2xl text-white">
+                    <span className="font-display font-semibold text-2xl text-white tabular-nums">
                       {estimatedCustomers}
                     </span>
                   </div>
@@ -356,7 +356,7 @@ Est. ROI: ${estimatedROI}%`;
                   {/* Estimated Revenue */}
                   <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
                     <span className="text-xs text-zinc-300">Estimated Revenue</span>
-                    <span className="font-display font-extrabold text-2xl sm:text-3xl text-emerald-400 font-mono">
+                    <span className="font-display font-semibold text-2xl sm:text-3xl text-emerald-400 font-mono tabular-nums">
                       ₹{estimatedRevenue.toLocaleString("en-IN")}
                     </span>
                   </div>
@@ -365,11 +365,11 @@ Est. ROI: ${estimatedROI}%`;
                   <div className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-1">
                     <div className="flex items-center justify-between text-xs text-zinc-300">
                       <span>Estimated ROI</span>
-                      <span className="font-mono font-bold text-emerald-400">
+                      <span className="font-mono font-medium text-emerald-400 tabular-nums">
                         {estimatedProfit >= 0 ? `+₹${estimatedProfit.toLocaleString("en-IN")} profit` : `-₹${Math.abs(estimatedProfit).toLocaleString("en-IN")} loss`}
                       </span>
                     </div>
-                    <div className="font-display font-extrabold text-3xl sm:text-4xl text-white">
+                    <div className="font-display font-semibold text-3xl sm:text-4xl text-white tabular-nums">
                       {estimatedROI}%
                     </div>
                   </div>
@@ -382,7 +382,7 @@ Est. ROI: ${estimatedROI}%`;
                 type="button"
                 disabled={hasError}
                 onClick={handleApply}
-                className="w-full h-[52px] px-4 rounded-md font-bold text-xs sm:text-sm text-white bg-[#3157D5] hover:bg-[#2546B8] active:bg-[#1E3A8A] disabled:opacity-50 transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs uppercase tracking-wide"
+                className="w-full h-12 px-5 rounded-lg font-semibold text-sm text-white bg-[#3157D5] hover:bg-[#2546B8] active:bg-[#1E3A8A] disabled:opacity-50 transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
               >
                 <span>Plan Campaign With These Numbers</span>
                 <ArrowRight className="w-4 h-4" />

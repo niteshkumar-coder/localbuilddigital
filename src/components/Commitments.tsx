@@ -5,75 +5,84 @@ export default function Commitments() {
     {
       num: "01",
       title: "Direct account ownership",
-      status: "Verified",
+      detail: "100% permanent client control",
       icon: ShieldCheck
     },
     {
       num: "02",
       title: "Transparent platform billing",
-      status: "Verified",
+      detail: "Billed directly by Google & Meta",
       icon: Eye
     },
     {
       num: "03",
       title: "Conversion-focused execution",
-      status: "Verified",
+      detail: "Enquiries over vanity clicks",
       icon: CheckCircle2
     },
     {
       num: "04",
       title: "Clear reporting",
-      status: "Verified",
+      detail: "Verified monthly performance",
       icon: PhoneCall
     }
   ];
 
   return (
-    <section id="commitments" className="py-12 sm:py-16 bg-[#F7F5EF] border-b border-[#DDE3EC]">
+    <section id="commitments" className="py-12 sm:py-16 bg-[#F8FAFC] border-b border-[#E2E8F0]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="mb-6 sm:mb-8 text-center sm:text-left">
-          <h2 className="font-display font-extrabold text-xl sm:text-2xl text-[#263044] tracking-tight">
-            Core Operating Commitments
-          </h2>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-8 sm:mb-10 pb-5 border-b border-[#E2E8F0]">
+          <div>
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#3157D5] block mb-1">
+              Commercial Integrity
+            </span>
+            <h2 className="font-display font-semibold text-xl sm:text-2xl text-[#1E293B] tracking-tight">
+              Core Operating Commitments
+            </h2>
+          </div>
+          <p className="text-xs sm:text-sm text-[#64748B] max-w-sm">
+            Strict structural standards governing every client engagement from day one.
+          </p>
         </div>
 
-        {/* 4 Commitments Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+        {/* 4 Commitments Open Layout with Subtle Vertical Dividers */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0] border-y sm:border border-[#E2E8F0] rounded-xl bg-white overflow-hidden shadow-2xs">
           {commitments.map((item) => {
             const Icon = item.icon;
             return (
               <div 
                 key={item.num}
-                className="bg-white p-5 rounded-xl border border-[#DDE3EC] shadow-2xs flex items-center justify-between gap-4"
+                className="p-6 sm:p-7 flex flex-col justify-between hover:bg-[#F8FAFC]/60 transition-colors"
               >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-9 h-9 rounded-lg bg-[#F2F5FA] text-[#3157D5] flex items-center justify-center shrink-0">
-                    <Icon className="w-4 h-4 text-[#3157D5]" />
-                  </div>
-                  <div className="min-w-0">
-                    <span className="font-mono text-xs font-bold text-[#667085] block mb-0.5">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="font-mono text-xs font-semibold text-[#64748B]">
                       {item.num}
                     </span>
-                    <h3 className="font-display font-bold text-sm text-[#263044] truncate">
-                      {item.title}
-                    </h3>
+                    <Icon className="w-4 h-4 text-[#3157D5]" />
                   </div>
+                  <h3 className="font-display font-semibold text-base text-[#1E293B] leading-snug mb-1.5">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-[#64748B] leading-relaxed">
+                    {item.detail}
+                  </p>
                 </div>
-
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-[#168A62]/10 text-[#168A62] font-mono shrink-0">
-                  {item.status}
-                </span>
+                <div className="pt-4 mt-4 border-t border-[#E2E8F0]/60 flex items-center gap-1.5 text-[11px] font-medium text-[#168A62]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#168A62]" />
+                  <span>Verified Standard</span>
+                </div>
               </div>
             );
           })}
         </div>
 
         {/* Closing line */}
-        <div className="text-center pt-2 border-t border-[#DDE3EC]/70">
-          <p className="font-display font-bold text-sm sm:text-base text-[#263044]">
-            Built for businesses that want more customers — not just clicks.
+        <div className="text-center pt-6">
+          <p className="text-xs sm:text-sm text-[#64748B]">
+            Built for local businesses that want verified customer enquiries — not just empty impressions.
           </p>
         </div>
 

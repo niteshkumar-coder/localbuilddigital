@@ -115,7 +115,7 @@ export default function Footer({ onQuoteClick, onNavigate, onAdminClick }: Foote
                   }}
                 />
               </div>
-              <span className="font-display font-extrabold text-lg sm:text-xl tracking-tight text-white">
+              <span className="font-display font-bold text-lg sm:text-xl tracking-tight text-white">
                 LocalBuild
               </span>
             </div>
@@ -134,8 +134,8 @@ export default function Footer({ onQuoteClick, onNavigate, onAdminClick }: Foote
 
           {/* COLUMN 2 — CORE CAPABILITIES (5 cols desktop with 2 sub-columns) */}
           <div className="lg:col-span-5 space-y-3">
-            <h4 className="text-[12px] font-bold uppercase tracking-wider text-white">
-              CORE CAPABILITIES
+            <h4 className="text-[12px] font-semibold text-white tracking-wide">
+              Core Capabilities
             </h4>
 
             {/* Split 12 services into two compact sub-columns */}
@@ -176,8 +176,8 @@ export default function Footer({ onQuoteClick, onNavigate, onAdminClick }: Foote
 
           {/* COLUMN 3 — AGENCY (2 cols) */}
           <div className="lg:col-span-2 space-y-3">
-            <h4 className="text-[12px] font-bold uppercase tracking-wider text-white">
-              AGENCY
+            <h4 className="text-[12px] font-semibold text-white tracking-wide">
+              Agency
             </h4>
             <ul className="space-y-2 text-[13px] sm:text-[13.5px] text-[#94A3B8]">
               <li>
@@ -230,8 +230,8 @@ export default function Footer({ onQuoteClick, onNavigate, onAdminClick }: Foote
 
           {/* COLUMN 4 — READY TO GROW? (2 cols) */}
           <div className="lg:col-span-2 space-y-3">
-            <h4 className="text-[12px] font-bold uppercase tracking-wider text-white">
-              READY TO GROW?
+            <h4 className="text-[12px] font-semibold text-white tracking-wide">
+              Growth Audit
             </h4>
             <p className="text-[13px] sm:text-[13px] text-[#94A3B8] leading-relaxed">
               Schedule a technical discovery audit to examine your funnel, traffic, and conversion pipeline.
@@ -240,9 +240,9 @@ export default function Footer({ onQuoteClick, onNavigate, onAdminClick }: Foote
               <button
                 type="button"
                 onClick={() => onQuoteClick("Discovery Audit Inquiry")}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-[#3157D5] hover:bg-[#2546B8] text-white text-[12px] font-bold transition-all duration-200 shadow-sm hover:shadow-[0_0_16px_rgba(49,87,213,0.45)] cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#3157D5] hover:bg-[#2546B8] text-white text-[12px] font-semibold transition-colors shadow-xs cursor-pointer"
               >
-                <span>REQUEST GROWTH AUDIT</span>
+                <span>Request Growth Audit</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
               </button>
             </div>

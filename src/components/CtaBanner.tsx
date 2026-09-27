@@ -37,11 +37,11 @@ export default function CtaBanner({ onQuoteClick }: CtaBannerProps) {
             Next Steps
           </span>
 
-          <h2 className="font-display font-extrabold text-3xl sm:text-5xl text-white tracking-tight leading-[1.15]">
+          <h2 className="font-display font-semibold text-3xl sm:text-5xl text-white tracking-tight leading-[1.12]">
             Let's build something that grows your business.
           </h2>
 
-          <p className="text-base sm:text-lg text-zinc-300 leading-relaxed max-w-xl mx-auto">
+          <p className="text-base sm:text-lg text-zinc-300 leading-relaxed max-w-[620px] mx-auto">
             Tell us where your business is today and where you want it to go. We'll audit your local market and provide an honest, actionable plan.
           </p>
 
@@ -50,7 +50,7 @@ export default function CtaBanner({ onQuoteClick }: CtaBannerProps) {
             <button
               type="button"
               onClick={onQuoteClick}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg text-sm sm:text-base font-bold text-zinc-900 bg-white hover:bg-zinc-100 active:bg-zinc-200 transition-colors shadow-xs cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg text-sm sm:text-base font-semibold text-zinc-900 bg-white hover:bg-zinc-100 active:bg-zinc-200 transition-colors shadow-xs cursor-pointer"
             >
               <span>Start a Conversation</span>
               <ArrowRight className="w-4 h-4" />

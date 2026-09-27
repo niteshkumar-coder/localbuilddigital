@@ -120,13 +120,13 @@ export default function ContactPage({ onQuoteClick, preselectedService = "", pre
       <section className="bg-[#071126] text-white border-b border-[#1C2A4A] py-14 sm:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#7C8CFF] mb-3">
-              CONTACT
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#7C8CFF] mb-3">
+              Contact
             </p>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.14] mb-4 text-balance">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-white tracking-tight leading-[1.12] mb-4 text-balance">
               Tell us your market. We&apos;ll tell you what it will take.
             </h1>
-            <p className="text-base sm:text-lg text-[#C6CEDE] leading-relaxed max-w-[70ch]">
+            <p className="text-base sm:text-lg text-[#C6CEDE] leading-relaxed max-w-[620px]">
               Schedule a free 30-minute discovery call or connect directly on WhatsApp. We&apos;ll audit your local market and outline a realistic growth roadmap.
             </p>
           </div>
@@ -416,10 +416,10 @@ export default function ContactPage({ onQuoteClick, preselectedService = "", pre
       <section className="py-16 sm:py-24 bg-[#F2F5FA] border-b border-[#DDE3EC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mb-10">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#3157D5] mb-2">
-              LOCATION
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#3157D5] mb-2">
+              Location
             </p>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#263044] tracking-tight mb-2">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-[#263044] tracking-tight mb-2">
               Offices &amp; Headquarters
             </h2>
             <div className="flex items-start gap-2 text-sm sm:text-base text-[#263044]">
@@ -447,7 +447,7 @@ export default function ContactPage({ onQuoteClick, preselectedService = "", pre
               href="https://maps.google.com/?q=Boring+Road+Sri+Krishna+Puri+Patna+Bihar+800001+India"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#3157D5] hover:text-[#2546B8]"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#3157D5] hover:text-[#2546B8]"
             >
               <span>Get Directions</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -460,20 +460,20 @@ export default function ContactPage({ onQuoteClick, preselectedService = "", pre
       <section className="py-16 sm:py-24 bg-white border-b border-[#DDE3EC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mb-12">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#3157D5] mb-2">
-              THE PROCESS
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#3157D5] mb-2">
+              The Process
             </p>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#263044] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-[#263044] tracking-tight">
               What happens next
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="space-y-2 border-t-2 border-[#3157D5] pt-6">
-              <span className="font-mono text-xs font-bold text-[#3157D5] uppercase tracking-wider block">
+              <span className="font-mono text-xs font-semibold text-[#3157D5] uppercase tracking-wider block">
                 01
               </span>
-              <h3 className="text-lg font-bold text-[#263044]">
+              <h3 className="text-lg font-semibold text-[#263044]">
                 You send your details
               </h3>
               <p className="text-sm text-[#667085] leading-relaxed">
@@ -482,10 +482,10 @@ export default function ContactPage({ onQuoteClick, preselectedService = "", pre
             </div>
 
             <div className="space-y-2 border-t-2 border-[#3157D5] pt-6">
-              <span className="font-mono text-xs font-bold text-[#3157D5] uppercase tracking-wider block">
+              <span className="font-mono text-xs font-semibold text-[#3157D5] uppercase tracking-wider block">
                 02
               </span>
-              <h3 className="text-lg font-bold text-[#263044]">
+              <h3 className="text-lg font-semibold text-[#263044]">
                 We audit your local market
               </h3>
               <p className="text-sm text-[#667085] leading-relaxed">
@@ -494,10 +494,10 @@ export default function ContactPage({ onQuoteClick, preselectedService = "", pre
             </div>
 
             <div className="space-y-2 border-t-2 border-[#3157D5] pt-6">
-              <span className="font-mono text-xs font-bold text-[#3157D5] uppercase tracking-wider block">
+              <span className="font-mono text-xs font-semibold text-[#3157D5] uppercase tracking-wider block">
                 03
               </span>
-              <h3 className="text-lg font-bold text-[#263044]">
+              <h3 className="text-lg font-semibold text-[#263044]">
                 We talk for 30 minutes
               </h3>
               <p className="text-sm text-[#667085] leading-relaxed">
@@ -512,10 +512,10 @@ export default function ContactPage({ onQuoteClick, preselectedService = "", pre
       <section className="py-16 sm:py-24 bg-[#F7F5EF] border-b border-[#DDE3EC]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mb-12">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#3157D5] mb-2">
-              FREQUENTLY ASKED QUESTIONS
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#3157D5] mb-2">
+              Frequently Asked Questions
             </p>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#263044] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-[#263044] tracking-tight">
               Questions before you get in touch.
             </h2>
           </div>
@@ -531,7 +531,7 @@ export default function ContactPage({ onQuoteClick, preselectedService = "", pre
                     className="w-full flex items-center justify-between text-left gap-4 cursor-pointer focus:outline-none"
                     aria-expanded={isOpen}
                   >
-                    <span className="font-bold text-base sm:text-lg text-[#263044]">
+                    <span className="font-semibold text-base sm:text-lg text-[#263044]">
                       {faq.q}
                     </span>
                     <ChevronDown
@@ -555,7 +555,7 @@ export default function ContactPage({ onQuoteClick, preselectedService = "", pre
       {/* 4.8 Final CTA (Deep Navy) */}
       <section className="py-16 sm:py-24 bg-[#071126] text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight mb-4">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-white tracking-tight mb-4">
             Prefer to talk it through first?
           </h2>
           <p className="text-base sm:text-lg text-[#C6CEDE] mb-8 leading-relaxed max-w-2xl">

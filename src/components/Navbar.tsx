@@ -150,7 +150,7 @@ export default function Navbar({
               href={getWhatsAppUrl("Hi LocalBuild, I'd like to ask a question about your digital marketing services.")}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded-md transition-colors border border-emerald-200/80"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-emerald-800 bg-emerald-50/80 hover:bg-emerald-100 rounded-md transition-colors border border-emerald-200/60"
               aria-label="Chat on WhatsApp"
             >
               <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
@@ -160,7 +160,7 @@ export default function Navbar({
             <button
               type="button"
               onClick={() => handleLinkClick("/contact")}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs sm:text-sm font-bold text-white bg-[#3157D5] hover:bg-[#2546B8] active:bg-[#1D3A9E] rounded-md transition-colors shadow-xs cursor-pointer uppercase tracking-wider"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-[#3157D5] hover:bg-[#2546B8] active:bg-[#1D3A9E] rounded-lg transition-colors shadow-xs cursor-pointer"
             >
               <span>Start a Conversation</span>
               <ArrowRight className="w-4 h-4" />
@@ -256,7 +256,7 @@ export default function Navbar({
               <button
                 type="button"
                 onClick={() => handleLinkClick("/contact")}
-                className="w-full h-[52px] flex items-center justify-center gap-2 text-sm font-bold text-white bg-[#3157D5] active:bg-[#2546B8] rounded-md transition-colors uppercase tracking-wider cursor-pointer shadow-sm"
+                className="w-full h-12 flex items-center justify-center gap-2 text-sm font-semibold text-white bg-[#3157D5] active:bg-[#2546B8] rounded-lg transition-colors cursor-pointer shadow-xs"
               >
                 <span>Start a Conversation</span>
                 <ArrowRight className="w-4 h-4" />
@@ -267,7 +267,7 @@ export default function Navbar({
                   href={getWhatsAppUrl("Hi LocalBuild, I'm interested in your digital marketing services.")}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="h-12 flex items-center justify-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 active:bg-emerald-100 border border-emerald-200/80 rounded-md transition-colors"
+                  className="h-11 flex items-center justify-center gap-2 text-xs font-semibold text-emerald-800 bg-emerald-50 active:bg-emerald-100 border border-emerald-200/80 rounded-lg transition-colors"
                 >
                   <MessageSquare className="w-4 h-4 text-emerald-600" />
                   <span>WhatsApp</span>

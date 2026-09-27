@@ -54,13 +54,13 @@ export default function ServicesPage({ onQuoteClick, onNavigate }: ServicesPageP
       <section className="bg-[#071126] text-white border-b border-[#1C2A4A] py-14 sm:py-24 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#7C8CFF] mb-3">
-              OUR SERVICES
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#7C8CFF] mb-3">
+              Our Services
             </p>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.14] mb-4 text-balance">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-white tracking-tight leading-[1.12] mb-4 text-balance">
               Four disciplined systems. Thirteen services. One commercial outcome.
             </h1>
-            <p className="text-base sm:text-lg text-[#C6CEDE] leading-relaxed mb-6 max-w-[70ch]">
+            <p className="text-base sm:text-lg text-[#C6CEDE] leading-relaxed mb-6 max-w-[620px]">
               Everything your business needs to turn local search interest into verified phone calls, booked appointments, and long-term revenue.
             </p>
 
@@ -80,14 +80,15 @@ export default function ServicesPage({ onQuoteClick, onNavigate }: ServicesPageP
                 onClick={() => onQuoteClick()}
                 className="btn btn--primary"
               >
-                START A CONVERSATION
+                Start a Conversation
               </button>
               <button
                 type="button"
                 onClick={() => onNavigate("case-studies")}
                 className="btn btn--ghost"
               >
-                EXPLORE OUR WORK <span aria-hidden="true">→</span>
+                <span>Explore Our Work</span>
+                <span aria-hidden="true">→</span>
               </button>
             </div>
           </div>
@@ -97,71 +98,71 @@ export default function ServicesPage({ onQuoteClick, onNavigate }: ServicesPageP
       {/* 3.3 Capability Overview (Four editorial rows) */}
       <section className="py-12 sm:py-16 bg-[#F7F5EF] border-b border-[#DDE3EC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#3157D5] mb-2">
-            OVERVIEW
+          <p className="text-xs font-semibold uppercase tracking-wider text-[#3157D5] mb-2">
+            Overview
           </p>
-          <h2 className="text-xl sm:text-2xl font-extrabold text-[#263044] mb-8">
+          <h2 className="text-xl sm:text-2xl font-semibold text-[#263044] mb-8">
             Four disciplined systems to acquire and retain local customers.
           </h2>
 
           <div className="divide-y divide-[#DDE3EC] border-y border-[#DDE3EC]">
             <div className="py-4 sm:py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-baseline gap-3">
-                <span className="font-mono text-xs font-extrabold text-[#3157D5]">01</span>
-                <span className="font-bold text-base text-[#263044]">BUILD</span>
+                <span className="font-mono text-xs font-semibold text-[#3157D5]">01</span>
+                <span className="font-semibold text-base text-[#263044]">Build</span>
                 <span className="text-sm text-[#667085]">— Websites &amp; digital experiences that turn visitors into enquiries.</span>
               </div>
               <button
                 type="button"
                 onClick={() => scrollToSection("build")}
-                className="text-xs font-bold text-[#3157D5] hover:text-[#2546B8] self-start sm:self-auto cursor-pointer"
+                className="text-xs font-semibold text-[#3157D5] hover:text-[#2546B8] self-start sm:self-auto cursor-pointer"
               >
-                Jump to BUILD ↓
+                Jump to Build ↓
               </button>
             </div>
 
             <div className="py-4 sm:py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-baseline gap-3">
-                <span className="font-mono text-xs font-extrabold text-[#3157D5]">02</span>
-                <span className="font-bold text-base text-[#263044]">GROW</span>
+                <span className="font-mono text-xs font-semibold text-[#3157D5]">02</span>
+                <span className="font-semibold text-base text-[#263044]">Grow</span>
                 <span className="text-sm text-[#667085]">— Search, ads and local visibility built around measurable growth.</span>
               </div>
               <button
                 type="button"
                 onClick={() => scrollToSection("grow")}
-                className="text-xs font-bold text-[#3157D5] hover:text-[#2546B8] self-start sm:self-auto cursor-pointer"
+                className="text-xs font-semibold text-[#3157D5] hover:text-[#2546B8] self-start sm:self-auto cursor-pointer"
               >
-                Jump to GROW ↓
+                Jump to Grow ↓
               </button>
             </div>
 
             <div className="py-4 sm:py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-baseline gap-3">
-                <span className="font-mono text-xs font-extrabold text-[#3157D5]">03</span>
-                <span className="font-bold text-base text-[#263044]">REACH</span>
+                <span className="font-mono text-xs font-semibold text-[#3157D5]">03</span>
+                <span className="font-semibold text-base text-[#263044]">Reach</span>
                 <span className="text-sm text-[#667085]">— Content, video and authority marketing that make you the first choice.</span>
               </div>
               <button
                 type="button"
                 onClick={() => scrollToSection("reach")}
-                className="text-xs font-bold text-[#3157D5] hover:text-[#2546B8] self-start sm:self-auto cursor-pointer"
+                className="text-xs font-semibold text-[#3157D5] hover:text-[#2546B8] self-start sm:self-auto cursor-pointer"
               >
-                Jump to REACH ↓
+                Jump to Reach ↓
               </button>
             </div>
 
             <div className="py-4 sm:py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-baseline gap-3">
-                <span className="font-mono text-xs font-extrabold text-[#3157D5]">04</span>
-                <span className="font-bold text-base text-[#263044]">AUTOMATE</span>
+                <span className="font-mono text-xs font-semibold text-[#3157D5]">04</span>
+                <span className="font-semibold text-base text-[#263044]">Automate</span>
                 <span className="text-sm text-[#667085]">— Lead pipelines and systems that eliminate lost inquiries.</span>
               </div>
               <button
                 type="button"
                 onClick={() => scrollToSection("automate")}
-                className="text-xs font-bold text-[#3157D5] hover:text-[#2546B8] self-start sm:self-auto cursor-pointer"
+                className="text-xs font-semibold text-[#3157D5] hover:text-[#2546B8] self-start sm:self-auto cursor-pointer"
               >
-                Jump to AUTOMATE ↓
+                Jump to Automate ↓
               </button>
             </div>
           </div>
@@ -172,10 +173,10 @@ export default function ServicesPage({ onQuoteClick, onNavigate }: ServicesPageP
       <section id="build" className="py-16 sm:py-24 bg-white border-b border-[#DDE3EC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mb-12">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#3157D5] mb-2">
-              01 · BUILD
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#3157D5] mb-2">
+              01 · Build
             </p>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#263044] tracking-tight mb-3">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#263044] tracking-tight mb-3">
               Websites and digital experiences that give customers a reason to choose you.
             </h2>
             <p className="text-base text-[#667085]">
@@ -801,7 +802,7 @@ export default function ServicesPage({ onQuoteClick, onNavigate }: ServicesPageP
             <div className="flex items-start gap-4">
               <CheckCircle className="w-5 h-5 text-[#168A62] shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-display font-bold text-base text-white mb-1">
+                <h4 className="font-display font-semibold text-base text-white mb-1">
                   100% Direct Account Billing &amp; Transparency Guarantee
                 </h4>
                 <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
@@ -817,10 +818,10 @@ export default function ServicesPage({ onQuoteClick, onNavigate }: ServicesPageP
       <section className="py-16 sm:py-24 bg-[#F2F5FA] border-b border-[#DDE3EC]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mb-12">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#3157D5] mb-2">
-              FREQUENTLY ASKED QUESTIONS
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#3157D5] mb-2">
+              Frequently Asked Questions
             </p>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#263044] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-[#263044] tracking-tight">
               Practical answers to how we scope and deliver services.
             </h2>
           </div>
@@ -836,7 +837,7 @@ export default function ServicesPage({ onQuoteClick, onNavigate }: ServicesPageP
                     className="w-full flex items-center justify-between text-left gap-4 cursor-pointer focus:outline-none"
                     aria-expanded={isOpen}
                   >
-                    <span className="font-bold text-base sm:text-lg text-[#263044]">
+                    <span className="font-semibold text-base sm:text-lg text-[#263044]">
                       {faq.q}
                     </span>
                     <ChevronDown
@@ -860,7 +861,7 @@ export default function ServicesPage({ onQuoteClick, onNavigate }: ServicesPageP
       {/* 3.10 Final CTA (Deep Navy) */}
       <section className="py-16 sm:py-24 bg-[#071126] text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight mb-4">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-white tracking-tight mb-4">
             Not sure which system your business needs first?
           </h2>
           <p className="text-base sm:text-lg text-[#C6CEDE] mb-8 leading-relaxed max-w-2xl">

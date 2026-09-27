@@ -33,13 +33,13 @@ export default function AboutPage({ onQuoteClick, onNavigate }: AboutPageProps) 
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-24 lg:py-32">
           <div className="max-w-2xl">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#7C8CFF] mb-3">
-              ABOUT LOCALBUILD
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#7C8CFF] mb-3">
+              About LocalBuild
             </p>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.14] mb-5 text-balance">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-white tracking-tight leading-[1.12] mb-5 text-balance">
               We build the systems that turn local interest into booked customers.
             </h1>
-            <p className="text-base sm:text-lg text-[#C6CEDE] leading-relaxed mb-8 max-w-[70ch]">
+            <p className="text-base sm:text-lg text-[#C6CEDE] leading-relaxed mb-8 max-w-[620px]">
               LocalBuild is a Patna-based digital marketing agency. We build websites, run Google and Meta advertising, optimise local search visibility, and automate the follow-up that loses businesses their easiest enquiries.
             </p>
 
@@ -49,14 +49,15 @@ export default function AboutPage({ onQuoteClick, onNavigate }: AboutPageProps) 
                 onClick={() => onQuoteClick()}
                 className="btn btn--primary"
               >
-                START A CONVERSATION
+                Start a Conversation
               </button>
               <button
                 type="button"
                 onClick={() => onNavigate("case-studies")}
                 className="btn btn--ghost"
               >
-                EXPLORE OUR WORK <span aria-hidden="true">→</span>
+                <span>Explore Our Work</span>
+                <span aria-hidden="true">→</span>
               </button>
             </div>
           </div>
@@ -66,10 +67,10 @@ export default function AboutPage({ onQuoteClick, onNavigate }: AboutPageProps) 
       {/* 2.3 Why We Exist (Warm Ivory) */}
       <section className="py-16 sm:py-24 bg-[#F7F5EF] border-b border-[#DDE3EC]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#3157D5] mb-3">
-            WHY WE EXIST
+          <p className="text-xs font-semibold uppercase tracking-wider text-[#3157D5] mb-3">
+            Why We Exist
           </p>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#263044] tracking-tight leading-snug mb-8">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#263044] tracking-tight leading-snug mb-8">
             Most local businesses do not have a traffic problem. They have a follow-through problem.
           </h2>
 
@@ -366,10 +367,10 @@ export default function AboutPage({ onQuoteClick, onNavigate }: AboutPageProps) 
             {/* Role 5 */}
             <div className="py-6 sm:py-8 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
               <div>
-                <span className="font-mono text-xs font-bold text-[#3157D5] uppercase tracking-wider block mb-1">
+                <span className="font-mono text-xs font-semibold text-[#3157D5] uppercase tracking-wider block mb-1">
                   05 · Accountability
                 </span>
-                <h3 className="text-lg sm:text-xl font-bold text-[#263044]">
+                <h3 className="text-lg sm:text-xl font-semibold text-[#263044]">
                   Client reporting contact
                 </h3>
               </div>
@@ -394,42 +395,42 @@ export default function AboutPage({ onQuoteClick, onNavigate }: AboutPageProps) 
       <section className="py-16 sm:py-24 bg-[#F2F5FA] border-b border-[#DDE3EC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mb-12">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#3157D5] mb-2">
-              WHAT WE STAND FOR
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#3157D5] mb-2">
+              What We Stand For
             </p>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#263044] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#263044] tracking-tight">
               Four rules we do not bend.
             </h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
             <div className="bg-white p-6 sm:p-8 rounded-lg border border-[#DDE3EC]">
-              <div className="font-mono text-xs font-bold text-[#3157D5] uppercase mb-2">Rule 01</div>
-              <h3 className="text-lg font-bold text-[#263044] mb-2">Direct accountability</h3>
+              <div className="font-mono text-xs font-semibold text-[#3157D5] uppercase mb-2">Rule 01</div>
+              <h3 className="text-lg font-semibold text-[#263044] mb-2">Direct accountability</h3>
               <p className="text-sm text-[#667085] leading-relaxed">
                 If we cannot show what a rupee of your budget produced, we have not finished the job.
               </p>
             </div>
 
             <div className="bg-white p-6 sm:p-8 rounded-lg border border-[#DDE3EC]">
-              <div className="font-mono text-xs font-bold text-[#3157D5] uppercase mb-2">Rule 02</div>
-              <h3 className="text-lg font-bold text-[#263044] mb-2">Plain-English reporting</h3>
+              <div className="font-mono text-xs font-semibold text-[#3157D5] uppercase mb-2">Rule 02</div>
+              <h3 className="text-lg font-semibold text-[#263044] mb-2">Plain-English reporting</h3>
               <p className="text-sm text-[#667085] leading-relaxed">
                 You should be able to read your report without a marketing glossary. Calls, forms, bookings, cost per lead.
               </p>
             </div>
 
             <div className="bg-white p-6 sm:p-8 rounded-lg border border-[#DDE3EC]">
-              <div className="font-mono text-xs font-bold text-[#3157D5] uppercase mb-2">Rule 03</div>
-              <h3 className="text-lg font-bold text-[#263044] mb-2">No markup on your media</h3>
+              <div className="font-mono text-xs font-semibold text-[#3157D5] uppercase mb-2">Rule 03</div>
+              <h3 className="text-lg font-semibold text-[#263044] mb-2">No markup on your media</h3>
               <p className="text-sm text-[#667085] leading-relaxed">
                 Your ad spend goes to Google or Meta, billed to your card. Our fee is our fee, stated upfront.
               </p>
             </div>
 
             <div className="bg-white p-6 sm:p-8 rounded-lg border border-[#DDE3EC]">
-              <div className="font-mono text-xs font-bold text-[#3157D5] uppercase mb-2">Rule 04</div>
-              <h3 className="text-lg font-bold text-[#263044] mb-2">Build for the phone call</h3>
+              <div className="font-mono text-xs font-semibold text-[#3157D5] uppercase mb-2">Rule 04</div>
+              <h3 className="text-lg font-semibold text-[#263044] mb-2">Build for the phone call</h3>
               <p className="text-sm text-[#667085] leading-relaxed">
                 Every page, ad and follow-up is designed for the moment a customer decides to call, message or book.
               </p>
@@ -442,42 +443,42 @@ export default function AboutPage({ onQuoteClick, onNavigate }: AboutPageProps) 
       <section className="py-16 sm:py-24 bg-white border-b border-[#DDE3EC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mb-12">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#3157D5] mb-2">
-              HOW WE WORK
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#3157D5] mb-2">
+              How We Work
             </p>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#263044] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#263044] tracking-tight">
               A clear, disciplined process.
             </h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="p-6 border border-[#DDE3EC] rounded-lg bg-[#F2F5FA]">
-              <span className="font-mono text-xs font-bold text-[#3157D5] block mb-2">01</span>
-              <h3 className="font-display font-bold text-base text-[#263044] mb-2">UNDERSTAND</h3>
+              <span className="font-mono text-xs font-semibold text-[#3157D5] block mb-2">01</span>
+              <h3 className="font-display font-semibold text-base text-[#263044] mb-2">Understand</h3>
               <p className="text-xs sm:text-sm text-[#667085] leading-relaxed">
                 We learn about your business, customers and goals.
               </p>
             </div>
 
             <div className="p-6 border border-[#DDE3EC] rounded-lg bg-[#F2F5FA]">
-              <span className="font-mono text-xs font-bold text-[#3157D5] block mb-2">02</span>
-              <h3 className="font-display font-bold text-base text-[#263044] mb-2">BUILD</h3>
+              <span className="font-mono text-xs font-semibold text-[#3157D5] block mb-2">02</span>
+              <h3 className="font-display font-semibold text-base text-[#263044] mb-2">Build</h3>
               <p className="text-xs sm:text-sm text-[#667085] leading-relaxed">
                 We create the website, campaigns and systems.
               </p>
             </div>
 
             <div className="p-6 border border-[#DDE3EC] rounded-lg bg-[#F2F5FA]">
-              <span className="font-mono text-xs font-bold text-[#3157D5] block mb-2">03</span>
-              <h3 className="font-display font-bold text-base text-[#263044] mb-2">LAUNCH</h3>
+              <span className="font-mono text-xs font-semibold text-[#3157D5] block mb-2">03</span>
+              <h3 className="font-display font-semibold text-base text-[#263044] mb-2">Launch</h3>
               <p className="text-xs sm:text-sm text-[#667085] leading-relaxed">
                 Everything goes live with proper tracking.
               </p>
             </div>
 
             <div className="p-6 border border-[#DDE3EC] rounded-lg bg-[#F2F5FA]">
-              <span className="font-mono text-xs font-bold text-[#3157D5] block mb-2">04</span>
-              <h3 className="font-display font-bold text-base text-[#263044] mb-2">IMPROVE</h3>
+              <span className="font-mono text-xs font-semibold text-[#3157D5] block mb-2">04</span>
+              <h3 className="font-display font-semibold text-base text-[#263044] mb-2">Improve</h3>
               <p className="text-xs sm:text-sm text-[#667085] leading-relaxed">
                 We measure, learn and continuously optimize.
               </p>
@@ -488,7 +489,7 @@ export default function AboutPage({ onQuoteClick, onNavigate }: AboutPageProps) 
             <button
               type="button"
               onClick={() => onNavigate("/contact")}
-              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#3157D5] hover:text-[#2546B8] transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#3157D5] hover:text-[#2546B8] transition-colors cursor-pointer"
             >
               <span>Ready to start with Step 01? Schedule a 30-minute discovery call →</span>
             </button>
@@ -499,7 +500,7 @@ export default function AboutPage({ onQuoteClick, onNavigate }: AboutPageProps) 
       {/* 2.9 Final CTA */}
       <section className="py-16 sm:py-24 bg-[#071126] text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight mb-4">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-white tracking-tight mb-4">
             Let&apos;s build something that grows your business.
           </h2>
           <p className="text-base sm:text-lg text-[#C6CEDE] mb-8 leading-relaxed max-w-2xl">

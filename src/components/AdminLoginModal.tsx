@@ -127,11 +127,11 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }: Adm
                 <Shield className="w-6 h-6" />
               </div>
               <div>
-                <h2 id="admin-login-title" className="font-display font-extrabold text-xl text-zinc-900 tracking-tight leading-snug">
+                <h2 id="admin-login-title" className="font-display font-semibold text-xl text-zinc-900 tracking-tight leading-snug">
                   LocalBuild Admin
                 </h2>
-                <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mt-0.5">
-                  Secure Lead Dashboard
+                <p className="text-xs font-medium text-zinc-500 tracking-normal mt-0.5">
+                  Secure Leads Portal
                 </p>
               </div>
             </div>
