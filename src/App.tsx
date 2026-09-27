@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import Commitments from "./components/Commitments";
-import Industries from "./components/Industries";
+import TrustProof from "./components/TrustProof";
 import Services from "./components/Services";
 import WhyChooseUs from "./components/WhyChooseUs";
 import AccountabilityModel from "./components/AccountabilityModel";
@@ -121,8 +120,6 @@ export default function App() {
 
     const sectionIds = [
       "hero",
-      "commitments",
-      "industries",
       "services",
       "why-us",
       "accountability",
@@ -500,13 +497,10 @@ export default function App() {
           onNavigate={handleNavigate}
         />
 
-        {/* 2. Core Operating Commitments */}
-        <Commitments />
+        {/* 2. Trust Proof Strip */}
+        <TrustProof />
 
-        {/* 3. Industries Served */}
-        <Industries />
-
-        {/* 4. Core Capabilities (Services) */}
+        {/* 3. Core Capabilities (Services) */}
         <Services
           onQuoteClick={(srv) => handleOpenContact(srv)}
         />

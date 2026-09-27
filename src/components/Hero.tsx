@@ -1,4 +1,4 @@
-import { ArrowRight, MessageSquare, PhoneCall } from "lucide-react";
+import { ArrowRight, MessageSquare, ShieldCheck, Zap, TrendingUp } from "lucide-react";
 import { getWhatsAppUrl, LOCALBUILD_PHONE, LOCALBUILD_PHONE_DISPLAY } from "../utils/whatsapp";
 
 interface HeroProps {
@@ -8,29 +8,17 @@ interface HeroProps {
 
 export default function Hero({ onQuoteClick, onNavigate }: HeroProps) {
   return (
-    <section 
-      id="hero" 
-      className="hero text-white border-b border-white/10"
-    >
+    <section id="hero" className="hero">
+      {/* Background Media */}
       <div className="hero__media-wrapper">
-        <picture className="hero__media">
-          <source 
-            media="(max-width:768px)"  
-            srcSet="/images/hero-mobile.png 768w, https://i.ibb.co/G421Mn7h/image.png 941w"  
-            sizes="(max-width: 768px) 100vw, 768px" 
-          />
-          <source 
-            media="(max-width:1024px)" 
-            srcSet="/images/hero-tablet.png 1024w, https://i.ibb.co/qLL1nG4c/image.png 1448w" 
-            sizes="100vw" 
-          />
-          <img 
+        <div className="hero__media">
+          <img
             src="/images/hero.png"
-            alt="LocalBuild — business owner reviewing local marketing performance on laptop"
-            width={1672} 
-            height={941} 
-            fetchPriority="high" 
-            decoding="async" 
+            alt="LocalBuild Growth Engineering — business owner reviewing verified customer acquisition pipeline"
+            width={1440}
+            height={800}
+            fetchPriority="high"
+            decoding="async"
             className="hero-image"
             onError={(e) => {
               const target = e.currentTarget as HTMLImageElement;
@@ -39,42 +27,47 @@ export default function Hero({ onQuoteClick, onNavigate }: HeroProps) {
               }
             }}
           />
-        </picture>
+        </div>
       </div>
 
+      {/* Copy Container */}
       <div className="hero__copy">
-        <p className="hero__eyebrow">LOCAL GROWTH • DIGITAL • AI</p>
-        
-        <h1>Turn Your Digital Presence Into Real Business Growth.</h1>
-        
+        <p className="hero__eyebrow">
+          LOCAL GROWTH ENGINEERING · BENGALURU &amp; PAN-INDIA
+        </p>
+
+        <h1>
+          Turn your digital presence into verified customer bookings.
+        </h1>
+
         <p className="hero__support">
-          LocalBuild helps ambitious businesses attract more customers through high-converting websites, paid advertising, local search and intelligent automation.
+          LocalBuild builds the websites, search advertising campaigns, and lead automation systems that turn local search interest into paying clients. Complete direct account ownership, verified tracking, and zero agency markups.
         </p>
 
         <div className="hero__actions">
           <button
             type="button"
             onClick={() => onQuoteClick()}
-            className="btn btn--primary cursor-pointer"
+            className="btn btn--primary"
           >
             <span>Start a Conversation</span>
           </button>
-          
+
           <button
             type="button"
             onClick={() => onNavigate("case-studies")}
-            className="btn btn--ghost cursor-pointer"
+            className="btn btn--ghost"
           >
-            <span>Explore Our Work</span>
+            <span>Explore Verified Work</span>
             <span aria-hidden="true">→</span>
           </button>
         </div>
 
-        {/* Desktop / Tablet extras - hidden on mobile (<=640px) */}
-        <div className="hidden min-[641px]:block pt-6 space-y-4">
+        {/* Direct Communication Channels */}
+        <div className="mt-8 pt-4 border-t border-white/10 space-y-3">
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs sm:text-sm text-zinc-300">
             <div className="flex items-center gap-2">
-              <span>Prefer direct chat?</span>
+              <span className="text-zinc-400">Prefer direct chat?</span>
               <a
                 href={getWhatsAppUrl("Hi LocalBuild, I'd like to start a conversation about growing my local business.")}
                 target="_blank"
@@ -85,28 +78,31 @@ export default function Hero({ onQuoteClick, onNavigate }: HeroProps) {
                 <span>WhatsApp Us</span>
               </a>
             </div>
-            <span className="text-zinc-600 hidden sm:inline">•</span>
-            <div className="flex items-center gap-1.5">
-              <span>Direct Line:</span>
+            <span className="text-zinc-600 hidden sm:inline" aria-hidden="true">·</span>
+            <div className="flex items-center gap-2">
+              <span className="text-zinc-400">Direct Line:</span>
               <a href={`tel:${LOCALBUILD_PHONE}`} className="font-mono text-zinc-100 hover:text-white font-semibold">
                 {LOCALBUILD_PHONE_DISPLAY}
               </a>
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 pt-4 border-t border-white/15 text-xs text-zinc-200">
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#4C7DFF] shrink-0" />
-              <span className="font-medium">Direct Account Ownership</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#4C7DFF] shrink-0" />
-              <span className="font-medium">Verified Enquiries</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#4C7DFF] shrink-0" />
-              <span className="font-medium">Transparent Audits</span>
-            </div>
+          {/* Operating Standards Strip */}
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 pt-1 text-xs text-zinc-400">
+            <span className="flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#4C7DFF]" />
+              <span>Direct Account Ownership</span>
+            </span>
+            <span className="text-zinc-600 hidden sm:inline" aria-hidden="true">·</span>
+            <span className="flex items-center gap-1.5">
+              <Zap className="w-3.5 h-3.5 text-[#4C7DFF]" />
+              <span>Direct Google &amp; Meta Billing</span>
+            </span>
+            <span className="text-zinc-600 hidden sm:inline" aria-hidden="true">·</span>
+            <span className="flex items-center gap-1.5">
+              <TrendingUp className="w-3.5 h-3.5 text-[#4C7DFF]" />
+              <span>Verified Inquiry Attribution</span>
+            </span>
           </div>
         </div>
 

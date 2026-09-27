@@ -58,23 +58,21 @@ export default function Pricing({ onQuoteClick }: PricingProps) {
                     : "border border-[#DDE3EC] shadow-2xs"
                 }`}
               >
-                {/* Popular Badge */}
-                {isHighlighted && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                    <span className="inline-flex items-center px-3 py-0.5 rounded-full bg-[#3157D5] text-white text-[11px] font-semibold tracking-wide shadow-xs font-mono">
-                      Most Popular
-                    </span>
-                  </div>
-                )}
-
                 <div>
                   {/* Card Header */}
                   <div className="pb-5 border-b border-[#E2E8F0] mb-5">
-                    <span className="text-xs font-mono font-medium uppercase tracking-wider text-[#64748B] block mb-1">
-                      {plan.name === "Local Authority" && "Plan 01"}
-                      {plan.name === "Market Dominance" && "Plan 02"}
-                      {plan.name === "City Saturation" && "Plan 03"}
-                    </span>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-xs font-mono font-medium uppercase tracking-wider text-[#64748B]">
+                        {plan.name === "Local Authority" && "Plan 01"}
+                        {plan.name === "Market Dominance" && "Plan 02"}
+                        {plan.name === "City Saturation" && "Plan 03"}
+                      </span>
+                      {isHighlighted && (
+                        <span className="font-mono text-[11px] font-semibold text-[#3157D5] tracking-wide">
+                          RECOMMENDED
+                        </span>
+                      )}
+                    </div>
                     <h3 className="font-display font-semibold text-2xl text-[#1E293B]">
                       {plan.name}
                     </h3>

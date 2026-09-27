@@ -26,10 +26,10 @@ export default function WhyChooseUs() {
           
           {/* Left Column: Thesis & Vision */}
           <div className="lg:col-span-5 lg:sticky lg:top-24">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#3157D5] block mb-2">
+            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#3157D5] block mb-2">
               Why LocalBuild
             </span>
-            <h2 className="font-display font-semibold text-2xl sm:text-4xl text-[#1E293B] tracking-tight leading-[1.12] mb-4">
+            <h2 className="font-display font-semibold text-2xl sm:text-4xl text-[#1E293B] tracking-tight leading-tight mb-4">
               Marketing should create business, not just traffic.
             </h2>
             <p className="text-base text-[#64748B] leading-relaxed mb-6 max-w-lg">

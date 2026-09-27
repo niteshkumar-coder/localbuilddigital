@@ -45,11 +45,11 @@ export default function FAQ({ onQuoteClick }: FAQProps) {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-10 sm:mb-14">
-          <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[#3157D5] mb-2">
-            Common Questions
+        <div className="max-w-3xl mb-10 sm:mb-12">
+          <span className="inline-block text-xs font-mono font-semibold uppercase tracking-wider text-[#3157D5] mb-2">
+            Commercial Inquiries
           </span>
-          <h2 className="font-display font-semibold text-2xl sm:text-4xl lg:text-5xl text-[#1E293B] tracking-tight leading-[1.12] mb-3">
+          <h2 className="font-display font-semibold text-2xl sm:text-4xl lg:text-5xl text-[#1E293B] tracking-tight leading-tight mb-3">
             Frequently asked questions.
           </h2>
           <p className="text-base sm:text-lg text-[#64748B] leading-relaxed max-w-[620px]">

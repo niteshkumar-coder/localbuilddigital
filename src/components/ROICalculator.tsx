@@ -112,14 +112,14 @@ Est. ROI: ${estimatedROI}%`;
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-12 sm:mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white border border-[#DDE3EC] text-[#263044] text-xs font-semibold uppercase tracking-wider mb-3">
-            <Calculator className="w-3.5 h-3.5 text-[#3157D5]" />
-            <span>Interactive Tool</span>
+        <div className="max-w-3xl mb-10 sm:mb-12">
+          <div className="flex items-center gap-2 text-xs font-mono font-semibold text-[#3157D5] uppercase tracking-wider mb-2">
+            <Calculator className="w-3.5 h-3.5" />
+            <span>Commercial Projection Model</span>
           </div>
 
-          <h2 className="font-display font-semibold text-2xl sm:text-4xl lg:text-5xl text-[#1E293B] tracking-tight leading-[1.12] mb-3">
-            Commercial Marketing ROI Calculator
+          <h2 className="font-display font-semibold text-2xl sm:text-4xl lg:text-5xl text-[#1E293B] tracking-tight leading-tight mb-3">
+            Local Marketing ROI Calculator
           </h2>
 
           <p className="text-base sm:text-lg text-[#667085] leading-relaxed max-w-[620px]">
