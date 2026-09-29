@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { 
   Search, Copy, Check, FileText, Code, Network, Globe, BookOpen, 
   MapPin, CheckCircle, Calendar, Star, Layers, Activity, ShieldCheck, 
-  ArrowLeft, ExternalLink, Download, Sparkles 
+  ArrowLeft, ExternalLink, Download, Sparkles, MoreVertical, Smartphone, Monitor
 } from "lucide-react";
 
 // Types
@@ -29,6 +29,7 @@ interface SEOStrategyHubProps {
 
 export default function SEOStrategyHub({ onBack, onQuoteClick }: SEOStrategyHubProps) {
   const [activeTab, setActiveTab] = useState<"meta" | "content" | "schemas" | "keywords" | "calendar" | "local">("meta");
+  const [serpDevice, setSerpDevice] = useState<"desktop" | "mobile">("desktop");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   
   // Keyword Filters
@@ -554,17 +555,191 @@ Sitemap: https://www.localbuild.site/sitemap.xml`;
         {/* TAB 1: Title & Meta Tags */}
         {activeTab === "meta" && (
           <div className="space-y-8 animate-fadeIn">
+            {/* 1. FEATURED LIVE GOOGLE SEARCH RESULT (SERP) PREVIEW WITH OFFICIAL WEBSITE LOGO */}
             <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-xs">
-              <h2 className="text-xl md:text-2xl font-display font-extrabold tracking-tight text-zinc-900 mb-2">
-                10 High-Ranking SEO Meta Tag Sets
-              </h2>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-zinc-100 pb-5 mb-6">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full">
+                      <Sparkles className="w-3 h-3 text-blue-600" />
+                      Live Google Search Snippet
+                    </span>
+                    <span className="text-xs text-zinc-500 font-medium">· Verified Brand Identity</span>
+                  </div>
+                  <h2 className="text-xl md:text-2xl font-display font-extrabold tracking-tight text-zinc-900 mt-1">
+                    Google Search Results (SERP) &amp; Brand Logo Preview
+                  </h2>
+                  <p className="text-zinc-600 text-xs sm:text-sm mt-1 max-w-2xl leading-relaxed">
+                    This preview shows exactly how Google search results display LocalBuild with its official website logo, sitelinks, star ratings, and canonical URL structure.
+                  </p>
+                </div>
+
+                {/* Device Switcher */}
+                <div className="inline-flex items-center bg-zinc-100 p-1 rounded-lg border border-zinc-200 shrink-0 self-start sm:self-auto">
+                  <button
+                    type="button"
+                    onClick={() => setSerpDevice("desktop")}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                      serpDevice === "desktop"
+                        ? "bg-white text-zinc-900 shadow-2xs"
+                        : "text-zinc-600 hover:text-zinc-900"
+                    }`}
+                  >
+                    <Monitor className="w-3.5 h-3.5" />
+                    <span>Desktop SERP</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSerpDevice("mobile")}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                      serpDevice === "mobile"
+                        ? "bg-white text-zinc-900 shadow-2xs"
+                        : "text-zinc-600 hover:text-zinc-900"
+                    }`}
+                  >
+                    <Smartphone className="w-3.5 h-3.5" />
+                    <span>Mobile SERP</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Simulated Google Search Box */}
+              <div className="bg-[#F8FAFC] border border-slate-200 rounded-xl p-4 sm:p-5 mb-6">
+                <div className="max-w-2xl mx-auto">
+                  <div className="flex items-center gap-3 bg-white border border-slate-300 rounded-full px-4 py-2.5 shadow-xs">
+                    <Search className="w-4 h-4 text-zinc-400 shrink-0" />
+                    <span className="text-sm font-sans text-zinc-800 font-medium truncate">
+                      localbuild digital marketing agency
+                    </span>
+                    <span className="ml-auto text-[11px] font-mono text-zinc-400 bg-zinc-100 px-2 py-0.5 rounded">
+                      Google Search
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Realistic Google Search Result Card (SERP with Website Logo) */}
+              <div className={`mx-auto bg-white p-5 sm:p-6 rounded-xl border border-slate-200 transition-all ${
+                serpDevice === "mobile" ? "max-w-md shadow-md" : "max-w-3xl shadow-xs"
+              }`}>
+                {/* 1. Google Site Header with Logo, Site Name, and Breadcrumb */}
+                <div className="flex items-center justify-between gap-3 mb-2">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    {/* Website Same Logo Icon Circle */}
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden bg-[#07080A] border border-zinc-200 shadow-xs flex items-center justify-center p-0.5 shrink-0">
+                      <img
+                        src="/images/logo-256.png"
+                        alt="LocalBuild Official Logo"
+                        width={32}
+                        height={32}
+                        className="w-full h-full object-cover rounded-full"
+                        onError={(e) => {
+                          const target = e.currentTarget as HTMLImageElement;
+                          if (target.src.indexOf("/images/logo.png") === -1 && target.src.indexOf("logo-256.png") !== -1) {
+                            target.src = "/images/logo.png";
+                          } else if (target.src.indexOf("localbuild-logo-icon.svg") === -1) {
+                            target.src = "/brand/localbuild-logo-icon.svg";
+                          } else if (target.src.indexOf("i.ibb.co") === -1) {
+                            target.src = "https://i.ibb.co/G3tMbK2q/image.png";
+                          }
+                        }}
+                      />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[13px] sm:text-[14px] font-medium text-zinc-900 leading-none">
+                          LocalBuild
+                        </span>
+                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500" title="Verified Domain" />
+                      </div>
+                      <span className="text-[11px] sm:text-[12px] text-zinc-500 font-sans truncate block leading-tight mt-0.5">
+                        https://www.localbuild.site
+                      </span>
+                    </div>
+                  </div>
+
+                  <button type="button" aria-label="Search options" className="text-zinc-400 hover:text-zinc-600 p-1">
+                    <MoreVertical className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* 2. Google Clickable Title Link */}
+                <h3 className="text-[18px] sm:text-[20px] font-normal text-[#1a0dab] hover:underline cursor-pointer leading-[1.3] font-sans">
+                  LocalBuild | Digital Marketing Agency &amp; SEO Services
+                </h3>
+
+                {/* 3. Google Star Rating & Review Signals */}
+                <div className="flex items-center gap-1.5 text-[12px] text-zinc-600 my-1 font-sans">
+                  <div className="flex items-center text-amber-500 text-xs">
+                    {"★★★★★"}
+                  </div>
+                  <span className="font-semibold text-zinc-800">5.0</span>
+                  <span className="text-zinc-400">·</span>
+                  <span>120+ client reviews</span>
+                  <span className="text-zinc-400">·</span>
+                  <span className="text-emerald-700 font-medium">Verified Growth Partner</span>
+                </div>
+
+                {/* 4. Google Meta Description Snippet */}
+                <p className="text-[13px] sm:text-[14px] text-[#4d5156] leading-[1.58] mt-1 font-sans">
+                  LocalBuild helps businesses grow with high-converting websites, surgical SEO rankings, Google Ads management, Meta Ads, and automated lead workflows. Direct account ownership with verified commercial outcomes.
+                </p>
+
+                {/* 5. Google Sitelinks Grid (Desktop & Mobile) */}
+                <div className="mt-4 pt-3.5 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+                  <div className="p-2 rounded-lg hover:bg-slate-50 transition cursor-pointer">
+                    <span className="text-[13.5px] font-medium text-[#1a0dab] hover:underline block leading-tight">
+                      Verified Case Studies
+                    </span>
+                    <span className="text-[11.5px] text-zinc-500 line-clamp-1 mt-0.5 font-sans">
+                      Dental clinics, CA firms, coaching institutes, hotels &amp; ecommerce results.
+                    </span>
+                  </div>
+                  <div className="p-2 rounded-lg hover:bg-slate-50 transition cursor-pointer">
+                    <span className="text-[13.5px] font-medium text-[#1a0dab] hover:underline block leading-tight">
+                      Google Ads Management
+                    </span>
+                    <span className="text-[11.5px] text-zinc-500 line-clamp-1 mt-0.5 font-sans">
+                      High-intent search campaigns billed directly to your corporate card.
+                    </span>
+                  </div>
+                  <div className="p-2 rounded-lg hover:bg-slate-50 transition cursor-pointer">
+                    <span className="text-[13.5px] font-medium text-[#1a0dab] hover:underline block leading-tight">
+                      Local SEO &amp; Maps Pack
+                    </span>
+                    <span className="text-[11.5px] text-zinc-500 line-clamp-1 mt-0.5 font-sans">
+                      Dominate Google 3-pack local search and geotargeted consumer intent.
+                    </span>
+                  </div>
+                  <div className="p-2 rounded-lg hover:bg-slate-50 transition cursor-pointer">
+                    <span className="text-[13.5px] font-medium text-[#1a0dab] hover:underline block leading-tight">
+                      Transparent Pricing &amp; ROI
+                    </span>
+                    <span className="text-[11.5px] text-zinc-500 line-clamp-1 mt-0.5 font-sans">
+                      Clear monthly fees, zero ad spend markups, and verified call tracking.
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 2. 10 HIGH-RANKING SEO META TAG SETS (EACH WITH OFFICIAL LOGO & SERP FORMAT) */}
+            <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-xs">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
+                <h2 className="text-xl md:text-2xl font-display font-extrabold tracking-tight text-zinc-900">
+                  10 High-Ranking SEO Meta Tag Sets
+                </h2>
+                <span className="text-xs font-mono bg-blue-50 text-blue-700 font-bold px-2.5 py-1 rounded-md border border-blue-200">
+                  10 Validated Variations
+                </span>
+              </div>
               <p className="text-zinc-600 text-sm mb-6 max-w-3xl leading-relaxed">
-                These titles and structures incorporate premium keywords with localized identifiers (Patna, Bihar, Bangalore, Delhi) to grab first-page relevance. They strictly stay under pixel weight boundaries for optimal web rendering.
+                These titles and structures incorporate premium keywords with localized identifiers (Patna, Bihar, Bangalore, Delhi) to grab first-page relevance. Every variation features the official LocalBuild website logo in the Google search snippet.
               </p>
 
               <div className="grid grid-cols-1 gap-6">
                 {metaTagsList.map((tag, idx) => (
-                  <div key={tag.id} className="border border-slate-100 bg-slate-50 hover:bg-white hover:border-blue-200 transition-all rounded-xl p-5 relative group">
+                  <div key={tag.id} className="border border-slate-200 bg-white hover:border-blue-300 transition-all rounded-xl p-5 relative group shadow-2xs">
                     <div className="flex flex-wrap items-center justify-between gap-3 mb-3 border-b border-slate-100 pb-2.5">
                       <span className="text-xs font-mono uppercase tracking-wider font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded">
                         Variation #{idx + 1} — {tag.usage}
@@ -587,18 +762,65 @@ Sitemap: https://www.localbuild.site/sitemap.xml`;
                       </button>
                     </div>
 
-                    <div className="space-y-3">
+                    {/* Google SERP Snippet Preview with Website Logo */}
+                    <div className="space-y-2.5 bg-[#FAFBFD] p-4 rounded-lg border border-slate-200/80">
+                      {/* Search Snippet Header: Favicon + Site Name + URL */}
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className="w-6 h-6 rounded-full overflow-hidden bg-[#07080A] border border-zinc-200 shadow-2xs flex items-center justify-center p-0.5 shrink-0">
+                            <img
+                              src="/images/logo-256.png"
+                              alt="LocalBuild Logo"
+                              width={24}
+                              height={24}
+                              className="w-full h-full object-cover rounded-full"
+                              onError={(e) => {
+                                const target = e.currentTarget as HTMLImageElement;
+                                if (target.src.indexOf("/images/logo.png") === -1 && target.src.indexOf("logo-256.png") !== -1) {
+                                  target.src = "/images/logo.png";
+                                } else if (target.src.indexOf("localbuild-logo-icon.svg") === -1) {
+                                  target.src = "/brand/localbuild-logo-icon.svg";
+                                } else if (target.src.indexOf("i.ibb.co") === -1) {
+                                  target.src = "https://i.ibb.co/G3tMbK2q/image.png";
+                                }
+                              }}
+                            />
+                          </div>
+                          <div className="min-w-0 flex items-center gap-1.5">
+                            <span className="text-[13px] font-semibold text-zinc-900 leading-none">
+                              LocalBuild
+                            </span>
+                            <span className="text-zinc-400">·</span>
+                            <span className="text-[11.5px] text-zinc-500 font-sans truncate block">
+                              https://www.localbuild.site › {tag.id}
+                            </span>
+                          </div>
+                        </div>
+
+                        <MoreVertical className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                      </div>
+
+                      {/* Google Title Link */}
                       <div>
-                        <span className="text-xs font-bold text-zinc-400 block mb-0.5">GOOGLE TITLE TAG</span>
-                        <div className="text-base font-display font-medium text-blue-700 font-sans tracking-tight hover:underline cursor-pointer">
+                        <div className="text-[17px] sm:text-[18px] font-normal text-[#1a0dab] font-sans tracking-tight hover:underline cursor-pointer leading-[1.3]">
                           {tag.title}
                         </div>
                       </div>
+
+                      {/* Meta Description Snippet */}
                       <div>
-                        <span className="text-xs font-bold text-zinc-400 block mb-0.5">META DESCRIPTION</span>
-                        <p className="text-sm text-zinc-600 leading-relaxed font-sans font-normal">
+                        <p className="text-[13px] sm:text-[13.5px] text-[#4d5156] leading-relaxed font-sans font-normal">
                           {tag.description}
                         </p>
+                      </div>
+
+                      {/* Local Snippet Footer */}
+                      <div className="pt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-zinc-500 font-sans border-t border-slate-200/50">
+                        <span className="text-amber-500 font-bold">★ 5.0 Rating</span>
+                        <span>·</span>
+                        <span>Basavanagudi, Bengaluru &amp; Patna</span>
+                        <span>·</span>
+                        <span className="text-blue-700 font-medium">Billed Directly by Google &amp; Meta</span>
                       </div>
                     </div>
                   </div>
@@ -643,10 +865,63 @@ Sitemap: https://www.localbuild.site/sitemap.xml`;
               </div>
             </div>
 
-            {/* Social Tags Graph Preview */}
-            <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-xs">
-              <h3 className="text-lg font-display font-bold text-zinc-900 mb-2">Open Graph & Twitter Card Integration Tags</h3>
-              <p className="text-zinc-500 text-xs mb-4">Place these inline tags directly inside your HTML site header to populate beautiful, clickable previews in WhatsApp, Facebook, LinkedIn, and Twitter.</p>
+            {/* Social Tags Graph Preview with Visual Card */}
+            <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-xs space-y-6">
+              <div>
+                <h3 className="text-lg font-display font-bold text-zinc-900 mb-2">Open Graph &amp; Social Card Integration</h3>
+                <p className="text-zinc-500 text-xs sm:text-sm leading-relaxed">
+                  This card shows how your brand identity and website logo render when shared across WhatsApp, LinkedIn, Facebook, and Twitter.
+                </p>
+              </div>
+
+              {/* Visual Social Share Card Preview with Website Logo */}
+              <div className="max-w-lg mx-auto bg-slate-900 text-white rounded-2xl overflow-hidden border border-slate-800 shadow-lg">
+                <div className="relative aspect-[1200/630] bg-[#07080A] flex items-center justify-center p-6 border-b border-slate-800">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-[#07080A] border-2 border-blue-500/80 shadow-md p-1 flex items-center justify-center shrink-0">
+                      <img
+                        src="/images/logo-256.png"
+                        alt="LocalBuild Official Logo"
+                        width={80}
+                        height={80}
+                        className="w-full h-full object-cover rounded-full"
+                        onError={(e) => {
+                          const target = e.currentTarget as HTMLImageElement;
+                          if (target.src.indexOf("/images/logo.png") === -1 && target.src.indexOf("logo-256.png") !== -1) {
+                            target.src = "/images/logo.png";
+                          } else if (target.src.indexOf("localbuild-logo-icon.svg") === -1) {
+                            target.src = "/brand/localbuild-logo-icon.svg";
+                          } else if (target.src.indexOf("i.ibb.co") === -1) {
+                            target.src = "https://i.ibb.co/G3tMbK2q/image.png";
+                          }
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <span className="font-display font-bold text-2xl sm:text-3xl text-white tracking-tight block">
+                        LocalBuild
+                      </span>
+                      <span className="text-xs sm:text-sm text-blue-400 font-medium tracking-wider uppercase block">
+                        Digital Marketing &amp; SEO Agency
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-slate-950">
+                  <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-widest block">
+                    LOCALBUILD.SITE
+                  </span>
+                  <h4 className="text-base font-semibold text-white mt-1 leading-snug">
+                    LocalBuild | Digital Marketing Agency &amp; SEO Services
+                  </h4>
+                  <p className="text-xs text-zinc-400 mt-1 line-clamp-2 leading-relaxed font-sans">
+                    LocalBuild helps businesses grow with high-converting websites, SEO, Google Ads, Meta Ads, Google Business Profile, AI solutions and lead generation.
+                  </p>
+                </div>
+              </div>
+
+              {/* Code Snippet */}
               <div className="relative">
                 <button 
                   onClick={() => triggerCopy(`<meta property="og:title" content="LocalBuild | Digital Marketing Agency & SEO Services" />\n<meta property="og:description" content="LocalBuild helps businesses grow with high-converting websites, SEO, Google Ads, Meta Ads, Google Business Profile, AI solutions and lead generation." />\n<meta property="og:image" content="https://www.localbuild.site/images/og-preview.png" />`, "social-snippet")}

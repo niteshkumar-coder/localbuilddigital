@@ -101,11 +101,22 @@ export default function Navbar({
           >
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-[#07080A] border border-zinc-200/90 shadow-xs flex items-center justify-center group-hover:border-[#3157D5] group-hover:scale-105 transition-all p-0.5 shrink-0">
               <img
-                src="/images/logo.png"
+                src="/images/logo-256.png"
                 alt="LocalBuild Logo"
+                width={40}
+                height={40}
+                loading="eager"
+                decoding="async"
                 className="w-full h-full object-cover rounded-full"
                 onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).src = "https://i.ibb.co/G3tMbK2q/image.png";
+                  const target = e.currentTarget as HTMLImageElement;
+                  if (target.src.indexOf("/images/logo.png") === -1 && target.src.indexOf("logo-256.png") !== -1) {
+                    target.src = "/images/logo.png";
+                  } else if (target.src.indexOf("localbuild-logo-icon.svg") === -1) {
+                    target.src = "/brand/localbuild-logo-icon.svg";
+                  } else if (target.src.indexOf("i.ibb.co") === -1) {
+                    target.src = "https://i.ibb.co/G3tMbK2q/image.png";
+                  }
                 }}
               />
             </div>
@@ -201,11 +212,22 @@ export default function Navbar({
             >
               <div className="w-10 h-10 rounded-full overflow-hidden bg-[#07080A] border border-zinc-200/90 shadow-xs flex items-center justify-center p-0.5 shrink-0">
                 <img
-                  src="/images/logo.png"
+                  src="/images/logo-256.png"
                   alt="LocalBuild Logo"
+                  width={40}
+                  height={40}
+                  loading="eager"
+                  decoding="async"
                   className="w-full h-full object-cover rounded-full"
                   onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src = "https://i.ibb.co/G3tMbK2q/image.png";
+                    const target = e.currentTarget as HTMLImageElement;
+                    if (target.src.indexOf("/images/logo.png") === -1 && target.src.indexOf("logo-256.png") !== -1) {
+                      target.src = "/images/logo.png";
+                    } else if (target.src.indexOf("localbuild-logo-icon.svg") === -1) {
+                      target.src = "/brand/localbuild-logo-icon.svg";
+                    } else if (target.src.indexOf("i.ibb.co") === -1) {
+                      target.src = "https://i.ibb.co/G3tMbK2q/image.png";
+                    }
                   }}
                 />
               </div>

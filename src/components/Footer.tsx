@@ -107,11 +107,22 @@ export default function Footer({ onQuoteClick, onNavigate, onAdminClick }: Foote
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-full overflow-hidden bg-[#07080A] border border-white/20 p-0.5 flex items-center justify-center shrink-0 shadow-xs">
                 <img
-                  src="/images/logo.png"
+                  src="/images/logo-256.png"
                   alt="LocalBuild Logo"
+                  width={36}
+                  height={36}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover rounded-full"
                   onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src = "https://i.ibb.co/G3tMbK2q/image.png";
+                    const target = e.currentTarget as HTMLImageElement;
+                    if (target.src.indexOf("/images/logo.png") === -1 && target.src.indexOf("logo-256.png") !== -1) {
+                      target.src = "/images/logo.png";
+                    } else if (target.src.indexOf("localbuild-logo-icon.svg") === -1) {
+                      target.src = "/brand/localbuild-logo-icon.svg";
+                    } else if (target.src.indexOf("i.ibb.co") === -1) {
+                      target.src = "https://i.ibb.co/G3tMbK2q/image.png";
+                    }
                   }}
                 />
               </div>

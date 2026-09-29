@@ -32,6 +32,34 @@ export default function Hero({ onQuoteClick, onNavigate }: HeroProps) {
 
       {/* Copy Container */}
       <div className="hero__copy">
+        {/* Official Brand Identity Badge with Website Logo */}
+        <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/[0.08] backdrop-blur-md border border-white/20 mb-4 shadow-xs">
+          <div className="w-5 h-5 rounded-full overflow-hidden bg-[#07080A] border border-white/30 p-0.5 flex items-center justify-center shrink-0">
+            <img
+              src="/images/logo.png"
+              alt="LocalBuild Logo"
+              width={20}
+              height={20}
+              className="w-full h-full object-cover rounded-full"
+              onError={(e) => {
+                const target = e.currentTarget as HTMLImageElement;
+                if (target.src.indexOf("localbuild-logo-icon.svg") === -1) {
+                  target.src = "/brand/localbuild-logo-icon.svg";
+                } else if (target.src.indexOf("i.ibb.co") === -1) {
+                  target.src = "https://i.ibb.co/G3tMbK2q/image.png";
+                }
+              }}
+            />
+          </div>
+          <span className="text-[12px] font-bold text-white tracking-wide">
+            LocalBuild™
+          </span>
+          <span className="text-zinc-500">·</span>
+          <span className="text-[11.5px] text-zinc-300 font-medium">
+            Verified Digital Growth Engineering
+          </span>
+        </div>
+
         <p className="hero__eyebrow">
           LOCAL GROWTH ENGINEERING · BENGALURU &amp; PAN-INDIA
         </p>
