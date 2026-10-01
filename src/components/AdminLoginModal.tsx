@@ -123,8 +123,24 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }: Adm
           <div className="p-6 sm:p-8">
             {/* Header branding */}
             <div className="flex flex-col items-center text-center space-y-2 mb-6">
-              <div className="w-12 h-12 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shadow-xs">
-                <Shield className="w-6 h-6" />
+              <div className="w-12 h-12 rounded-full bg-[#07080A] border border-blue-200 flex items-center justify-center p-0.5 shadow-xs overflow-hidden">
+                <img
+                  src="/images/logo-256.png"
+                  alt="LocalBuild Logo"
+                  width={48}
+                  height={48}
+                  className="w-full h-full object-cover rounded-full"
+                  onError={(e) => {
+                    const target = e.currentTarget as HTMLImageElement;
+                    if (target.src.indexOf("/images/logo.png") === -1 && target.src.indexOf("logo-256.png") !== -1) {
+                      target.src = "/images/logo.png";
+                    } else if (target.src.indexOf("localbuild-logo-icon.svg") === -1) {
+                      target.src = "/brand/localbuild-logo-icon.svg";
+                    } else if (target.src.indexOf("i.ibb.co") === -1) {
+                      target.src = "https://i.ibb.co/PZGcbqbT/cropped-circle-image.png";
+                    }
+                  }}
+                />
               </div>
               <div>
                 <h2 id="admin-login-title" className="font-display font-semibold text-xl text-zinc-900 tracking-tight leading-snug">
@@ -216,25 +232,12 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }: Adm
                 </button>
               </div>
 
-              {/* Default Credentials Helper */}
-              <div className="rounded-xl bg-blue-50/70 border border-blue-100 p-3 text-xs text-zinc-600">
-                <div className="flex items-center justify-between font-semibold text-zinc-800 mb-1.5">
-                  <span className="text-xs">Default Admin Login:</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setUsername("admin");
-                      setPassword("LOCAL45090");
-                    }}
-                    className="text-blue-600 hover:text-blue-800 font-bold cursor-pointer text-[11px] underline underline-offset-2"
-                  >
-                    Auto Fill Credentials
-                  </button>
-                </div>
-                <div className="text-[12px] font-mono text-zinc-700 space-y-0.5 bg-white/80 p-2 rounded-lg border border-blue-100/80">
-                  <p><span className="text-zinc-500 font-sans">Username:</span> <strong className="text-blue-900">admin</strong></p>
-                  <p><span className="text-zinc-500 font-sans">Password:</span> <strong className="text-blue-900">LOCAL45090</strong></p>
-                </div>
+              {/* Security notice */}
+              <div className="rounded-xl bg-zinc-50 border border-zinc-200/80 p-3 text-xs text-zinc-500 flex items-center gap-2.5">
+                <Shield className="w-4 h-4 text-blue-600 shrink-0" />
+                <span className="text-[11.5px] leading-relaxed">
+                  Authorized administrator access only. Credentials are confidential and encrypted.
+                </span>
               </div>
 
               <div className="text-center pt-1">

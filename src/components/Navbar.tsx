@@ -92,7 +92,7 @@ export default function Navbar({
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between">
           
-          {/* Brand Logo with https://i.ibb.co/G3tMbK2q/image.png */}
+          {/* Brand Logo with https://i.ibb.co/PZGcbqbT/cropped-circle-image.png */}
           <button
             type="button"
             onClick={() => handleLinkClick("/")}
@@ -115,7 +115,7 @@ export default function Navbar({
                   } else if (target.src.indexOf("localbuild-logo-icon.svg") === -1) {
                     target.src = "/brand/localbuild-logo-icon.svg";
                   } else if (target.src.indexOf("i.ibb.co") === -1) {
-                    target.src = "https://i.ibb.co/G3tMbK2q/image.png";
+                    target.src = "https://i.ibb.co/PZGcbqbT/cropped-circle-image.png";
                   }
                 }}
               />
@@ -226,7 +226,7 @@ export default function Navbar({
                     } else if (target.src.indexOf("localbuild-logo-icon.svg") === -1) {
                       target.src = "/brand/localbuild-logo-icon.svg";
                     } else if (target.src.indexOf("i.ibb.co") === -1) {
-                      target.src = "https://i.ibb.co/G3tMbK2q/image.png";
+                      target.src = "https://i.ibb.co/PZGcbqbT/cropped-circle-image.png";
                     }
                   }}
                 />

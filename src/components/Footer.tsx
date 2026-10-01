@@ -121,7 +121,7 @@ export default function Footer({ onQuoteClick, onNavigate, onAdminClick }: Foote
                     } else if (target.src.indexOf("localbuild-logo-icon.svg") === -1) {
                       target.src = "/brand/localbuild-logo-icon.svg";
                     } else if (target.src.indexOf("i.ibb.co") === -1) {
-                      target.src = "https://i.ibb.co/G3tMbK2q/image.png";
+                      target.src = "https://i.ibb.co/PZGcbqbT/cropped-circle-image.png";
                     }
                   }}
                 />
