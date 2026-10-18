@@ -775,9 +775,9 @@ async function start() {
   }
 
   // Catch-all SPA fallback route for BOTH development and production
-  app.get("*all", async (req, res, next) => {
-    // Avoid intercepting API routes or actual static physical files (e.g. .css, .js, .png)
-    if (req.originalUrl.startsWith("/api") || path.extname(req.originalUrl)) {
+  app.use(async (req, res, next) => {
+    // Only handle GET requests that are not API routes or static files
+    if (req.method !== "GET" || req.originalUrl.startsWith("/api") || path.extname(req.originalUrl)) {
       return next();
     }
 
@@ -791,7 +791,7 @@ async function start() {
         res.sendFile(path.join(distPath, "index.html"));
       }
     } catch (err) {
-      console.error("SPA wildcard fallback error:", err);
+      console.error("SPA fallback error:", err);
       next(err);
     }
   });

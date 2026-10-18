@@ -172,6 +172,7 @@ Est. ROI: ${estimatedROI}%`;
                 min="5000"
                 max="250000"
                 step="5000"
+                aria-label="Adjust monthly ad budget slider"
                 value={budgetNum > 0 ? budgetNum : 35000}
                 onChange={(e) => setBudgetStr(e.target.value)}
                 className="w-full accent-[#3157D5] cursor-pointer"
@@ -206,6 +207,7 @@ Est. ROI: ${estimatedROI}%`;
                 min="5"
                 max="100"
                 step="1"
+                aria-label="Adjust estimated cost per click slider"
                 value={cpcNum > 0 ? cpcNum : 20}
                 onChange={(e) => setCpcStr(e.target.value)}
                 className="w-full accent-[#3157D5] cursor-pointer"
@@ -241,6 +243,7 @@ Est. ROI: ${estimatedROI}%`;
                 min="1"
                 max="20"
                 step="0.5"
+                aria-label="Adjust website conversion rate slider"
                 value={convRateNum > 0 && convRateNum <= 100 ? convRateNum : 6}
                 onChange={(e) => setConvRateStr(e.target.value)}
                 className="w-full accent-[#3157D5] cursor-pointer"
@@ -276,6 +279,7 @@ Est. ROI: ${estimatedROI}%`;
                 min="5"
                 max="60"
                 step="1"
+                aria-label="Adjust lead-to-customer close rate slider"
                 value={closeRateNum > 0 && closeRateNum <= 100 ? closeRateNum : 25}
                 onChange={(e) => setCloseRateStr(e.target.value)}
                 className="w-full accent-[#3157D5] cursor-pointer"
@@ -310,6 +314,7 @@ Est. ROI: ${estimatedROI}%`;
                 min="1000"
                 max="100000"
                 step="1000"
+                aria-label="Adjust average customer value slider"
                 value={customerValueNum > 0 ? customerValueNum : 15000}
                 onChange={(e) => setCustomerValueStr(e.target.value)}
                 className="w-full accent-[#3157D5] cursor-pointer"

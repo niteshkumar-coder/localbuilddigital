@@ -12,21 +12,30 @@ export default function Hero({ onQuoteClick, onNavigate }: HeroProps) {
       {/* Background Media */}
       <div className="hero__media-wrapper">
         <div className="hero__media">
-          <img
-            src="/images/hero.png"
-            alt="LocalBuild Growth Engineering — business owner reviewing verified customer acquisition pipeline"
-            width={1440}
-            height={800}
-            fetchPriority="high"
-            decoding="async"
-            className="hero-image"
-            onError={(e) => {
-              const target = e.currentTarget as HTMLImageElement;
-              if (target.src.indexOf("i.ibb.co") === -1) {
-                target.src = "https://i.ibb.co/DHMWGPxn/image.png";
-              }
-            }}
-          />
+          <picture>
+            <source type="image/webp" media="(max-width: 640px)" srcSet="/images/hero-mobile.webp" />
+            <source type="image/webp" media="(max-width: 1024px)" srcSet="/images/hero-tablet.webp" />
+            <source type="image/webp" srcSet="/images/hero.webp" />
+            <source media="(max-width: 640px)" srcSet="/images/hero-mobile.png" />
+            <source media="(max-width: 1024px)" srcSet="/images/hero-tablet.png" />
+            <img
+              src="/images/hero.webp"
+              alt="LocalBuild Growth Engineering — business owner reviewing verified customer acquisition pipeline"
+              width={1440}
+              height={800}
+              fetchPriority="high"
+              decoding="async"
+              className="hero-image"
+              onError={(e) => {
+                const target = e.currentTarget as HTMLImageElement;
+                if (target.src.indexOf("hero.png") === -1 && target.src.indexOf("hero.webp") !== -1) {
+                  target.src = "/images/hero.png";
+                } else if (target.src.indexOf("i.ibb.co") === -1) {
+                  target.src = "https://i.ibb.co/DHMWGPxn/image.png";
+                }
+              }}
+            />
+          </picture>
         </div>
       </div>
 

@@ -294,132 +294,139 @@ export default function ContactForm({
           )}
 
           {/* 1. Name * */}
-          <div>
-            <label htmlFor="form-name" className="block text-xs font-bold text-zinc-800 mb-1">
-              Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              id="form-name"
-              name="name"
-              type="text"
-              required
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Full name"
-              disabled={isSubmitting}
-              className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-white focus:outline-none transition-all ${
-                errors.name ? "border-red-500 bg-red-50/30" : "border-zinc-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-              }`}
-            />
-            {errors.name && <p className="text-xs text-red-600 mt-1">{errors.name}</p>}
-          </div>
+          {(() => {
+            const idPrefix = embedded ? "emb-" : "mdl-";
+            return (
+              <>
+                <div>
+                  <label htmlFor={`${idPrefix}name`} className="block text-xs font-bold text-zinc-800 mb-1">
+                    Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id={`${idPrefix}name`}
+                    name="name"
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Full name"
+                    disabled={isSubmitting}
+                    className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-white focus:outline-none transition-all ${
+                      errors.name ? "border-red-500 bg-red-50/30" : "border-zinc-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                    }`}
+                  />
+                  {errors.name && <p className="text-xs text-red-600 mt-1">{errors.name}</p>}
+                </div>
 
-          {/* 2. Phone / WhatsApp Number * */}
-          <div>
-            <label htmlFor="form-phone" className="block text-xs font-bold text-zinc-800 mb-1">
-              Phone / WhatsApp Number <span className="text-red-500">*</span>
-            </label>
-            <input
-              id="form-phone"
-              name="phone"
-              type="tel"
-              required
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="Phone or WhatsApp number"
-              disabled={isSubmitting}
-              className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-white focus:outline-none transition-all ${
-                errors.phone ? "border-red-500 bg-red-50/30" : "border-zinc-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-              }`}
-            />
-            {errors.phone && <p className="text-xs text-red-600 mt-1">{errors.phone}</p>}
-          </div>
+                {/* 2. Phone / WhatsApp Number * */}
+                <div>
+                  <label htmlFor={`${idPrefix}phone`} className="block text-xs font-bold text-zinc-800 mb-1">
+                    Phone / WhatsApp Number <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id={`${idPrefix}phone`}
+                    name="phone"
+                    type="tel"
+                    required
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="Phone or WhatsApp number"
+                    disabled={isSubmitting}
+                    className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-white focus:outline-none transition-all ${
+                      errors.phone ? "border-red-500 bg-red-50/30" : "border-zinc-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                    }`}
+                  />
+                  {errors.phone && <p className="text-xs text-red-600 mt-1">{errors.phone}</p>}
+                </div>
 
-          {/* 3. Business Name * */}
-          <div>
-            <label htmlFor="form-business" className="block text-xs font-bold text-zinc-800 mb-1">
-              Business Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              id="form-business"
-              name="businessName"
-              type="text"
-              required
-              value={formData.businessName}
-              onChange={handleChange}
-              placeholder="Business name"
-              disabled={isSubmitting}
-              className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-white focus:outline-none transition-all ${
-                errors.businessName ? "border-red-500 bg-red-50/30" : "border-zinc-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-              }`}
-            />
-            {errors.businessName && <p className="text-xs text-red-600 mt-1">{errors.businessName}</p>}
-          </div>
+                {/* 3. Business Name * */}
+                <div>
+                  <label htmlFor={`${idPrefix}business`} className="block text-xs font-bold text-zinc-800 mb-1">
+                    Business Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id={`${idPrefix}business`}
+                    name="businessName"
+                    type="text"
+                    required
+                    value={formData.businessName}
+                    onChange={handleChange}
+                    placeholder="Business name"
+                    disabled={isSubmitting}
+                    className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-white focus:outline-none transition-all ${
+                      errors.businessName ? "border-red-500 bg-red-50/30" : "border-zinc-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                    }`}
+                  />
+                  {errors.businessName && <p className="text-xs text-red-600 mt-1">{errors.businessName}</p>}
+                </div>
 
-          {/* 4. Website or Google Business Profile (Optional) */}
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <label htmlFor="form-website" className="block text-xs font-bold text-zinc-800">
-                Website or Google Business Profile
-              </label>
-              <span className="text-[11px] text-zinc-400 font-medium">Optional</span>
-            </div>
-            <input
-              id="form-website"
-              name="websiteOrProfile"
-              type="text"
-              value={formData.websiteOrProfile}
-              onChange={handleChange}
-              placeholder="https://example.com or Google Business Profile URL"
-              disabled={isSubmitting}
-              className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-zinc-300 bg-white focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
-            />
-          </div>
+                {/* 4. Website or Google Business Profile (Optional) */}
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label htmlFor={`${idPrefix}website`} className="block text-xs font-bold text-zinc-800">
+                      Website or Google Business Profile
+                    </label>
+                    <span className="text-[11px] text-zinc-400 font-medium">Optional</span>
+                  </div>
+                  <input
+                    id={`${idPrefix}website`}
+                    name="websiteOrProfile"
+                    type="text"
+                    value={formData.websiteOrProfile}
+                    onChange={handleChange}
+                    placeholder="https://example.com or Google Business Profile URL"
+                    disabled={isSubmitting}
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-zinc-300 bg-white focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+                  />
+                </div>
 
-          {/* 5. What do you need help with? */}
-          <div>
-            <label htmlFor="form-service" className="block text-xs font-bold text-zinc-800 mb-1">
-              What do you need help with?
-            </label>
-            <div className="relative">
-              <select
-                id="form-service"
-                name="helpWith"
-                value={formData.helpWith}
-                onChange={handleChange}
-                disabled={isSubmitting}
-                className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-zinc-300 bg-white focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all appearance-none cursor-pointer pr-10 text-zinc-800 font-medium"
-              >
-                {SERVICES_LIST.map((srv) => (
-                  <option key={srv} value={srv}>
-                    {srv}
-                  </option>
-                ))}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-zinc-500">
-                <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                  <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                </svg>
-              </div>
-            </div>
-          </div>
+                {/* 5. What do you need help with? */}
+                <div>
+                  <label htmlFor={`${idPrefix}service`} className="block text-xs font-bold text-zinc-800 mb-1">
+                    What do you need help with?
+                  </label>
+                  <div className="relative">
+                    <select
+                      id={`${idPrefix}service`}
+                      name="helpWith"
+                      value={formData.helpWith}
+                      onChange={handleChange}
+                      disabled={isSubmitting}
+                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-zinc-300 bg-white focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all appearance-none cursor-pointer pr-10 text-zinc-800 font-medium"
+                    >
+                      {SERVICES_LIST.map((srv) => (
+                        <option key={srv} value={srv}>
+                          {srv}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-zinc-500">
+                      <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20" aria-hidden="true">
+                        <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
 
-          {/* Additional details / message */}
-          <div>
-            <label htmlFor="form-msg" className="block text-xs font-bold text-zinc-800 mb-1">
-              Specific Requirements or Current Challenges
-            </label>
-            <textarea
-              id="form-msg"
-              name="message"
-              rows={2}
-              value={formData.message}
-              onChange={handleChange}
-              placeholder="Tell us what you want to achieve or any questions..."
-              disabled={isSubmitting}
-              className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-zinc-300 bg-white focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all resize-none"
-            />
-          </div>
+                {/* Additional details / message */}
+                <div>
+                  <label htmlFor={`${idPrefix}msg`} className="block text-xs font-bold text-zinc-800 mb-1">
+                    Specific Requirements or Current Challenges
+                  </label>
+                  <textarea
+                    id={`${idPrefix}msg`}
+                    name="message"
+                    rows={2}
+                    value={formData.message}
+                    onChange={handleChange}
+                    placeholder="Tell us what you want to achieve or any questions..."
+                    disabled={isSubmitting}
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-zinc-300 bg-white focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all resize-none"
+                  />
+                </div>
+              </>
+            );
+          })()}
 
           {/* SUBMIT BUTTON */}
           <div className="pt-2">

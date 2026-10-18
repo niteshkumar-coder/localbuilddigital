@@ -4,56 +4,26 @@
     <meta charset="UTF-8" />
     <script>
       (function() {
-        // Safe iframe environment fallbacks to prevent SecurityError DOMExceptions
         try {
-          window.alert = function(msg) {
-            console.warn("[Safe Alert Fallback]:", msg);
-          };
-          window.confirm = function(msg) {
-            console.warn("[Safe Confirm Fallback]:", msg);
-            return true; // Auto-confirm on safe environments
-          };
-        } catch (storageErr) {
-          console.warn("Could not patch window dialog interfaces:", storageErr);
-        }
-
-        try {
-          var originalFetch = window.fetch;
-          var currentFetch = originalFetch;
-          // Redefine window.fetch to support both getter and setter safely in iframe security boundaries
-          Object.defineProperty(window, 'fetch', {
-            get: function() {
-              return currentFetch;
-            },
-            set: function(val) {
-              currentFetch = val;
-            },
-            configurable: true,
-            enumerable: true
-          });
-        } catch (e) {
-          try {
-            var protoFetch = window.fetch;
-            Object.defineProperty(Window.prototype, 'fetch', {
-              get: function() {
-                return protoFetch;
-              },
-              set: function(val) {
-                protoFetch = val;
-              },
-              configurable: true,
-              enumerable: true
-            });
-          } catch (err) {
-            console.warn("Could not patch window.fetch setter: ", err);
+          if (typeof window !== "undefined") {
+            window.alert = function(msg) { console.warn("[Safe Alert Fallback]:", msg); };
+            window.confirm = function(msg) { console.warn("[Safe Confirm Fallback]:", msg); return true; };
           }
-        }
+        } catch (_) {}
       })();
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0B1633" />
     <title>LocalBuild | Digital Marketing Agency &amp; SEO Services</title>
     <link rel="canonical" href="https://www.localbuild.site/" />
+
+    <!-- Google Fonts Preconnect and Optimized Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Preload Hero Image for LCP Performance -->
+    <link rel="preload" as="image" href="/images/hero.webp" type="image/webp" fetchpriority="high" />
     <link rel="preconnect" href="https://i.ibb.co" />
 
     <!-- Google Search & Modern Favicon Suite -->

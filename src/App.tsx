@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import TrustProof from "./components/TrustProof";
@@ -12,17 +12,21 @@ import Pricing from "./components/Pricing";
 import FAQ from "./components/FAQ";
 import ContactForm from "./components/ContactForm";
 import Footer from "./components/Footer";
-import LegalModal from "./components/LegalModals";
 import FloatingButtons from "./components/FloatingButtons";
-import AdminLoginModal from "./components/AdminLoginModal";
-import AdminDashboard from "./components/AdminDashboard";
-import CostView from "./components/CostView";
-import ServicePage from "./components/ServicePage";
-import AboutPage from "./components/AboutPage";
-import ServicesPage from "./components/ServicesPage";
-import ContactPage from "./components/ContactPage";
-import BlogPage, { BLOG_POSTS } from "./components/BlogPage";
-import SEOStrategyHub from "./components/SEOStrategyHub";
+import PageLoader from "./components/PageLoader";
+import { BLOG_POSTS } from "./data/blogPosts";
+
+// Lazy-loaded heavy views for optimal initial page-load performance
+const AdminDashboard = lazy(() => import("./components/AdminDashboard"));
+const AdminLoginModal = lazy(() => import("./components/AdminLoginModal"));
+const CostView = lazy(() => import("./components/CostView"));
+const ServicePage = lazy(() => import("./components/ServicePage"));
+const AboutPage = lazy(() => import("./components/AboutPage"));
+const ServicesPage = lazy(() => import("./components/ServicesPage"));
+const ContactPage = lazy(() => import("./components/ContactPage"));
+const BlogPage = lazy(() => import("./components/BlogPage"));
+const SEOStrategyHub = lazy(() => import("./components/SEOStrategyHub"));
+const LegalModal = lazy(() => import("./components/LegalModals"));
 
 const memoryStorage = new Map<string, string>();
 
@@ -270,10 +274,12 @@ export default function App() {
   // ROUTE: PROTECTED ADMIN DASHBOARD (/admin, /admin/leads, /admin-dashboard)
   if (isAdminRoute && adminToken) {
     return (
-      <AdminDashboard 
-        token={adminToken} 
-        onLogout={handleAdminLogout} 
-      />
+      <Suspense fallback={<PageLoader />}>
+        <AdminDashboard 
+          token={adminToken} 
+          onLogout={handleAdminLogout} 
+        />
+      </Suspense>
     );
   }
 
@@ -287,10 +293,12 @@ export default function App() {
           currentPath={currentPath}
         />
         <div className="pt-16">
-          <AboutPage
-            onQuoteClick={(service, notes) => handleOpenContact(service, notes)}
-            onNavigate={handleNavigate}
-          />
+          <Suspense fallback={<PageLoader />}>
+            <AboutPage
+              onQuoteClick={(service, notes) => handleOpenContact(service, notes)}
+              onNavigate={handleNavigate}
+            />
+          </Suspense>
         </div>
         <Footer
           onQuoteClick={(srv) => handleOpenContact(srv)}
@@ -318,10 +326,12 @@ export default function App() {
           currentPath={currentPath}
         />
         <div className="pt-16">
-          <ServicesPage
-            onQuoteClick={(service, notes) => handleOpenContact(service, notes)}
-            onNavigate={handleNavigate}
-          />
+          <Suspense fallback={<PageLoader />}>
+            <ServicesPage
+              onQuoteClick={(service, notes) => handleOpenContact(service, notes)}
+              onNavigate={handleNavigate}
+            />
+          </Suspense>
         </div>
         <Footer
           onQuoteClick={(srv) => handleOpenContact(srv)}
@@ -349,11 +359,13 @@ export default function App() {
           currentPath={currentPath}
         />
         <div className="pt-16">
-          <ContactPage
-            onQuoteClick={(service, notes) => handleOpenContact(service, notes)}
-            preselectedService={preselectedService}
-            prefilledNotes={prefilledNotes}
-          />
+          <Suspense fallback={<PageLoader />}>
+            <ContactPage
+              onQuoteClick={(service, notes) => handleOpenContact(service, notes)}
+              preselectedService={preselectedService}
+              prefilledNotes={prefilledNotes}
+            />
+          </Suspense>
         </div>
         <Footer
           onQuoteClick={(srv) => handleOpenContact(srv)}
@@ -383,11 +395,13 @@ export default function App() {
           currentPath={currentPath}
         />
         <div className="pt-16">
-          <BlogPage
-            currentSlug={slug}
-            onNavigate={handleNavigate}
-            onQuoteClick={(service, notes) => handleOpenContact(service, notes)}
-          />
+          <Suspense fallback={<PageLoader />}>
+            <BlogPage
+              currentSlug={slug}
+              onNavigate={handleNavigate}
+              onQuoteClick={(service, notes) => handleOpenContact(service, notes)}
+            />
+          </Suspense>
         </div>
         <Footer
           onQuoteClick={(srv) => handleOpenContact(srv)}
@@ -416,12 +430,14 @@ export default function App() {
           currentPath={currentPath}
         />
         <div className="pt-16">
-          <ServicePage
-            slug={slug}
-            onBack={() => handleNavigate("/services")}
-            onNavigateToOtherService={(otherSlug) => handleNavigate(`/services/${otherSlug}`)}
-            onQuoteClick={(notes, service) => handleOpenContact(service, notes)}
-          />
+          <Suspense fallback={<PageLoader />}>
+            <ServicePage
+              slug={slug}
+              onBack={() => handleNavigate("/services")}
+              onNavigateToOtherService={(otherSlug) => handleNavigate(`/services/${otherSlug}`)}
+              onQuoteClick={(notes, service) => handleOpenContact(service, notes)}
+            />
+          </Suspense>
         </div>
         <Footer
           onQuoteClick={(srv) => handleOpenContact(srv)}
@@ -448,10 +464,12 @@ export default function App() {
           onNavigate={handleNavigate}
           currentPath={currentPath}
         />
-        <SEOStrategyHub
-          onBack={() => handleNavigate("/")}
-          onQuoteClick={() => handleOpenContact()}
-        />
+        <Suspense fallback={<PageLoader />}>
+          <SEOStrategyHub
+            onBack={() => handleNavigate("/")}
+            onQuoteClick={() => handleOpenContact()}
+          />
+        </Suspense>
         <Footer
           onQuoteClick={(srv) => handleOpenContact(srv)}
           onNavigate={handleNavigate}
@@ -471,10 +489,12 @@ export default function App() {
   // ROUTE: COST ESTIMATOR (/cost)
   if (currentPath === "/cost") {
     return (
-      <CostView 
-        onBack={() => handleNavigate("/")}
-        onQuoteClick={() => handleOpenContact()}
-      />
+      <Suspense fallback={<PageLoader />}>
+        <CostView 
+          onBack={() => handleNavigate("/")}
+          onQuoteClick={() => handleOpenContact()}
+        />
+      </Suspense>
     );
   }
 
@@ -558,26 +578,34 @@ export default function App() {
       />
 
       {/* Privacy Policy & Terms of Service Modal */}
-      <LegalModal
-        type={legalModalType}
-        onClose={() => setLegalModalType(null)}
-      />
+      {legalModalType && (
+        <Suspense fallback={null}>
+          <LegalModal
+            type={legalModalType}
+            onClose={() => setLegalModalType(null)}
+          />
+        </Suspense>
+      )}
 
       {/* Floating Call & WhatsApp Buttons */}
       <FloatingButtons />
 
       {/* Admin CRM Login Modal */}
-      <AdminLoginModal
-        isOpen={isAdminLoginOpen}
-        onClose={() => {
-          setIsAdminLoginOpen(false);
-          if (currentPath === "/admin/login") {
-            window.history.pushState({}, "", "/");
-            setCurrentPath("/");
-          }
-        }}
-        onLoginSuccess={handleAdminSuccess}
-      />
+      {isAdminLoginOpen && (
+        <Suspense fallback={null}>
+          <AdminLoginModal
+            isOpen={isAdminLoginOpen}
+            onClose={() => {
+              setIsAdminLoginOpen(false);
+              if (currentPath === "/admin/login") {
+                window.history.pushState({}, "", "/");
+                setCurrentPath("/");
+              }
+            }}
+            onLoginSuccess={handleAdminSuccess}
+          />
+        </Suspense>
+      )}
 
     </div>
   );

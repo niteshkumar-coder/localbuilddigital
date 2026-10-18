@@ -335,7 +335,7 @@ export default function Footer({ onQuoteClick, onNavigate, onAdminClick }: Foote
         {/* ========================================================= */}
         {/* 6. BOTTOM COPYRIGHT BAR                                   */}
         {/* ========================================================= */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-[#64748B]">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-slate-300">
           <div>
             <span>© 2026 LocalBuild. All rights reserved. • Crafted with care by humans.</span>
           </div>
