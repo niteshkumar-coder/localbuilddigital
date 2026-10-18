@@ -1,5 +1,15 @@
 [
   {
+    "id": "LOG-MVE0TRYK",
+    "timestamp": "2026-10-18T16:09:38.252Z",
+    "action": "LEAD_CREATED",
+    "adminUser": "system",
+    "details": {
+      "leadId": "LD-MVE0TR9A-PYPV",
+      "name": "System Validation"
+    }
+  },
+  {
     "id": "LOG-MUGVHVJ8",
     "timestamp": "2026-09-25T11:24:01.124Z",
     "action": "ADMIN_LOGIN",
