@@ -112,10 +112,10 @@ Est. ROI: ${estimatedROI}%`;
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-10 sm:mb-12">
+        <div className="reveal-on-scroll max-w-3xl mb-10 sm:mb-12">
           <div className="flex items-center gap-2 text-xs font-mono font-semibold text-[#3157D5] uppercase tracking-wider mb-2">
-            <Calculator className="w-3.5 h-3.5" />
-            <span>Commercial Projection Model</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#3157D5]" />
+            <span>// 06 · ACQUISITION MATH &amp; ROI PROJECTION</span>
           </div>
 
           <h2 className="font-display font-semibold text-2xl sm:text-4xl lg:text-5xl text-[#1E293B] tracking-tight leading-tight mb-3">
@@ -135,7 +135,7 @@ Est. ROI: ${estimatedROI}%`;
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           
           {/* Inputs Column (7 cols) */}
-          <div className="lg:col-span-7 bg-white rounded-xl border border-[#DDE3EC] p-6 sm:p-8 space-y-6 shadow-2xs">
+          <div className="reveal-on-scroll delay-100 card-hover-lift lg:col-span-7 bg-white rounded-xl border border-[#DDE3EC] p-6 sm:p-8 space-y-6 shadow-2xs">
             <div className="flex items-center justify-between pb-3 border-b border-[#DDE3EC]">
               <span className="font-display font-semibold text-base text-[#263044]">
                 Campaign Inputs
@@ -330,7 +330,7 @@ Est. ROI: ${estimatedROI}%`;
           </div>
 
           {/* Output Panel (5 cols) */}
-          <div className="lg:col-span-5 flex flex-col justify-between p-6 sm:p-8 rounded-xl bg-[#0B1633] text-white border border-[#071126] shadow-xl">
+          <div className="reveal-on-scroll delay-200 card-hover-lift lg:col-span-5 flex flex-col justify-between p-6 sm:p-8 rounded-xl bg-[#0B1633] text-white border border-[#071126] shadow-xl">
             <div>
               <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#7C8CFF] block mb-6">
                 Calculated Projection

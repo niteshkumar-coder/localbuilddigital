@@ -51,10 +51,10 @@ export default function CaseStudies({ onQuoteClick }: CaseStudiesProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section 7 Header: Real Work. Measurable Impact. */}
-        <div className="max-w-3xl mb-8 sm:mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/70 text-[#3157D5] text-xs font-semibold uppercase tracking-wider mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-[#3157D5]" />
-            <span>Verified Portfolio &amp; Case Studies</span>
+        <div className="reveal-on-scroll max-w-3xl mb-8 sm:mb-12">
+          <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#3157D5] mb-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#3157D5]" />
+            <span>// 05 · VERIFIED CASE STUDIES &amp; COMMERCIAL IMPACT</span>
           </div>
           <h2 className="font-display font-semibold text-3xl sm:text-4xl lg:text-5xl text-[#071126] tracking-tight leading-[1.12] mb-3">
             Real Work. Measurable Impact.
@@ -138,7 +138,7 @@ export default function CaseStudies({ onQuoteClick }: CaseStudiesProps) {
               <article
                 key={cs.id}
                 id={`case-study-${cs.serviceNumber}`}
-                className="case group bg-white rounded-2xl border border-[#DDE3EC] hover:border-[#3157D5]/50 transition-all duration-300 p-5 sm:p-7 shadow-xs hover:shadow-lg"
+                className="reveal-on-scroll card-hover-lift case group bg-white rounded-2xl border border-[#DDE3EC] hover:border-[#3157D5]/50 transition-all duration-300 p-5 sm:p-7 shadow-xs hover:shadow-lg"
               >
                 {/* 2-Column Grid: Image Canvas on Left/Right, Strategy & Metrics on other */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">

@@ -45,10 +45,11 @@ export default function FAQ({ onQuoteClick }: FAQProps) {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-10 sm:mb-12">
-          <span className="inline-block text-xs font-mono font-semibold uppercase tracking-wider text-[#3157D5] mb-2">
-            Commercial Inquiries
-          </span>
+        <div className="reveal-on-scroll max-w-3xl mb-10 sm:mb-12">
+          <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#3157D5] mb-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#3157D5]" />
+            <span>// 08 · DEPLOYMENT PROTOCOLS &amp; ANSWERS</span>
+          </div>
           <h2 className="font-display font-semibold text-2xl sm:text-4xl lg:text-5xl text-[#1E293B] tracking-tight leading-tight mb-3">
             Frequently asked questions.
           </h2>
@@ -63,11 +64,12 @@ export default function FAQ({ onQuoteClick }: FAQProps) {
             const isOpen = openIndex === index;
             const buttonId = `faq-btn-${index}`;
             const panelId = `faq-panel-${index}`;
+            const delays = ["delay-75", "delay-150", "delay-225", "delay-300", "delay-375"];
 
             return (
               <div
                 key={index}
-                className="py-5 sm:py-6 transition-colors"
+                className={`reveal-on-scroll ${delays[index % delays.length]} py-5 sm:py-6 transition-colors`}
               >
                 <button
                   id={buttonId}

@@ -33,11 +33,12 @@ export default function Process({ onQuoteClick }: ProcessProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-14 sm:mb-16">
+        <div className="reveal-on-scroll flex flex-col md:flex-row md:items-end justify-between gap-4 mb-14 sm:mb-16">
           <div className="max-w-2xl">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#3157D5] block mb-2">
-              Execution Roadmap
-            </span>
+            <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#3157D5] mb-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#3157D5]" />
+              <span>// 04 · SYSTEMATIC DEPLOYMENT SPRINT</span>
+            </div>
             <h2 className="font-display font-semibold text-2xl sm:text-4xl text-[#1E293B] tracking-tight leading-[1.12]">
               A disciplined, transparent four-step process.
             </h2>
@@ -56,22 +57,25 @@ export default function Process({ onQuoteClick }: ProcessProps) {
           />
 
           <div className="grid grid-cols-4 gap-6 relative">
-            {steps.map((step) => (
-              <div key={step.num} className="pt-2 group">
-                {/* Milestone Node */}
-                <div className="w-10 h-10 rounded-full bg-white border-2 border-[#3157D5] text-[#3157D5] font-mono text-xs font-bold flex items-center justify-center mb-6 relative z-10 shadow-xs group-hover:bg-[#3157D5] group-hover:text-white transition-colors">
-                  {step.num}
+            {steps.map((step, idx) => {
+              const delays = ["delay-75", "delay-150", "delay-225", "delay-300"];
+              return (
+                <div key={step.num} className={`reveal-on-scroll ${delays[idx]} pt-2 group`}>
+                  {/* Milestone Node */}
+                  <div className="w-10 h-10 rounded-full bg-white border-2 border-[#3157D5] text-[#3157D5] font-mono text-xs font-bold flex items-center justify-center mb-6 relative z-10 shadow-xs group-hover:bg-[#3157D5] group-hover:text-white transition-all duration-200 group-hover:scale-105">
+                    {step.num}
+                  </div>
+
+                  <h3 className="font-display font-semibold text-lg text-[#1E293B] mb-2 tracking-tight group-hover:text-[#3157D5] transition-colors">
+                    {step.title}
+                  </h3>
+
+                  <p className="text-sm text-[#64748B] leading-relaxed pr-4">
+                    {step.sentence}
+                  </p>
                 </div>
-
-                <h3 className="font-display font-semibold text-lg text-[#1E293B] mb-2 tracking-tight">
-                  {step.title}
-                </h3>
-
-                <p className="text-sm text-[#64748B] leading-relaxed pr-4">
-                  {step.sentence}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 

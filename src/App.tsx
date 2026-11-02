@@ -14,6 +14,8 @@ import ContactForm from "./components/ContactForm";
 import Footer from "./components/Footer";
 import FloatingButtons from "./components/FloatingButtons";
 import PageLoader from "./components/PageLoader";
+import ScrollProgressCompanion from "./components/ScrollProgressCompanion";
+import { useScrollReveal } from "./hooks/useScrollReveal";
 import { BLOG_POSTS } from "./data/blogPosts";
 
 // Lazy-loaded heavy views for optimal initial page-load performance
@@ -70,6 +72,9 @@ export default function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
   const [adminToken, setAdminToken] = useState<string | null>(safeSessionStorage.getItem("localbuild_admin_token"));
   const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
+
+  // Handcrafted smooth scroll reveal trigger on route change
+  useScrollReveal([currentPath]);
 
   // Sync client router with popstate history actions (back/forward)
   useEffect(() => {
@@ -509,6 +514,9 @@ export default function App() {
         activeSection={activeSection}
         currentPath={currentPath}
       />
+
+      {/* Handcrafted Scroll Companion: Top 3px Progress Indicator & Floating Readout */}
+      <ScrollProgressCompanion activeSection={activeSection} />
 
       <main className="relative pt-16">
         {/* 1. Hero Section */}

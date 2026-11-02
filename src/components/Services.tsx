@@ -76,10 +76,11 @@ export default function Services({ onQuoteClick }: ServicesProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-12 sm:mb-16">
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#3157D5] block mb-2">
-            Core Capabilities
-          </span>
+        <div className="reveal-on-scroll max-w-3xl mb-12 sm:mb-16">
+          <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#3157D5] mb-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#3157D5]" />
+            <span>// 01 · SYSTEM ARCHITECTURE &amp; CAPABILITIES</span>
+          </div>
           <h2 className="font-display font-semibold text-2xl sm:text-4xl lg:text-5xl text-[#1E293B] tracking-tight leading-[1.12] mb-3">
             Everything you need to build, reach and convert local customers.
           </h2>
@@ -92,7 +93,7 @@ export default function Services({ onQuoteClick }: ServicesProps) {
             FEATURED SERVICE SPOTLIGHT: WEBSITE DESIGN & ENGINEERING
             Dominant 12-Column Art-Directed Marquee (7 cols text / 5 cols visual)
             ======================================================== */}
-        <div className="mb-16 rounded-2xl bg-white border border-[#DDE3EC] p-6 sm:p-10 shadow-sm overflow-hidden">
+        <div className="reveal-on-scroll delay-100 card-hover-lift mb-16 rounded-2xl bg-white border border-[#DDE3EC] p-6 sm:p-10 shadow-sm overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
             {/* Left Column (7 cols): Editorial Showcase */}
@@ -241,12 +242,13 @@ export default function Services({ onQuoteClick }: ServicesProps) {
 
           {/* Clean 5-Row Editorial List with Hairline Dividers */}
           <div className="divide-y divide-[#E2E8F0] border-y border-[#E2E8F0] bg-white rounded-xl shadow-2xs overflow-hidden">
-            {secondaryServices.map((srv) => {
+            {secondaryServices.map((srv, idx) => {
               const Icon = srv.icon;
+              const delays = ["delay-75", "delay-150", "delay-225", "delay-300", "delay-375"];
               return (
                 <div 
                   key={srv.id}
-                  className="p-6 sm:p-7 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:bg-[#F8FAFC] transition-colors group"
+                  className={`reveal-on-scroll ${delays[idx % delays.length]} p-6 sm:p-7 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:bg-[#F8FAFC] transition-colors group`}
                 >
                   {/* Left: Number + Title + Category */}
                   <div className="lg:w-1/3 space-y-1">

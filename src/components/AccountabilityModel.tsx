@@ -36,10 +36,11 @@ export default function AccountabilityModel({ onQuoteClick }: AccountabilityMode
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start mb-8">
           
           {/* Left Column (4 Columns): Thesis & Direct Stance */}
-          <div className="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
-            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#7C8CFF] block">
-              The Accountability Model
-            </span>
+          <div className="reveal-on-scroll lg:col-span-4 lg:sticky lg:top-24 space-y-4">
+            <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#7C8CFF]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#7C8CFF]" />
+              <span>// 03 · ACCOUNTABILITY &amp; ZERO MARKUPS</span>
+            </div>
             <h2 className="font-display font-semibold text-2xl sm:text-4xl text-white tracking-tight leading-tight">
               A transparent commercial partnership with zero agency markups.
             </h2>
@@ -60,7 +61,7 @@ export default function AccountabilityModel({ onQuoteClick }: AccountabilityMode
           </div>
 
           {/* Right Column (8 Columns): Authoritative Comparison Ledger */}
-          <div className="lg:col-span-8 bg-[#0B1633] border border-white/10 rounded-2xl overflow-hidden shadow-xl">
+          <div className="reveal-on-scroll delay-150 card-hover-lift lg:col-span-8 bg-[#0B1633] border border-white/10 rounded-2xl overflow-hidden shadow-xl">
             {/* Table Header */}
             <div className="grid grid-cols-1 sm:grid-cols-2 border-b border-white/10 bg-[#071126]/60 text-xs font-mono font-semibold uppercase tracking-wider">
               <div className="p-4 sm:p-5 text-red-400/90 flex items-center gap-2 border-b sm:border-b-0 sm:border-r border-white/10">

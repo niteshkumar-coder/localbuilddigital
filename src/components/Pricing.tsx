@@ -22,10 +22,11 @@ export default function Pricing({ onQuoteClick }: PricingProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-12 sm:mb-16">
-          <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[#3157D5] mb-2">
-            Transparent Pricing
-          </span>
+        <div className="reveal-on-scroll max-w-3xl mb-12 sm:mb-16">
+          <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#3157D5] mb-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#3157D5]" />
+            <span>// 07 · TRANSPARENT 3-YEAR INVESTMENT</span>
+          </div>
           <h2 className="font-display font-semibold text-2xl sm:text-4xl lg:text-5xl text-[#1E293B] tracking-tight leading-[1.12] mb-3">
             Simple, transparent 3-year pricing.
           </h2>
@@ -36,11 +37,12 @@ export default function Pricing({ onQuoteClick }: PricingProps) {
 
         {/* 3 Pricing Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-          {PRICING_PLANS.map((plan) => {
+          {PRICING_PLANS.map((plan, idx) => {
             const isHighlighted = plan.popular;
             const isExpanded = expandedPlan === plan.name;
             const keyFeatures = plan.features.slice(0, 5);
             const extraFeatures = plan.features.slice(5);
+            const delays = ["delay-75", "delay-150", "delay-225"];
 
             let idealFor = "For businesses building their digital foundation.";
             if (plan.name === "Market Dominance") {
@@ -52,7 +54,7 @@ export default function Pricing({ onQuoteClick }: PricingProps) {
             return (
               <div
                 key={plan.name}
-                className={`relative flex flex-col justify-between rounded-xl bg-white p-6 sm:p-8 transition-all ${
+                className={`reveal-on-scroll ${delays[idx]} card-hover-lift relative flex flex-col justify-between rounded-xl bg-white p-6 sm:p-8 transition-all ${
                   isHighlighted
                     ? "border-2 border-[#3157D5] shadow-md"
                     : "border border-[#DDE3EC] shadow-2xs"

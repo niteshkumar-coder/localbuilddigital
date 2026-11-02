@@ -84,10 +84,10 @@ export default function Navbar({
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 h-16 flex items-center transition-all duration-200 ${
+        className={`fixed top-0 left-0 right-0 z-40 h-16 flex items-center transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           scrolled
-            ? "bg-white/95 backdrop-blur-md shadow-xs border-b border-zinc-200/80"
-            : "bg-white/90 backdrop-blur-xs border-b border-zinc-100"
+            ? "bg-white/90 backdrop-blur-md shadow-[0_4px_20px_-4px_rgba(7,17,38,0.06)] border-b border-zinc-200/90"
+            : "bg-white/80 backdrop-blur-xs border-b border-zinc-100/80"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between">
@@ -131,7 +131,7 @@ export default function Navbar({
           </button>
 
           {/* Desktop Navigation Links (>=1024px) */}
-          <nav className="hidden lg:flex items-center space-x-6" aria-label="Main Navigation">
+          <nav className="hidden lg:flex items-center space-x-1.5" aria-label="Main Navigation">
             {navItems.map((item) => {
               const active = isItemActive(item.target);
               return (
@@ -140,15 +140,15 @@ export default function Navbar({
                   type="button"
                   onClick={() => handleLinkClick(item.target)}
                   aria-current={active ? "page" : undefined}
-                  className={`text-sm font-medium transition-colors py-1 cursor-pointer relative ${
+                  className={`text-sm font-medium transition-all px-3 py-1.5 rounded-lg cursor-pointer relative ${
                     active
-                      ? "text-zinc-900 font-semibold"
-                      : "text-zinc-600 hover:text-zinc-900"
+                      ? "text-[#3157D5] font-semibold bg-blue-50/70"
+                      : "text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100/70"
                   }`}
                 >
                   {item.name}
                   {active && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#3157D5] rounded-full" />
+                    <span className="absolute bottom-0.5 left-3 right-3 h-0.5 bg-[#3157D5] rounded-full" />
                   )}
                 </button>
               );

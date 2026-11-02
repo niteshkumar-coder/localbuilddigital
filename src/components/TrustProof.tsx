@@ -77,17 +77,21 @@ export default function TrustProof() {
           </div>
         </div>
 
-        {/* DESKTOP COMMITMENTS (>=640px): 4 Clean Grid Cards */}
+        {/* DESKTOP COMMITMENTS (>=640px): 4 Clean Grid Cards with Staggered Entrance */}
         <div className="hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-6 pb-10 border-b border-zinc-200/60">
           {commitments.map((item, idx) => {
             const Icon = item.icon;
+            const delays = ["delay-75", "delay-150", "delay-225", "delay-300"];
             return (
-              <div key={idx} className="bg-white p-5 rounded-xl border border-zinc-200/80 shadow-2xs space-y-2">
+              <div
+                key={idx}
+                className={`reveal-on-scroll ${delays[idx]} card-hover-lift bg-white p-5 rounded-xl border border-zinc-200/80 shadow-2xs space-y-2 cursor-default`}
+              >
                 <div className="flex items-center justify-between">
                   <div className="w-8 h-8 rounded-lg bg-zinc-100 text-zinc-900 flex items-center justify-center">
                     <Icon className="w-4 h-4 text-zinc-900" />
                   </div>
-                  <span className="font-mono text-xs font-bold text-zinc-400">{item.num}</span>
+                  <span className="font-mono text-xs font-bold text-blue-600">{item.num}</span>
                 </div>
                 <h3 className="font-display font-bold text-sm text-zinc-900">
                   {item.title}
