@@ -85,16 +85,38 @@ export default function CaseStudyDetailModal({
 
           {/* Body */}
           <div className="px-6 py-6 space-y-5 max-h-[70vh] overflow-y-auto">
-            {/* Project Image */}
-            <div className="case__media w-full">
-              <img
-                src={caseStudy.imageUrl}
-                alt={caseStudy.altText}
-                width={caseStudy.imageWidth}
-                height={caseStudy.imageHeight}
-                loading="lazy"
-                decoding="async"
-              />
+            {/* Project Image as Background Stage */}
+            <div className="relative overflow-hidden rounded-2xl border border-slate-700/60 shadow-md min-h-[220px] sm:min-h-[260px] flex flex-col justify-between p-4 bg-[#071126]">
+              <div className="absolute inset-0 z-0">
+                <img
+                  src={caseStudy.imageUrl}
+                  alt={caseStudy.altText}
+                  width={caseStudy.imageWidth || 1200}
+                  height={caseStudy.imageHeight || 800}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover object-center"
+                  onError={(e) => {
+                    const target = e.currentTarget as HTMLImageElement;
+                    if (target.src.endsWith(".svg")) {
+                      target.src = target.src.replace(".svg", ".webp");
+                    } else if (target.src.endsWith(".webp")) {
+                      target.src = target.src.replace(".webp", ".jpg");
+                    } else if (!target.src.includes("i.ibb.co") && caseStudy.fallbackUrl) {
+                      target.src = caseStudy.fallbackUrl;
+                    }
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#071126] via-[#071126]/60 to-[#071126]/20 pointer-events-none" />
+              </div>
+              <div className="relative z-10 flex justify-between items-center">
+                <span className="backdrop-blur-md bg-black/60 border border-white/20 text-white font-mono text-[11px] font-bold px-3 py-1 rounded-full shadow-lg">
+                  {caseStudy.serviceNumber} · {caseStudy.serviceCategory}
+                </span>
+                <span className="backdrop-blur-md bg-white/10 border border-white/20 text-zinc-200 text-[10px] px-2.5 py-1 rounded-full">
+                  {caseStudy.clientDomain}
+                </span>
+              </div>
             </div>
             
             {/* Highlight Metric Banner */}
